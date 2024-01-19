@@ -1,0 +1,841 @@
+<!--
+	此示例下载自 https://echarts.apache.org/examples/zh/editor.html?c=sunburst-visualMap&code=G4QwTgBAJiAuIQLwQNoCgKYgbw1_ARAHYgC2ApgQFwQEBK5AZuWOUQMaUA0e-mBAS1jlSAZVgBPADaUauPgtrsA9lOVhqtAMQBRACwBGAIIGAwgV58Avj0VKAFgKlRWRTejv55nhcTKzaACEpECgoFghTEA4WAlsfPgJQKQBXAIBWAwA2eISsQWExSRlNbzzfFTUNGgJdQxNzSzybJoSCdkdnV3dW8pxevvySCk0CUTIAZ2EBIghyWAgQKTiBwdpktM0AJgN03LXEoRFxaQCyg7t21XVRrSMs0x0dAGYLC4UrVYSW9_7fwmGAQIAFkBCBlHMFksAHQrf75DYBLYAdn2vwKx2KZy-FyuVVuADFAgBOIzE4lveEQT6_H7vc7owGjYHgMGwewgCbRSGLKSwtHvJJLTY0FF6AW4o5FU6lHEHPE3GpaUxGQJbAAiWUp8Jp711fQAunK6T4GW0mTVAqxOQsojENBLPELUgE9OK5YQpScSnIPYoFdVtM9kcidIEABza8om8rtTouNg9X5m3EW2jjUhTcgzHlLOFU50iiBux1rDHSn1_KmESqK7T3R4vKO0v0fVsQI3NUtYFNOtMEUzXVjseBSSLRTgO9uFgIGAwABm7vi9WNl6NrgdqenVRgJeiMze-S8SHScCbcNA89Pbl37GazOfmvPz8Jnmjni5v_pXMt91ZrQ63A2TyvF-bYtmsnZHnKva3v4ow6BMygAA4cgA5soaE2mAAjsOO9ovrGiLvuGezTj-lawW0G63MS4Z6DoRigWsMZ5HGZ7dJeYFVq-d6TNMsxPnmx5scRNAGFsOTcZ6hTeti_75DRSrAU20lYPqBysYMVF9H4Iw1AAUtEABWAhoWCglQnyhHomJxaftW5ZyWuClKIBSpEqS5KHhcGksSJig6bG_aBCAAi5tZAU-G-4nElFToUfJrkBrcKpqpqPmadxfkJFBPhaQoQUAvBNQAOJSAIygAEYhFMyikCANltHZBjPFs8VOauf6Ckp2gEgSyIEvO86ZXYBVOqeXSJlxyZqfwfGZgJEVNbiLUGKic20IlLkKSlykPCBo2DDlfTjXkRXmiVtAAFochCQmRZtMUQLs8WXNt3W7b1tRpRqWqbSd0btnlnhnT2079gAEuQoSLEQUAQAAcuQ7AANb4ZOK1Oi1zxxeRsldTx8rfVo_X9c8zHHR1k3nkm16OQtD6Wc-b3-jjeOOR9ROOSTKmUzq2XA8ax4XfNV0guQIREPVjUdXZxKGB1XOiye7n1lk6RZFskbtmDFTxpxqDcSrcH6em_HZszwlPXZbUOQWyubQB-L7Y2_P_IDXbG09_YAGrckYUgyFbj2OWt9uvo7rluS7QbPOGWRGDoR2ndlrOYCb_r9qC4IRfyNvCrOmTp4cBO_tzBYk-G6qmJqBIp0DtIl5nvhQykGF51jZa2-GJcyZi5ctxNau1OG4bEuq6QHgDafewz4uiEQEjhJAD352HheaFk7qc2XlFO4pI-6JP86ZA3zSz7N89mwQRgkGh0t1Sknd9wim80HoUm7wP-_R3tfXpHDASdIyJz7fEvvTAs_Y6BggAF4vwLi6LevcnpR2SiTAkOgx7znrjPJuc8oHiwADICGfmvLugxnoGBLKgveSUvpH1-hlPBeohZe3OhDcWiNlBEAALQTAakHCAnAhGpCIGhYRE5Yhy3fhAcMkklZ0J2sTI-A1wwGECLg_y04aaGyvBcIexUb73iWg9ChulbbpAjv8Tqg8D78F5gdVS1ZPbQSvoQm-Od7pWXXgWOymtX78DQQw2OtQQyBHSKSMB-UIEGJ9uLGBsDgDhTXgACi2POAw4YACU5iiKyK2Hoax6Jgn_n_rUdIJJ9AGGiaDWJBxDFDHFtDIODUiAh18a-OyyIyLfwrPQspJMdDIgps8PQtSxr1LWI0sWN9EnJLzukzJ6RcmBPWLI7IazbG_3Qaonc6Q9BbAmYoVx-Vm7xJvnfEAD9lBPwQRvJBNBx5bNKTzRhqo_rHPAqwyCwsYKcJvgAaQEFAIg5AJAY2kdOOy6jniKJ_gMssJNyQoopLramBtppG3cbxBeFtHxWTyaJDZxdaEIuUW80JdwnHuwgnqc518gRWhACkDpRLmoFKyAYF5SjPqDKPukdUES9CBC-dYKZ2kLlAmBMoWAsCIjkK2bbLIX8Ha8orq-IZET5zBjFfgU5oMGUeOlWCbxvJOk2MsTy8lfLKV1h-h85hLjBa_PYQkFWekgQAAVoi8PYFIqc3dZF0Xhf0illDepEBSEHdFOjMUXmxZA3FN8vVsBXvcvxwaUF9OcrayuR8-Z6vUi6wYIMxoiwBd631pUACSkiCIyMeS9EBobc0atjJG6NUhY1IvjXTOJjLRgGVNRmrpwb2pkrDXmzVBaaVFswAa8tBDk1AgAOrRAkYqxBRYNbWqne29c7z0r_WdXSw0fyOFlihuQZCcBlAiNSCESA_qwDsBmDLdl_A7IolbYTIe_8o0xu0b2jiWL9ENKlaMSG4AoAzE3T4z92MCkbRzX--xMd7XUrdvO6kJbz1utNJW0YyMUhgGUGm-9OEwUQFgCkUgyhSMTEQ89Z4qrdKvIjWrQD3bgMRr7TNJNNj-xELIQhpVsjWN7rbTM1WVLC0sN8mw8BdgQYxl7J60YAAVUwpUDyOm2Yi_0JNgyhgjJlca7EpoJvA3YD1_YjCmHMI2osxIJ1lg47pIZ9QzC1INXrA9WdxaBCISqZjdlDDcvxjagL0USYRgpnoWlym3HuqI5aOgoXnOznnBk39djD1UurnoUwidfMXtS1e8WjxRBOehQU55UX93_pJlrDWxIam63K4RyrN9TCQwAPJELCxJtjsYPMdqPiZsMOsWJdc8HZqr_WjDqmG02opO9KHjbYsZ0w4YySNFmwR-baXaDqiIYEWrQam3Bjyzs3EJNDDEiyOosrR3bMnYIDoGrem6tNqyRt9j6rmtHz0MiIwkl0ivZS91yh_ZSqBGBKtos8ds2baB9xcpWhty7n3FDs5_yetAkhojGrSOMjzhQ2j6LwOqXpAJE9rII1OtvcCh9wFNa-tk63qNtiW3qJH2RCiYZJ7jpzfe4T0Y7OMtc5oKxjmVOmsY6rprZ7B3Rcs8KmzmtdAvUy4gNrSL7n0cFcw3RBiTE8eGoJ7D4hRhgRDay--G7jXpNK6PoEXYRgweW6XZem3N8iGlVKnrzIxS2h89i4wwIKqz7M-h8diXNQiE1shpdyhyq4Uu7QybzcugQFbG1j7k5FbE-0CIQAVWWyH6ht3DOedUQNIaTPDvx_F_7oEFfSeO4_qRWv4b69Uv6sSIaavU4a74AtzxX3-t6_kX36dE3B9EgJAYNFLf8d-90v2frvs9cRfnzF4eS_1QEkkkXj4Jf2-jC9UYKv3eXo9IPzTzDZMCQU3P9YS_W_xZetMF64P9-60qOgO1ObuVKWC6oiWze6urerOpeBAXqdAd-v2RYegCsT-YBmG6oWwt-GoH--qX-wUCSjEK2gBaBGBOetwF24YOW086-Vum-RBxiRg0u9-WwkmWe-WPUs6msheceG-FWV-NQoggKpgiO9-n8PO4exu3BVKgQ9w8424-B6khBbEd4mmyBV2qB8cFBshmGjwWQgQIyyhC6qhl0N8mmpUpgmmeuEkwBY2Mh92R8OgKIWQ3k_BDBgh3-FhqeP2Whro7WuhThg-yI6imiJh1IZh0U_YmmkMAAmuISgbOOwUESolSifuGMiBEhEf5pPkCOXo8GnhYrIukM8GHtFBHkfvoWPDuKPo3LAZrvAQUaICHpTiAYrpQUqIEPOMSM8ODjkVEX2OLOXr7Ikf4ZoDQakUikfKiu4fQZMippYGpgMBpjUH_hoUUaXKAdtiDjuHuHQcXisbomBtbt4UCPDmMensGvLu0a7p0doNUg0L5hiqBtZsukJuLOuuIqOpatcVJtnrsuAd5nUWellK6g0RPh9l6rUbYRwUbtsXobnvuILvcM8XGq8f2hBoOmsbnFug8kWK1FIZKI4fylSsiTgSLgLKCXkGWocYwWoUFkgZscSn9hJFMZxmSXtp_Ecj2nxhiQJgOsapLmAO3D8bZBsmyZOncYCZhnoFyVrDhouickpgITDmcVBqVF3kkZoL0eyQPphqGFkFgpDryZ5vxomoKSulBqJryBAAAGQQDAjsDqgsD0awALB4mZpNq6lSkAkhIGk6BGmkSKl4blC0kX6nFMEd41bMkcp_bzj2G84knTHpHZAKwzZUzolWaYnTKQbCFwC3rsgQqeljrxmJmCiVEplYFplykhnUm5Ri5wFCFl6V6kHaniQ9F6mL4v5EjIjZBokgbZkClYlCllROAyDunkBimCgtSdm-lcH-m579RGH9kKZgmlqNmNHNkEDE4xm2EJldk7HgFmBaxaKZmDm0zDm5nYm0CQwpAbrTmrQbIHnzl3akmYY6AnlbBnlUk_Ibnj5eAfYFE6CxnRSznlEJTJkcmYZGF05oEDl8lDkWkjlWk1DqgMaPnyjgX_ELnvm56wV7hr5UhKnfL4YQmAXwGOYZagVIbxk3EOEInBEfm7bPDyEIVmn8nIXXmjm0CmBProwlm_F0U4Vvl2q54gXhisUHG_mKbgmqkJ7bmmBLZtnjE0A-nwkdGIm0SzHsUdrmk2aSo3kED-xcgCCozgCYWqUQDqVqqMV4XaWop1l_lkUxKLH6poAGgADcaAKEsAlUswyA3gAA9EFRAMkhMPeVICyMhN1CFVgJIMhOQDQAAOQqBEB-VRoMYTDJXxBxWYCkAzA0D2x5UQANQAAeHZuVoVmAMwdAG6SVVYJVmAG4l4yVWg35vRu2OVEAbVScpgcpBI3VbV_UQq6QpgQ1pMdECcWwyVUEJVuocVdIEwLAAg5AEwfKCVDVyVEVRAVUjGsAOVlgMA8ANAx1IA-wYAoQpC61qAi4PVxI84AApLNfsCEFVJLHmmRvAMIClZdbBksMlUsXgJ8FYJ5UAA
+	⚠ 请注意，该图表不是 Apache ECharts 官方示例，而是由用户代码生成的。请注意鉴别其内容。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+  
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+  <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/extension/dataTool.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  -->
+  <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/extension/bmap.min.js"></script>
+  -->
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    
+    var option;
+
+    var data = [
+    {
+        "name": "Reference",
+        "itemStyle": {
+            "color": "#E41A1C"
+        },
+        "children": [
+            {
+                "name": "Bladder Cancer",
+                "value": 516,
+                "itemStyle": {
+                    "color": "#E41A1C"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 215,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    },
+                    {
+                        "name": "Miao et al.",
+                        "value": 27,
+                        "itemStyle": {
+                            "color": "#FB9A99"
+                        }
+                    },
+                    {
+                        "name": "Mariathasan et al.",
+                        "value": 274,
+                        "itemStyle": {
+                            "color": "#CAB2D6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Breast Cancer",
+                "value": 44,
+                "itemStyle": {
+                    "color": "#377EB8"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 44,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Colorectal Cancer",
+                "value": 110,
+                "itemStyle": {
+                    "color": "#4DAF4A"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 110,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Esophagogastric Cancer",
+                "value": 185,
+                "itemStyle": {
+                    "color": "#984EA3"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 126,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    },
+                    {
+                        "name": "Janjigian et al.",
+                        "value": 40,
+                        "itemStyle": {
+                            "color": "#FB9A99"
+                        }
+                    },
+                    {
+                        "name": "Bai et al.",
+                        "value": 19,
+                        "itemStyle": {
+                            "color": "#CAB2D6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Glioblastoma",
+                "value": 132,
+                "itemStyle": {
+                    "color": "#FF7F00"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 117,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    },
+                    {
+                        "name": "Zhao et al.",
+                        "value": 15,
+                        "itemStyle": {
+                            "color": "#CAB2D6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Head and Neck Cancer",
+                "value": 139,
+                "itemStyle": {
+                    "color": "#FFFF33"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 139,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Melanoma",
+                "value": 941,
+                "itemStyle": {
+                    "color": "#A65628"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 320,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    },
+                    {
+                        "name": "Van Allen et al.",
+                        "value": 110,
+                        "itemStyle": {
+                            "color": "#3386AE"
+                        }
+                    },
+                    {
+                        "name": "Miao et al.",
+                        "value": 151,
+                        "itemStyle": {
+                            "color": "#8DCD6F"
+                        }
+                    },
+                    {
+                        "name": "Hugo et al.",
+                        "value": 38,
+                        "itemStyle": {
+                            "color": "#889D5A"
+                        }
+                    },
+                    {
+                        "name": "Snyder et al.",
+                        "value": 64,
+                        "itemStyle": {
+                            "color": "#ED5051"
+                        }
+                    },
+                    {
+                        "name": "Anagnostou et al.",
+                        "value": 46,
+                        "itemStyle": {
+                            "color": "#F58F57"
+                        }
+                    },
+                    {
+                        "name": "Riaz et al.",
+                        "value": 68,
+                        "itemStyle": {
+                            "color": "#FE880F"
+                        }
+                    },
+                    {
+                        "name": "Liu et al.",
+                        "value": 144,
+                        "itemStyle": {
+                            "color": "#CAB2D6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Non-small cell lung cancer",
+                "value": 826,
+                "itemStyle": {
+                    "color": "#F781BF"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 350,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    },
+                    {
+                        "name": "Miao et al.",
+                        "value": 56,
+                        "itemStyle": {
+                            "color": "#77B59A"
+                        }
+                    },
+                    {
+                        "name": "Rizvi et al.(2018)",
+                        "value": 240,
+                        "itemStyle": {
+                            "color": "#5B9E41"
+                        }
+                    },
+                    {
+                        "name": "Hellmann et al.",
+                        "value": 75,
+                        "itemStyle": {
+                            "color": "#E73334"
+                        }
+                    },
+                    {
+                        "name": "Rizvi et al.(2015)",
+                        "value": 16,
+                        "itemStyle": {
+                            "color": "#FDA542"
+                        }
+                    },
+                    {
+                        "name": "Anagnostou et al.",
+                        "value": 89,
+                        "itemStyle": {
+                            "color": "#CAB2D6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Kidney Cancer",
+                "value": 813,
+                "itemStyle": {
+                    "color": "#999999"
+                },
+                "children": [
+                    {
+                        "name": "Samstein et al",
+                        "value": 151,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    },
+                    {
+                        "name": "Braun et al.",
+                        "value": 261,
+                        "itemStyle": {
+                            "color": "#5DB54B"
+                        }
+                    },
+                    {
+                        "name": "Motzer et al.",
+                        "value": 366,
+                        "itemStyle": {
+                            "color": "#EB5037"
+                        }
+                    },
+                    {
+                        "name": "Miao et al.",
+                        "value": 35,
+                        "itemStyle": {
+                            "color": "#CAB2D6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Pan-cancer",
+                "value": 98,
+                "itemStyle": {
+                    "color": null
+                },
+                "children": [
+                    {
+                        "name": "Pender et al.",
+                        "value": 98,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Pan-GI cancer",
+                "value": 157,
+                "itemStyle": {
+                    "color": null
+                },
+                "children": [
+                    {
+                        "name": "Jiao et al.",
+                        "value": 92,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    },
+                    {
+                        "name": "Wang et al.",
+                        "value": 65,
+                        "itemStyle": {
+                            "color": "#CAB2D6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Hepatocellular carcinoma",
+                "value": 27,
+                "itemStyle": {
+                    "color": null
+                },
+                "children": [
+                    {
+                        "name": "Harding et al.",
+                        "value": 27,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Neuroendocrine tumours",
+                "value": 36,
+                "itemStyle": {
+                    "color": null
+                },
+                "children": [
+                    {
+                        "name": "Lu et al.",
+                        "value": 36,
+                        "itemStyle": {
+                            "color": "#A6CEE3"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "TCGA",
+        "itemStyle": {
+            "color": "#377EB8"
+        },
+        "children": [
+            {
+                "name": "ACC",
+                "value": 92,
+                "itemStyle": {
+                    "color": "#E41A1C"
+                }
+            },
+            {
+                "name": "BLCA",
+                "value": 411,
+                "itemStyle": {
+                    "color": "#B83343"
+                }
+            },
+            {
+                "name": "BRCA",
+                "value": 1020,
+                "itemStyle": {
+                    "color": "#8D4C6A"
+                }
+            },
+            {
+                "name": "CESC",
+                "value": 289,
+                "itemStyle": {
+                    "color": "#626591"
+                }
+            },
+            {
+                "name": "CHOL",
+                "value": 36,
+                "itemStyle": {
+                    "color": "#377EB8"
+                }
+            },
+            {
+                "name": "COAD",
+                "value": 404,
+                "itemStyle": {
+                    "color": "#3C8A9C"
+                }
+            },
+            {
+                "name": "DLBC",
+                "value": 37,
+                "itemStyle": {
+                    "color": "#419681"
+                }
+            },
+            {
+                "name": "ESCA",
+                "value": 184,
+                "itemStyle": {
+                    "color": "#47A265"
+                }
+            },
+            {
+                "name": "GBM",
+                "value": 388,
+                "itemStyle": {
+                    "color": "#4DAF4A"
+                }
+            },
+            {
+                "name": "HNSC",
+                "value": 507,
+                "itemStyle": {
+                    "color": "#5F9660"
+                }
+            },
+            {
+                "name": "KICH",
+                "value": 66,
+                "itemStyle": {
+                    "color": "#727E76"
+                }
+            },
+            {
+                "name": "KIRC",
+                "value": 369,
+                "itemStyle": {
+                    "color": "#85668C"
+                }
+            },
+            {
+                "name": "KIRP",
+                "value": 281,
+                "itemStyle": {
+                    "color": "#984EA3"
+                }
+            },
+            {
+                "name": "LAML",
+                "value": 137,
+                "itemStyle": {
+                    "color": "#B15A7A"
+                }
+            },
+            {
+                "name": "LGG",
+                "value": 510,
+                "itemStyle": {
+                    "color": "#CB6651"
+                }
+            },
+            {
+                "name": "LIHC",
+                "value": 363,
+                "itemStyle": {
+                    "color": "#E57228"
+                }
+            },
+            {
+                "name": "LUAD",
+                "value": 514,
+                "itemStyle": {
+                    "color": "#FF7F00"
+                }
+            },
+            {
+                "name": "LUSC",
+                "value": 485,
+                "itemStyle": {
+                    "color": "#FF9F0C"
+                }
+            },
+            {
+                "name": "MESO",
+                "value": 82,
+                "itemStyle": {
+                    "color": "#FFBF19"
+                }
+            },
+            {
+                "name": "OV",
+                "value": 411,
+                "itemStyle": {
+                    "color": "#FFDF26"
+                }
+            },
+            {
+                "name": "PAAD",
+                "value": 175,
+                "itemStyle": {
+                    "color": "#FFFF33"
+                }
+            },
+            {
+                "name": "PCPG",
+                "value": 178,
+                "itemStyle": {
+                    "color": "#E8D430"
+                }
+            },
+            {
+                "name": "PRAD",
+                "value": 494,
+                "itemStyle": {
+                    "color": "#D2AA2D"
+                }
+            },
+            {
+                "name": "READ",
+                "value": 149,
+                "itemStyle": {
+                    "color": "#BC802A"
+                }
+            },
+            {
+                "name": "SARC",
+                "value": 236,
+                "itemStyle": {
+                    "color": "#A65628"
+                }
+            },
+            {
+                "name": "SKCM",
+                "value": 466,
+                "itemStyle": {
+                    "color": "#BA604D"
+                }
+            },
+            {
+                "name": "STAD",
+                "value": 438,
+                "itemStyle": {
+                    "color": "#CE6B73"
+                }
+            },
+            {
+                "name": "TGCT",
+                "value": 128,
+                "itemStyle": {
+                    "color": "#E27699"
+                }
+            },
+            {
+                "name": "THCA",
+                "value": 491,
+                "itemStyle": {
+                    "color": "#F781BF"
+                }
+            },
+            {
+                "name": "THYM",
+                "value": 123,
+                "itemStyle": {
+                    "color": "#DF87B5"
+                }
+            },
+            {
+                "name": "UCEC",
+                "value": 530,
+                "itemStyle": {
+                    "color": "#C88DAC"
+                }
+            },
+            {
+                "name": "UCS",
+                "value": 57,
+                "itemStyle": {
+                    "color": "#B093A2"
+                }
+            },
+            {
+                "name": "UVM",
+                "value": 80,
+                "itemStyle": {
+                    "color": "#999999"
+                }
+            }
+        ]
+    },
+    {
+        "name": "CPTAC",
+        "itemStyle": {
+            "color": "#4DAF4A"
+        },
+        "children": [
+            {
+                "name": "GBM",
+                "value": 99,
+                "itemStyle": {
+                    "color": "#E41A1C"
+                },
+                "children": [
+                    {
+                        "name": "Wang et al.",
+                        "value": 99,
+                        "itemStyle": {
+                            "color": "#E41A1C"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "PDAC",
+                "value": 136,
+                "itemStyle": {
+                    "color": "#4A72A6"
+                },
+                "children": [
+                    {
+                        "name": "Cao et al.",
+                        "value": 136,
+                        "itemStyle": {
+                            "color": "#4A72A6"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "BRAC",
+                "value": 112,
+                "itemStyle": {
+                    "color": "#48A462"
+                },
+                "children": [
+                    {
+                        "name": "Krug et al.",
+                        "value": 112,
+                        "itemStyle": {
+                            "color": "#48A462"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "HGSC",
+                "value": 93,
+                "itemStyle": {
+                    "color": "#7E6E85"
+                },
+                "children": [
+                    {
+                        "name": "Hu et al & McDermott et al.",
+                        "value": 93,
+                        "itemStyle": {
+                            "color": "#7E6E85"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "LSCC",
+                "value": 108,
+                "itemStyle": {
+                    "color": "#D16948"
+                },
+                "children": [
+                    {
+                        "name": "Satpathy et al.",
+                        "value": 108,
+                        "itemStyle": {
+                            "color": "#D16948"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "LUAD",
+                "value": 109,
+                "itemStyle": {
+                    "color": "#FFB716"
+                },
+                "children": [
+                    {
+                        "name": "Gillette et al.",
+                        "value": 109,
+                        "itemStyle": {
+                            "color": "#FFB716"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "HNSCC",
+                "value": 108,
+                "itemStyle": {
+                    "color": "#E1C62F"
+                },
+                "children": [
+                    {
+                        "name": "Huang et al.",
+                        "value": 108,
+                        "itemStyle": {
+                            "color": "#E1C62F"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "UCEC",
+                "value": 100,
+                "itemStyle": {
+                    "color": "#B75F49"
+                },
+                "children": [
+                    {
+                        "name": "Dou et al.",
+                        "value": 100,
+                        "itemStyle": {
+                            "color": "#B75F49"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "CCRCC",
+                "value": 109,
+                "itemStyle": {
+                    "color": "#EC83BA"
+                },
+                "children": [
+                    {
+                        "name": "Clark et al.",
+                        "value": 109,
+                        "itemStyle": {
+                            "color": "#EC83BA"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "COAD",
+                "value": 93,
+                "itemStyle": {
+                    "color": "#999999"
+                },
+                "children": [
+                    {
+                        "name": "Vasaikar et al.",
+                        "value": 93,
+                        "itemStyle": {
+                            "color": "#999999"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+];
+option = {
+  // visualMap: {
+  //   type: 'continuous',
+  //   min: 0,
+  //   max: 10,
+  //   inRange: {
+  //     color: ['#2F93C8', '#AEC48F', '#FFDB5C', '#F98862']
+  //   }
+  // },
+  series: {
+    type: 'sunburst',
+    data: data,
+    radius: [0, '90%'],
+    label: {
+      rotate: 'radial'
+    }
+  }
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>

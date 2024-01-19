@@ -1,0 +1,135 @@
+<svg width="1600" height="800" id="mainsvg" class="svgs"></svg>
+  <link rel="stylesheet" href="mystyle.css">
+  <script src="d3.min.js"></script>
+  <script>
+    // The following code is the typical routine of my d3.js code. 
+    const svg = d3.select('svg');
+    const width = svg.attr('width');
+    const height = svg.attr('height');
+    const margin = { top: 60, right: 60, bottom: 60, left: 150 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+    const mainGroup = svg.append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    const container = mainGroup.append('g').classed("container", true);
+    const xValue = d => parseFloat(d.globalsale);
+    const yValue = d => d.platform;
+    const xScale = d3.scaleLinear();
+    const yScale = d3.scaleBand();
+
+    let xAxis = d3.axisBottom(xScale);
+    let yAxis = d3.axisLeft(yScale);
+
+    const colorScale = d3.scaleOrdinal();
+    const sp = d3.scalePoint();
+
+    const interval = 1000;
+
+    const yearLabel = mainGroup.append('text')
+      .attr('x', innerWidth - 200)
+      .attr('y', innerHeight - 80)
+      .attr('class', 'year-label')
+      .text('0000');
+
+    const formatFloat = d3.format(".2f");
+
+    d3.csv('pgy.csv').then(data => {
+      render(data);
+    })
+
+    async function render(data) {
+      sp.domain(data.map(yValue)).range([0, 1]);
+      data = d3.group(data, d => d.year);
+      const yearList = Array.from(data.keys()).sort((a, b) => a - b);
+
+
+      const xAxisGroup = mainGroup.append('g')
+        .attr('transform', `translate(${0}, ${innerHeight})`);
+      const yAxisGroup = mainGroup.append('g');
+
+      xAxisGroup.append('text')
+        .attr('font-size', '15pt')
+        .attr('font-weight', 'bold')
+        .attr('text-anchor', 'middle')
+        .attr('x', innerWidth / 2)
+        .attr('y', 50)
+        .attr('fill', '#000000')
+        .text('Globalsale');
+
+      yAxisGroup.append('text')
+        .attr('font-size', '15pt')
+        .attr('font-weight', 'bold')
+        .attr('transform', `rotate(-90)`)
+        .attr('text-anchor', 'middle')
+        .attr('x', -innerHeight / 2)
+        .attr('y', -50)
+        .attr('fill', '#000000')
+        .text('Platform');
+
+      const update = (year) => {
+
+        const transition = d3.transition().duration(interval).ease(d3.easeLinear);
+        yearLabel.text(yearList[year]);
+        console.log(year);
+        yearData = data.get(yearList[year]);
+
+        const sortedData = [...yearData].sort((a, b) => b.globalsale - a.globalsale);
+
+        // console.log(yearData);
+        // console.log(d3.max(yearData, xValue));
+
+        // calculating scales: 
+        yScale.domain(sortedData.map(yValue)).range([0, innerHeight]).padding(0.1);
+        xScale.domain([0, d3.max(yearData, xValue)]).range([0, innerWidth]);
+
+        container.selectAll('rect').data(yearData, d => d.platform).enter().append('rect')
+          .style("fill", d => d3.interpolateSpectral(sp(yValue(d))))
+          .attr('width', 0)
+          .attr('x', 0)
+          .attr('y', d => yScale(yValue(d)))
+          .attr('height', yScale.bandwidth());
+
+        container.selectAll('rect').data(yearData, d => d.platform).join('rect')
+          .transition(transition)
+          .attr('width', d => xScale(xValue(d)))
+          .attr('y', d => yScale(yValue(d)))
+          .attr('height', yScale.bandwidth());
+
+        container.selectAll("text").data(yearData, d => d.platform).enter().append('text')
+          .attr("x", 0)
+          .attr("y", d => yScale(yValue(d)) + yScale.bandwidth() / 2)
+          .attr("text-anchor", "start")
+          .attr("dx", "0.1em")
+          .attr("dy", "5")
+          .attr("class", "value-label")
+
+        container.selectAll("text").data(yearData, d => d.platform).join('text')
+          .transition(transition)
+          .attr("x", d => xScale(xValue(d)))
+          .attr("y", d => yScale(yValue(d)) + yScale.bandwidth() / 2)
+          .attr("text-anchor", "start")
+          .attr("dx", "0.1em")
+          .attr("dy", "5")
+          .attr("class", "value-label")
+          .tween("text", function (d) {
+            var i = d3.interpolate(this.textContent, d.globalsale);
+            return function (t) {
+              this.textContent = formatFloat(i(t));
+            }
+          });
+
+        // adding axes: 
+        xAxisGroup.transition(transition)
+          .call(xAxis);
+        yAxisGroup.transition(transition)
+          .call(yAxis);
+
+        d3.selectAll(".tick text").attr('font-size', '10pt');
+      }
+      for (const year in yearList) {
+        update(year);
+        await new Promise(done => setTimeout(() => done(), interval));
+      }
+    }
+
+  </script>

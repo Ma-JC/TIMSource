@@ -1,0 +1,233 @@
+<style>
+    .demo{
+
+        position:relative;
+
+        top: 0;
+
+        left: 0;
+
+        width:100%;
+
+        height:1000px;
+
+        min-width: 1000px;
+
+        padding: 0%;
+
+        margin: 0%;
+
+        z-index:-10;
+
+        zoom: 1;
+
+        background-color: #fff;
+
+        background: transparent url("https://www.bestofascoafrica.org/images/sliders/slide1.jpg");
+
+        background-repeat: no-repeat;
+
+        background-size: cover;
+
+        -webkit-background-size: cover;
+
+        -o-background-size: cover;
+
+        background-position: center 0;
+
+        /*filter:blur(3px);*/
+    }
+    #start{
+        border: 0;
+        margin: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 15px 50px;
+        border-radius: 50px;
+        color: white;
+        outline: none;
+        position: relative;
+    }
+    .start_green::before{
+        content: "";
+        display: block;
+        background: linear-gradient(to left, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 50%);
+        background-size: 210% 100%;
+        background-position:right bottom ;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        border-radius: 50px;
+        transition: all 1s;
+        -webkit-transition: all 1s;
+    }
+    .start_green{
+        background-image: linear-gradient(to right,#25aae1,#40e495);
+        box-shadow: 0 4px 15px 0 rgba(49 ,196 ,190 ,0.75);
+    }
+    .start_green:hover::before{
+        background-position: left bottom;
+    }
+
+    .start_wrap{
+        position: relative;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: 330px;
+        height: 260px;
+        background-color: rgb(255,255,255);
+        box-shadow: 0 0 10px rgb(0,0,0,.5);
+        overflow: hidden;
+        border-radius:  30px;
+        }
+    .start_box-top{
+        position: relative;
+        width: 330px;
+        height: 260px;
+        background-color: #033c73;
+        display: flex;
+        justify-content: center;
+        transition: .5s;
+            }
+    /*.start_box-top::after{
+        content: '';
+        width: 40px;
+        height: 40px;
+        clip-path: polygon(50% 40%,0 0,100% 0);
+        background-color: #033c73;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        bottom: -38px;
+        z-index: 999;
+                    }*/
+    .start_box-bottom2{
+        top: 300px;
+        height: 220px;
+                }
+
+     h2{
+        display: block;
+        margin: 30px 0 10px 0;
+        font: 800 28px 'Hobo Std';
+                    }
+     span{
+        font: 400 24px 'Giddyup Std';
+                    }
+
+
+    .start_box-bottom2 li{
+        margin: 2px;
+        color: black;
+        font-weight: bold;
+        font: 800 20px 'OCR A Std';
+        transition: .2s;
+                    }
+    .start_wrap:hover .start_box-top{
+        height: 50px;
+                        }
+
+    li:hover{
+        color:rgb(100,160,160)
+            }
+    .start_wrap:hover .start_box-bottom2{
+        top: 50px;
+                            }
+    </style>
+        <div class="demo"></div>
+        <div style="position: relative;left: 10%;top:-750px;width:1000px">
+            <p style="color:white;font-size: 50px;margin-bottom:15px">Welcome to SNVIO!</p>
+            <hr style="color:white;margin-left:0px;width:900px;">
+            <p style="color:white;font-size: 25px;">SNVIO is a user-friendly database dedicated to provide the results of<br/>
+                pan-cancer immunogenomic analyses based on next-generation<br/>
+                sequencing data. Sources of the databases include TCGA, CPTAC, and<br/>
+                multiple published WES-based immunotherapeutic cohorts.</p>
+            <div id="frozen-btn">
+                <button class="start_green action-button shiny-bound-input" id="start" type="button">Get Started Now</button>
+            </div>
+        </div>
+        <div style="position: relative;top: -350px;display: flex;justify-content: center;">
+            <div style="width: 1200px;">
+                <hr style="color:#033c73;text-align: center;width:100px;">
+                <p style="font-size: 40px;color: #033c73;font-weight: bold;text-align: center;padding-bottom: 0px;margin-bottom: 0px;">Single Nucleotide Variant Immune Oncology</p>
+                <p style="font-size: 40px;color: #033c73;font-weight: bold;text-align: center;padding-top: 0px;margin-top: 0px;">(SNVIO)</p>
+                <hr style="color:#033c73;text-align: center;width:100px;">
+                <br/>
+                <br/>
+                <p style="font-size: 40px;color: #033c73;font-weight: bold;text-align: center;">Data sources</p>
+                <hr style="text-align: center;width:1200px;border:0;background-color:#033c73;height:2px;margin-top: 0px;margin-bottom: 0px;">
+                <div class="start_wrap">
+                    <div class="start_box-top">
+                        <h2 style="display: flex;align-items: center;justify-content: center;color: white;">TCGA Database</h2>
+                    </div>
+                    <div class="start_box-bottom2">
+                        <ul>
+                            <li>Overview</li>
+                            <li>Infiltrating immune cells</li>
+                            <li>immune-related signatures</li>
+                            <li>Tumor mutation burden</li>
+                            <li>Differential expression analysis</li>
+                            <li>Survival analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr style="text-align: center;width:1200px;border:0;background-color:#033c73;height:2px;margin-top: 0px;margin-bottom: 0px;">
+                <div class="start_wrap">
+                    <div class="start_box-top">
+                        <h2 style="display: flex;align-items: center;justify-content: center;color: white;">CPTAC Database</h2>
+                    </div>
+                    <div class="start_box-bottom2">
+                        <ul>
+                            <li>Infiltrating immune cells</li>
+                            <li>immune-related signatures</li>
+                            <li>Differential protein analysis</li>
+                            <li>Survival analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr style="text-align: center;width:1200px;border:0;background-color:#033c73;height:2px;margin-top: 0px;margin-bottom: 0px;">
+                <div class="start_wrap">
+                    <div class="start_box-top">
+                        <h2 style="display: flex;align-items: center;justify-content: center;color: white;">Ref_ICI datasets</h2>
+                    </div>
+                    <div class="start_box-bottom2">
+                        <ul>
+                            <li>Survival analysis</li>
+                            <li>Immunetherapy response</li>
+                            <li>Tumor mutation burden</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr style="text-align: center;width:1200px;border:0;background-color:#033c73;height:2px;margin-top: 0px;margin-bottom: 0px;">
+
+                <div style="position: relative;top: -1150px;left:600px;">
+                    <div style="height: 260px;width: 600px;text-align: left;display:flex;align-items:center;margin-top: 100px;margin-bottom: 100px;"> 
+                        <p style="font-size: 25px;font-weight: bold;color: black;">This module provides the short summary of the gene mutation landscape 
+                            and its prognostic value in one specific cancer type. 
+                            Specifically, this module enables the integrative immunogenomic analyses of the correlations of gene mutation 
+                            and tumor microenvironment characteristics.</p>
+                    </div>
+
+                    <div style="height: 260px;width: 600px;text-align: left;display:flex;align-items:center;margin-top: 100px;margin-bottom: 100px;"> 
+                        <p style="font-size: 25px;font-weight: bold;color: black;">This module can be used to assess the gene mutation and proteomics-based immune features. 
+                            Because the proteomic layer reflects much more accurately the cellular function, 
+                            this module will aid the exploration of the cellular mechanisms of regulating tumor microenvironment.</p>
+                    </div>
+
+                    <div style="height: 260px;width: 600px;text-align: left;display:flex;align-items:center;margin-top: 100px;margin-bottom: 100px;"> 
+                        <p style="font-size: 25px;font-weight: bold;color: black;">This module describes the association between gene mutation and 
+                            immunotherapeutic outcomes in published clinical studies of immune checkpoint inhibitors.</p>
+                    </div>
+                </div>
+
+ 
+
+
+
+            </div>
+
+        </div>

@@ -1,0 +1,229 @@
+<!--
+	此示例下载自 https://echarts.apache.org/examples/zh/editor.html?c=sankey-nodeAlign-left&code=LYTwwgFghgTgLgOgM4QPYHcAyqoBMCWAdgOYAUAlANwBQAJAsQKZykBKA8uwCoD6ACgEEuACQAEAalEByAPS4ocKDKhIkzOQqWNCjGMRAIAVklSEpAGlEAzAK6EAxnHynRpeYvKiA3tVGjQkLCIEPi4jNh4RGRUvv7g0PDIzOwADk6mpLF-pKhpzoSiALzeWX6iTnAANowAXCVlDeWMAB5wdVIAcqhhogKV-MQFrAMQcFKlfgC-5hPlqKiVTil1Po1lcDADTDDt-HCMwBazfhtbuuyE7cCoNmrXAG6M42vTs2qbjEh1ANrH9WvrEApWrSJBQQgAa0YICOALKBxS0CQ-C-_zhfisqHst3aeEMUHs2nsML-Uxm6NEhG6jD6A0u0mqVjG5PRVLCqN-axkMm8ACJCFBgIxeTVeVxUIpKrzXmsvPzBcLRVwwABxATSlkNOUCoUi3lgPhcARgDWzbUKvWsRhWInCmWNc260V8GASxioXX2rXyp1imDgpD2TZpD12zVlR2K3kAdQAogBlU2yn1RvjgxhSr0RlN6lXaUNJh050XgpwAWj4ABEAIwyKuYauF706qOl_BlsBcTACAAsTezLb1AkI5artfr1fEAmaeyI-AARv2_JG9W2KzW65WGxJRGvO92-1m_ABdcP9SEc2bctFla9-Ew2GCE9riyWwxp38qwJhtaTKtXvg0n73FAlQ2CC1YAAzVgAzNWV48keojXqsH48veNxPiCUivqBgG3uhX56Mw7QGkaYD4X4wGgeBdRQQAbAA7AhohIShLEYY-z5_hKeHhlRhGKMRv5SFaNoOE8_HIYRIFgSCPaQQATD2LFIahawPlhpGGsalHrN-JHSC6bqhnpfiybRogMcxLxSepjSadxUjGfsplSScBkiVw_qEIGwZwG5fwWRBkFMbMal_I52H_gIZlET-L4-X5-AhkKcXBXR0FweFdmRZhTlibacVCQl0hxvG6U0RBjEABw2Y0EVwlF7SFRJxWee0aY6JUlVyXUimKTB9UNEhsxjWs40OnlXHYeV7XCbiI7tmOm4Nr1lkAJz0QArKIOVmtNWllQm82lVIe5dr260gnBG37bKh1OXN7nxYZUjDqOG4TlOM5OIQC7XXUMH0fR91TU1-WzSdL0lW9a4rROO4XQegNWTBKm2aSEaPdhXUZqdcNLeu45btWqPVjVik1WDWo4516Y9TDHXSMjV0vRlogbdTmNcjy9kCWUzVGQzemfrDIkfctX2kz9s7_fOosyVVdSQapuUQzN9PdQTInw9L26SKzPao3Bik02Uxz84LkOLZ9JNrUzC1_klQYpQFaXs8roiMZB23m8udMs0TCOkzr7R5lSHtBV7FNU-IW3bWWPt-zz4MAkL51E_ubN_OLiUBq7qWSdHfWiPR8Gp7TGtHZn5bZ8bjtnRHgVwhzt3xzVZbl_7N4NBnkvE6tk7TnLAON293kF_5LcAm3Q091bnE1wPIcNrLf1j7nzNSM3Uet17wP0WWMHz5XBG99J1ua0HdtD0jWeXQ3HGvV5LvT3vaFlBzZu86xUnsb_JeTk9b22rPfOuj9Fb6SdjvfMH8gJK1LhjT-rwDrVycpPXyhd3bFzhHnaQu9cGzxjoNaC-1SinixueRg8Y4AgGqCsLGfh7ALFQDsUEkM4oNGxDAR4OhVAqwQCndEkw_iiLWMeUokxyCxBiNIygQA
+	⚠ 请注意，该图表不是 Apache ECharts 官方示例，而是由用户代码生成的。请注意鉴别其内容。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/jquery"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+  <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/extension/dataTool.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  -->
+  <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/extension/bmap.min.js"></script>
+  -->
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    var ROOT_PATH = 'https://echarts.apache.org/examples';
+    var option;
+
+    myChart.showLoading();
+$.get(ROOT_PATH + '/data/asset/data/energy.json', function (data) {
+  myChart.hideLoading();
+  myChart.setOption(
+    (option = {
+      title: {
+        text: 'Node Align Right'
+      },
+      tooltip: {
+        trigger: 'item',
+        triggerOn: 'mousemove'
+      },
+      series: [
+        {
+          type: 'sankey',
+          emphasis: {
+            focus: 'adjacency'
+          },
+          nodeAlign: 'left',
+          nodes: [
+      // {"name":"Total"},
+      {"name":"TCGA"},
+      {"name":"CPTAC"},
+      {"name":"Refence"},
+      {"name":"Proteome"},
+      {"name":"Transcriptome"},
+      {"name":"WES"},
+      {"name":"Panel"},
+      {"name":"Genome"},
+      {"name":"anti-PD1/PDL1"},
+      {"name":"anti-CTLA4"},
+      {"name":"Anti-PD1/PDL1+Axitinib"},
+      {"name":"anti-PD1/PDL1 + anti-CTLA4"},
+      ],
+    links: [
+      // {
+      //   source: 'Total',
+      //   target: 'TCGA',
+      //   value: 10131
+      // },
+      // {
+      //   source: 'Total',
+      //   target: 'CPTAC',
+      //   value: 1067
+      // },
+      // {
+      //   source: 'Total',
+      //   target: 'Refence',
+      //   value: 4024
+      // },
+      {
+        source: 'CPTAC',
+        target: 'Proteome',
+        value: 1067
+      },
+      {
+        source: 'Proteome',
+        target: 'Transcriptome',
+        value: 1067
+      },
+      {
+        source: 'TCGA',
+        target: 'Transcriptome',
+        value: 10131
+      },
+      {
+        source: 'Refence',
+        target: 'WES',
+        value: 1787
+      },
+      {
+        source: 'Refence',
+        target: 'Panel',
+        value: 2237
+      },
+      
+      
+      
+      
+      
+      {
+        source: 'WES',
+        target: 'anti-PD1/PDL1',
+        value: 965 
+      },
+      {
+        source: 'WES',
+        target: 'anti-CTLA4',
+        value: 319
+      },
+      {
+        source: 'WES',
+        target: 'Anti-PD1/PDL1+Axitinib',
+        value: 366
+      },
+      {
+        source: 'WES',
+        target: 'anti-PD1/PDL1 + anti-CTLA4',
+        value: 134
+      },
+            {
+        source: 'Panel',
+        target: 'anti-PD1/PDL1',
+        value: 1828
+      },
+      {
+        source: 'Panel',
+        target: 'anti-CTLA4',
+        value: 98
+      },
+      // {
+      //   source: 'Panel',
+      //   target: 'Anti-PD1/PDL1+Axitinib',
+      //   value: 0
+      // },
+      {
+        source: 'Panel',
+        target: 'anti-PD1/PDL1 + anti-CTLA4',
+        value: 312
+      },
+      
+       {
+        source: 'anti-PD1/PDL1',
+        target: 'Transcriptome',
+        value: 705
+      },
+      {
+        source: 'anti-PD1/PDL1',
+        target: 'Genome',
+        value: 1828+965-705
+      },
+      {
+        source: 'anti-CTLA4',
+        target: 'Transcriptome',
+        value: 61
+      },
+      {
+        source: 'anti-CTLA4',
+        target: 'Genome',
+        value: 319+98-61
+      },
+      {
+        source: 'Anti-PD1/PDL1+Axitinib',
+        target: 'Transcriptome',
+        value: 337
+      },
+      {
+        source: 'Anti-PD1/PDL1+Axitinib',
+        target: 'Genome',
+        value: 366-337
+      },
+      // {
+      //   source: 'anti-PD1/PDL1 + anti-CTLA4',
+      //   target: 'Transcriptome',
+      //   value: 2
+      // },
+      // {
+      //   source: 'anti-PD1/PDL1 + anti-CTLA4',
+      //   target: 'Genome',
+      //   value: 4
+      // },
+
+      {
+        source: 'Transcriptome',
+        target: 'Genome',
+        value: 12301
+      },
+
+    ],
+          lineStyle: {
+            color: 'source',
+            curveness: 0.5
+          }
+        }
+      ]
+    })
+  );
+});
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>

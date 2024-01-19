@@ -1,0 +1,51 @@
+Organ,Sex,Number
+Uteri,Female,204089
+Uteri,Male,0
+Ureter,Male,3883
+Ureter,Female,2304
+Thyroid,Female,72791
+Thyroid,Male,24604
+Thymus,Male,1537
+Thymus,Female,1287
+Stomach,Male,54703
+Stomach,Female,34363
+Soft Tissue,Male,16907
+Soft Tissue,Female,14080
+Skin,Male,183315
+Skin,Female,143141
+Prostate,Male,667650
+Prostate,Female,0
+Pleura,Male,231
+Pleura,Female,118
+Pancreas,Female,63015
+Pancreas,Male,62849
+Ovary,Female,80473
+Ovary,Male,0
+Nervous System,Male,2189
+Nervous System,Female,2144
+Mouth,Male,123137
+Mouth,Female,50708
+Lung,Male,375429
+Lung,Female,273330
+Liver,Male,39639
+Liver,Female,15070
+Kidney,Male,83973
+Kidney,Female,50305
+Eye,Male,4902
+Eye,Female,4267
+Esophagus,Male,35919
+Esophagus,Female,12114
+Colonrectal,Female,290960
+Colonrectal,Male,290700
+Breast,Female,724205
+Breast,Male,5111
+Brain,Male,37245
+Brain,Female,29261
+Bone,Male,5546
+Bone,Female,4381
+Blood,Male,232534
+Blood,Female,188142
+Bladder,Male,161922
+Bladder,Female,54749
+Bile Duct,Female,13275
+Bile Duct,Male,8201

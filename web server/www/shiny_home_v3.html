@@ -1,0 +1,414 @@
+<!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.css">
+<style>
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
+body {
+	background: #f9f9f9;
+	font-family: "Roboto", sans-serif;
+}
+
+.main-content {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+.stat-card {
+	background: #fff;
+	padding: 25px;
+	margin-bottom: 25px;
+	border-radius: 5px;
+	overflow: hidden;
+	display: flex;
+	justify-content: space-between;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	transition: all 0.2s;
+}
+.stat-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+.stat-card__icon-circle {
+	height: 60px;
+	width: 60px;
+	border-radius: 60px;
+	background: rgba(0, 123, 255, 0.2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.stat-card__icon-circle i {
+	font-size: 30px;
+	color: #007bff;
+}
+.stat-card__icon.stat-card__icon--success .stat-card__icon-circle {
+	background: rgba(40, 167, 69, 0.2);
+}
+.stat-card__icon.stat-card__icon--success .stat-card__icon-circle i {
+	color: #79c58b;
+}
+.stat-card__icon.stat-card__icon--danger .stat-card__icon-circle {
+	background: rgba(220, 53, 69, 0.2);
+}
+.stat-card__icon.stat-card__icon--danger .stat-card__icon-circle i {
+	color: #cf828a;
+}
+.stat-card__icon.stat-card__icon--warning .stat-card__icon-circle {
+	background: rgba(255, 193, 7, 0.2);
+}
+.stat-card__icon.stat-card__icon--warning .stat-card__icon-circle i {
+	color: #ffc107;
+}
+.stat-card__icon.stat-card__icon--primary .stat-card__icon-circle {
+	background: rgba(0, 123, 255, 0.2);
+}
+.stat-card__icon.stat-card__icon--primary .stat-card__icon-circle i {
+	color: #80a8d3;
+}
+</style>
+<style>
+    .demo {
+
+        position: absolute;
+
+        top: 0;
+
+        left: 0;
+
+        width: 100%;
+
+        height: 1000px;
+
+        min-width: 1000px;
+
+        padding: 0%;
+
+        margin: 0%;
+
+        z-index: -10;
+
+        zoom: 1;
+
+        background-color: #fff;
+
+        background: transparent url("https://www.bestofascoafrica.org/images/sliders/slide1.jpg");
+
+        background-repeat: no-repeat;
+
+        background-size: cover;
+
+        -webkit-background-size: cover;
+
+        -o-background-size: cover;
+
+        background-position: center 0;
+
+        /*filter:blur(3px);*/
+    }
+
+    #start {
+        border: 0;
+        margin: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 15px 50px;
+        border-radius: 50px;
+        color: white;
+        outline: none;
+        position: relative;
+    }
+
+    .start_green::before {
+        content: "";
+        display: block;
+        background: linear-gradient(to left, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 50%);
+        background-size: 210% 100%;
+        background-position: right bottom;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        border-radius: 50px;
+        transition: all 1s;
+        -webkit-transition: all 1s;
+    }
+
+    .start_green {
+        background-image: linear-gradient(to right, #25aae1, #40e495);
+        box-shadow: 0 4px 15px 0 rgba(49, 196, 190, 0.75);
+    }
+
+    .start_green:hover::before {
+        background-position: left bottom;
+    }
+
+    .start_wrap {
+        position: relative;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: 330px;
+        height: 260px;
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0 0 10px rgb(0, 0, 0, .5);
+        overflow: hidden;
+        border-radius: 30px;
+    }
+
+    .start_box-top {
+        position: relative;
+        width: 330px;
+        height: 260px;
+        background-color: #033c73;
+        display: flex;
+        justify-content: center;
+        transition: .5s;
+    }
+
+    /*.start_box-top::after{
+        content: '';
+        width: 40px;
+        height: 40px;
+        clip-path: polygon(50% 40%,0 0,100% 0);
+        background-color: #033c73;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        bottom: -38px;
+        z-index: 999;
+                    }*/
+    .start_box-bottom2 {
+        top: 300px;
+        height: 220px;
+    }
+
+    h2 {
+        display: block;
+        margin: 30px 0 10px 0;
+        font: 800 28px 'Hobo Std';
+    }
+
+    .start_box-bottom2 li {
+        margin: 2px;
+        color: black;
+        font-weight: bold;
+        font: 800 20px 'OCR A Std';
+        transition: .2s;
+    }
+
+    .start_wrap:hover .start_box-top {
+        height: 50px;
+    }
+
+    li:hover {
+        color: rgb(100, 160, 160)
+    }
+
+    .start_wrap:hover .start_box-bottom2 {
+        top: 1000px;
+    }
+</style>
+<div class="demo"></div>
+<div style="position: absolute;left: 10%;top:25%;width:50%">
+    <p style="color:white;font-size: 50px;margin-bottom:15px">Welcome to SNVIO!</p>
+    <hr style="color:white;margin-left:0px;width:100%;">
+    <p style="color:white;font-size: 25px;">SNVIO is a user-friendly database dedicated to provide the results of
+        pan-cancer immunogenomic analyses based on next-generation
+        sequencing data. Sources of the databases include TCGA, CPTAC, and
+        multiple published WES-based immunotherapeutic cohorts.</p>
+    <div id="frozen-btn">
+        <button class="start_green action-button shiny-bound-input" id="start" type="button">Get Started Now</button>
+    </div>
+</div>
+<br />
+
+<div style="position: absolute;top: 1100px;width: 100%;display: flex;justify-content: center;">
+
+
+    <div style="width: 50%;">
+        <hr style="border:0;background-color:#033c73;text-align: center;width:100px;height:2px">
+        <p
+            style="font-size: 40px;color: #033c73;font-weight: bold;text-align: center;padding-bottom: 0px;margin-bottom: 0px;">
+            Single Nucleotide Variant Immune Oncology</p>
+        <p
+            style="font-size: 40px;color: #033c73;font-weight: bold;text-align: center;padding-top: 0px;margin-top: 0px;">
+            (SNVIO)</p>
+        <hr style="border:0;background-color:#033c73;text-align: center;width:100px;height:2px">
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-sm-4 offset-sm-2">
+                <div class="stat-card">
+                    <div class="stat-card__content">
+                        <p class="text-uppercase mb-1 text-muted">Patients</p>
+                        <h2 style="margin-top: 10px;">1,254</h2>
+                        <div>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> Ref_ICI : 2,623</span> 
+                            <br/>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> TCGA    : 2,623</span> 
+                            <br/>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> CPTAC   : 2,623</span> 
+                        </div>
+                    </div>
+                    <div class="stat-card__icon stat-card__icon--success">
+                        <div class="stat-card__icon-circle">
+                            <i class='fas fa-hospital-user fa-9x'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 offset-sm-2">
+                <div class="stat-card">
+                    <div class="stat-card__content">
+                        <p class="text-uppercase mb-1 text-muted">Cancer types</p>
+                        <h2 style="margin-top: 10px;">1,254</h2>
+                        <div>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> Ref_ICI : 2,623</span> 
+                            <br/>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> TCGA    : 33</span> 
+                            <br/>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> CPTAC   : 10</span> 
+                        </div>
+                    </div>
+                    <div class="stat-card__icon stat-card__icon--danger">
+                        <div class="stat-card__icon-circle">
+                            <i class='fas fa-virus fa-9x' style='color:darkred'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 offset-sm-2">
+                <div class="stat-card">
+                    <div class="stat-card__content">
+                        <p class="text-uppercase mb-1 text-muted">Datasets</p>
+                        <h2 style="margin-top: 10px;">1,254</h2>
+                        <div>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> Ref_ICI : 20</span> 
+                            <br/>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> TCGA    : 33</span> 
+                            <br/>
+                            <span class="text-muted font-weight-bold mr-1"><i class="fa fa-database" aria-hidden="true"></i> CPTAC   : 10</span> 
+                        </div>
+                    </div>
+                    <div class="stat-card__icon stat-card__icon--primary">
+                        <div class="stat-card__icon-circle">
+                            <i class='fas fa-folder fa-9x' style='color:royalblue'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p style="font-size: 40px;color: #033c73;font-weight: bold;text-align: center;">Data sources</p>
+        <hr style="text-align: center;border:0;background-color:#033c73;height:2px;margin-top: 0px;margin-bottom: 0px;">
+
+        <div style="display: flex;justify-content: center;">
+            <div style="position: relative;display: inline-block;vertical-align:top;margin-left: 0;">
+                <div class="start_wrap">
+                    <div class="start_box-top">
+                        <h2 style="display: flex;align-items: center;justify-content: center;color: white;">TCGA
+                            Database
+                        </h2>
+                    </div>
+                    <div class="start_box-bottom2">
+                        <ul>
+                            <li>Overview</li>
+                            <li>Infiltrating immune cells</li>
+                            <li>Immune-related signatures</li>
+                            <li>Tumor mutation burden</li>
+                            <li>Differential expression analysis</li>
+                            <li>Survival analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: relative;display: inline-block;vertical-align:top;margin-left: 25%;">
+                <div style="position: relative;">
+                    <div
+                        style="height: 260px;width: 600px;text-align: left;display:flex;align-items:center;margin-top: 50px;margin-bottom: 50px;">
+                        <p style="font-size: 25px;font-weight: bold;color: black;">This module provides the short
+                            summary of
+                            the
+                            gene mutation landscape
+                            and its prognostic value in one specific cancer type.
+                            Specifically, this module enables the integrative immunogenomic analyses of the correlations
+                            of
+                            gene
+                            mutation
+                            and tumor microenvironment characteristics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex;justify-content: center;">
+            <div style="position: relative;display: inline-block;vertical-align:top;margin-left: 0;">
+                <div class="start_wrap">
+                    <div class="start_box-top">
+                        <h2 style="display: flex;align-items: center;justify-content: center;color: white;">CPTAC Database
+                        </h2>
+                    </div>
+                    <div class="start_box-bottom2">
+                        <ul>
+                            <li>Infiltrating immune cells</li>
+                            <li>Immune-related signatures</li>
+                            <li>Differential protein analysis</li>
+                            <li>Survival analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: relative;display: inline-block;vertical-align:top;margin-left: 25%;">
+                <div style="position: relative;">
+                    <div
+                        style="height: 260px;width: 600px;text-align: left;display:flex;align-items:center;margin-top: 50px;margin-bottom: 50px;">
+                        <p style="font-size: 25px;font-weight: bold;color: black;">This module can be used to assess the
+                            gene
+                            mutation and proteomics-based immune features.
+                            Because the proteomic layer reflects much more accurately the cellular function,
+                            this module will aid the exploration of the cellular mechanisms of regulating tumor
+                            microenvironment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex;justify-content: center;">
+            <div style="position: relative;display: inline-block;vertical-align:top;margin-left: 0;">
+                <div class="start_wrap">
+                    <div class="start_box-top">
+                        <h2 style="display: flex;align-items: center;justify-content: center;color: white;">Ref_ICI datasets
+                        </h2>
+                    </div>
+                    <div class="start_box-bottom2">
+                        <ul>
+                            <li>Survival analysis</li>
+                            <li>Immunetherapy response</li>
+                            <li>Tumor mutation burden</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div style="position: relative;display: inline-block;vertical-align:top;margin-left: 25%;">
+                <div style="position: relative;">
+                    <div
+                        style="height: 260px;width: 600px;text-align: left;display:flex;align-items:center;margin-top: 50px;margin-bottom: 50px;">
+                        <p style="font-size: 25px;font-weight: bold;color: black;">This module describes the association
+                            between
+                            gene mutation and
+                            immunotherapeutic outcomes in published clinical studies of immune checkpoint inhibitors.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="position: relative;left: 50%;height: 200px;">
+            <p></p>
+        </div>
+
+
+    </div>
+
+</div>

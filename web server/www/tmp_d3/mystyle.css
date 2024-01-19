@@ -1,0 +1,15 @@
+.year-label {
+  font-size: 80px;
+  font-weight: bold;
+  fill: #ccc;
+}
+
+.axis-label {
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.value-label {
+  font-size: 12px;
+  font-weight: bold;
+}
