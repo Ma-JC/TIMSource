@@ -8,13 +8,13 @@ This repository contains all the data analysis scripts utilized in our study ent
 
 ### 1. Pan-cancer Analysis
 
-The **Pan-cancer analysis** directory comprises scripts for the preprocessing and analysis of multiple datasets, including **ICB cohort datasets**, **TCGA datasets**, and **CPTAC datasets**. The analyses primarily focus on understanding the impact of complement inhibition on various cancer types:
+The **Pan-cancer analysis** directory comprises scripts for the preprocessing and analysis of multiple datasets, including **ICB cohort datasets**, **TCGA datasets**, and **CPTAC datasets**. In this analysis, we developed ImmSNVscore to explore potential immunotherapy biomarkers and therapeutic targets, and further explore and verify the role of complement pathway mutations in immunotherapy through different datasets and methods:
 
 - **Data_Preprocess**: Contains scripts for preprocessing the data from the aforementioned sources.
 - **Data_Analysis**:
-  - **Overview.ipynb**: Provides an overarching summary of the data from the three sources.
-  - **ImmuneSNVscore_SingleGene_OS+PFS.ipynb**: Assesses the prognostic value of individual gene mutations using the ImmuneSNVscore, specifically in the context of survival outcomes (Overall Survival and Progression-Free Survival) for patients receiving immune checkpoint blockade (ICB) therapies.
-  - **ImmuneSNVscore_Complement_OS+PFS.ipynb**: Evaluates mutations within biological pathways, with a specific focus on complement-related pathways, and their association with patient survival under ICB therapy. Particular emphasis is placed on the analysis and validation of the **GOBP_REGULATION_OF_COMPLEMENT_ACTIVATION** pathway.
+  - **Overview.ipynb**: Provides an summary of the data from the three sources.
+  - **ImmuneSNVscore_SingleGene_OS+PFS.ipynb**: Assesses the prognostic value of individual gene mutations using the ImmSNVscore, specifically in the context of survival outcomes (Overall Survival and Progression-Free Survival) for patients receiving immune checkpoint blockade (ICB) therapies.
+  - **ImmuneSNVscore_Complement_OS+PFS.ipynb**: Evaluates mutations within pathways/biological processes, with a specific focus on complement-related pathways, and their association with patient survival under ICB therapy. Particular emphasis is placed on the analysis and validation of the GOBP_REGULATION_OF_COMPLEMENT_ACTIVATION pathway.
   - **Pan-Cancer Analysis.ipynb**: Investigates expression profile alterations and functional pathway changes in tumors harboring complement mutations across different cancer types.
 
 ### 2. scRNA-seq Analysis
