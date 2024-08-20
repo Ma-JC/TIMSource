@@ -1,16 +1,16 @@
-TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutation_subtype_tcga,gene_tcga_subtype,TCGA,pathway_database,Mut_type_tcga_subtype,Wild_type_tcga_subtype,MT_OR_WT_tcga,min.pct_subtype,FC_subtype,pvalue_subtype){
+TCGA_subtype_server <- function(input,output,session,TCGA_subtype_para,TCGA,pathway_database,MT_OR_WT_tcga,min.pct_subtype,FC_subtype,pvalue_subtype,useid){
   
-  
+  useid <- paste(useid,"TCGASubtype",sep = "_")
   
   TCGA_cohort_subtype_before = reactive({
-    Mutation_subtype = Mutation_subtype_tcga()
-    cancer_type_subtype = cancer_type_subtype()
-    Mut_type_tcga_subtype = Mut_type_tcga_subtype()
-    Wild_type_tcga_subtype = Wild_type_tcga_subtype()
+    Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+    cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
+    Mut_type_tcga_subtype = TCGA_subtype_para()$Mut_type_tcga_subtype
+    Wild_type_tcga_subtype = TCGA_subtype_para()$Wild_type_tcga_subtype
     
     TCGA_cohort_cal_subtype(TCGA = TCGA,Mutation_subtype = Mutation_subtype,cancer_type = cancer_type_subtype,Mut_type = Mut_type_tcga_subtype,Wild_type = Wild_type_tcga_subtype)
     
-    })%>% bindCache(Mutation_subtype_tcga(),cancer_type_subtype(),Mut_type_tcga_subtype(),Wild_type_tcga_subtype())
+    })%>% bindCache(TCGA_subtype_para()$Mutation_subtype_tcga,TCGA_subtype_para()$cancer_type_subtype,TCGA_subtype_para()$Mut_type_tcga_subtype,TCGA_subtype_para()$Wild_type_tcga_subtype)
   
   TCGA_cohort_subtype = reactive({
     TCGA_cohort_subtype_before = TCGA_cohort_subtype_before()
@@ -46,7 +46,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     }
   })
   
-  observeEvent(input$sec2_subtype,{
+  observe({
     TCGA_cohort_subtype_before = TCGA_cohort_subtype_before()
     
     if(
@@ -62,9 +62,9 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   
   
   output$immune_infiltration1_subtype = renderPlot({
-    Mutation_subtype = Mutation_subtype_tcga()
-    genes = gene_tcga_subtype()
-    cancer_type_subtype = cancer_type_subtype()
+    Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+    genes = TCGA_subtype_para()$gene_tcga_subtype
+    cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
     TCGA_cohort_subtype = TCGA_cohort_subtype()
     
     
@@ -103,14 +103,14 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     return(p)
     
     
-  }) %>% bindCache(Mutation_subtype_tcga(),gene_tcga_subtype(),cancer_type_subtype(),TCGA_cohort_subtype())
+  }) %>% bindCache(TCGA_subtype_para()$Mutation_subtype_tcga,TCGA_subtype_para()$gene_tcga_subtype,TCGA_subtype_para()$cancer_type_subtype,TCGA_cohort_subtype())
   
   
   output$TCGA_inf_subtype_down = downloadHandler(
     
     filename = function(){
-      genes = gene_tcga_subtype()
-      Mutation_subtype = Mutation_subtype_tcga()
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
       
       if(input$TCGA_inf_subtype_file == 'pdf'){
         paste0(genes,"_",input$Cancer_type_subtype,"_",Mutation_subtype,"_subtype",".","inf", '.',"pdf")
@@ -124,9 +124,10 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       
     },
     content = function(file){
-      Mutation_subtype = Mutation_subtype_tcga()
-      genes = gene_tcga_subtype()
-      cancer_type_subtype = cancer_type_subtype()
+      shinyjs::disable("TCGA_inf_subtype_down")
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
       TCGA_cohort_subtype = TCGA_cohort_subtype()
       
       if(input$TCGA_inf_subtype_res <= 300){
@@ -167,13 +168,14 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       print(immune_infiltration_subtype_compare(tmp_data_compare = tmp_data,genes = genes))
       
       dev.off()
+      shinyjs::disable("TCGA_inf_subtype_down")
     }
   )
   
   output$immune_infiltration2_subtype = renderPlotly({
-    Mutation_subtype = Mutation_subtype_tcga()
-    genes = gene_tcga_subtype()
-    cancer_type_subtype = cancer_type_subtype()
+    Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+    genes = TCGA_subtype_para()$gene_tcga_subtype
+    cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
     TCGA_cohort_subtype = TCGA_cohort_subtype()
     
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -193,7 +195,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     
     p = immune_one_subtype_compare(tmp_data_compare = tmp_data,selection = input$immune_cell_type_subtype,genes = genes)
     tmp = ggplotly(p) %>% 
-      layout(boxmode = "group",legend = list(orientation = "v",x =1.05,y = 0.5,xanchor = "center"))
+      layout(boxmode = "group",legend = list(orientation = "v",x =1.05,y = 0.5,xanchor = "center")) %>% plotly::config(displayModeBar = FALSE)
 
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -204,7 +206,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(Mutation_subtype_tcga(),gene_tcga_subtype(),cancer_type_subtype(),TCGA_cohort_subtype(),input$immune_cell_type_subtype)
+  }) %>% bindCache(TCGA_subtype_para()$Mutation_subtype_tcga,TCGA_subtype_para()$gene_tcga_subtype,TCGA_subtype_para()$cancer_type_subtype,TCGA_cohort_subtype(),input$immune_cell_type_subtype)
   
   #############immune_signature##################
   
@@ -231,7 +233,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     }
   })
   
-  observeEvent(input$sec2_subtype,{
+  observe({
     TCGA_cohort_subtype_before = TCGA_cohort_subtype_before()
 
     if(
@@ -247,9 +249,9 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   
   
   output$immune_signature1_subtype = renderPlot({
-    Mutation_subtype = Mutation_subtype_tcga()
-    genes = gene_tcga_subtype()
-    cancer_type_subtype = cancer_type_subtype()
+    Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+    genes = TCGA_subtype_para()$gene_tcga_subtype
+    cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
     TCGA_cohort_subtype = TCGA_cohort_subtype()
     
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -285,13 +287,13 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     return(p)
     
     
-  }) %>% bindCache(Mutation_subtype_tcga(),gene_tcga_subtype(),cancer_type_subtype(),TCGA_cohort_subtype())
+  }) %>% bindCache(TCGA_subtype_para()$Mutation_subtype_tcga,TCGA_subtype_para()$gene_tcga_subtype,TCGA_subtype_para()$cancer_type_subtype,TCGA_cohort_subtype())
   
   output$TCGA_sig_subtype_down = downloadHandler(
     
     filename = function(){
-      genes = gene_tcga_subtype()
-      Mutation_subtype = Mutation_subtype_tcga()
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
       
       if(input$TCGA_sig_subtype_file == 'pdf'){
         paste0(genes,"_",input$Cancer_type_subtype,"_",Mutation_subtype,"_subtype",".","sig", '.',"pdf")
@@ -305,9 +307,10 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       
     },
     content = function(file){
-      Mutation_subtype = Mutation_subtype_tcga()
-      genes = gene_tcga_subtype()
-      cancer_type_subtype = cancer_type_subtype()
+      shinyjs::disable("TCGA_sig_subtype_down")
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
       TCGA_cohort_subtype = TCGA_cohort_subtype()
       
       if(input$TCGA_sig_subtype_res <= 300){
@@ -348,14 +351,15 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       tmp_data = immune_signature_subtype_tmpdata_compare(TCGA = TCGA,cancer_type = cancer_type_subtype,Mutation_subtype = Mutation_subtype,genes = genes,mut_patient_id = TCGA_cohort_subtype$mut,wt_patient_id = TCGA_cohort_subtype$wt)
       print(immune_signature_subtype_compare(tmp_data_compare = tmp_data,genes = genes))      
       dev.off()
+      shinyjs::disable("TCGA_sig_subtype_down")
     }
   )
   
  
   output$immune_signature2_subtype = renderPlotly({
-    Mutation_subtype = Mutation_subtype_tcga()
-    genes = gene_tcga_subtype()
-    cancer_type_subtype = cancer_type_subtype()
+    Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+    genes = TCGA_subtype_para()$gene_tcga_subtype
+    cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
     TCGA_cohort_subtype = TCGA_cohort_subtype()
 
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -372,7 +376,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     
     p = immune_one_subtype_compare(tmp_data_compare = tmp_data,selection = input$immune_signature_subtype,genes = genes)
     tmp = ggplotly(p) %>% 
-      layout(boxmode = "group",legend = list(orientation = "v",x =1.05,y = 0.5,xanchor = "center"))
+      layout(boxmode = "group",legend = list(orientation = "v",x =1.05,y = 0.5,xanchor = "center")) %>% plotly::config(displayModeBar = FALSE)
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -383,7 +387,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  })  %>% bindCache(Mutation_subtype_tcga(),gene_tcga_subtype(),cancer_type_subtype(),TCGA_cohort_subtype(),input$immune_signature_subtype)
+  })  %>% bindCache(TCGA_subtype_para()$Mutation_subtype_tcga,TCGA_subtype_para()$gene_tcga_subtype,TCGA_subtype_para()$cancer_type_subtype,TCGA_cohort_subtype(),input$immune_signature_subtype)
   
   ############## DEG ###################
   
@@ -392,7 +396,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     downloadButton('TCGA_diff_subtype_tabdown',label = 'Download Table')
   })
   
-  observeEvent(input$sec2_subtype,{
+  observe({
     TCGA_cohort_subtype_before = TCGA_cohort_subtype_before()
     
     if(
@@ -408,9 +412,9 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   
   
   DEG_table_subtype = reactive({
-    Mutation_subtype = Mutation_subtype_tcga()
-    genes = gene_tcga_subtype()
-    cancer_type_subtype = cancer_type_subtype()
+    Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+    genes = TCGA_subtype_para()$gene_tcga_subtype
+    cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
     TCGA_cohort_subtype = TCGA_cohort_subtype()
     
     MT_OR_WT = MT_OR_WT_tcga()
@@ -455,7 +459,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(Mutation_subtype_tcga(),gene_tcga_subtype(),cancer_type_subtype(),TCGA_cohort_subtype(),MT_OR_WT_tcga(),min.pct_subtype())
+  }) %>% bindCache(TCGA_subtype_para()$Mutation_subtype_tcga,TCGA_subtype_para()$gene_tcga_subtype,TCGA_subtype_para()$cancer_type_subtype,TCGA_cohort_subtype(),MT_OR_WT_tcga(),min.pct_subtype())
   
   output$DEG_tab_subtype = renderReactable({
     DEG_table_subtype = DEG_table_subtype()
@@ -498,14 +502,14 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   output$TCGA_diff_subtype_tabdown = downloadHandler(
     
     filename = function(){
-      gene = Mutation_subtype_tcga()
+      gene = TCGA_subtype_para()$Mutation_subtype_tcga
       paste0(gene,"_",input$Cancer_type_subtype,".","diff", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("TCGA_diff_subtype_tabdown")
       write.csv(x = DEG_table_subtype(),file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::disable("TCGA_diff_subtype_tabdown")
     }
   )
   
@@ -543,7 +547,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     downloadButton('TCGA_gsea_subtype_tabdown',label = 'Download Table')
   })
   
-  observeEvent(input$sec2_subtype,{
+  observe({
     TCGA_cohort_subtype_before = TCGA_cohort_subtype_before()
 
     if(
@@ -574,9 +578,22 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
     
-    installr::kill_pid(pid = scan(status_file))
-    tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_tcga_subtype]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
-    write(tmp$get_pid(), status_file)
+    if( length(GSEA_use) < 5 | useid %in% names(GSEA_use) ){
+      
+      installr::kill_pid(pid = scan(status_file))
+      tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_tcga_subtype]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
+      write(tmp$get_pid(), status_file)
+      
+    }else{
+      
+      closeAlert(session,"warning4_tcga_subtype_id")
+      createAlert(session, "warning4_tcga_subtype", "warning4_tcga_subtype_id", title = "Warning",style = "danger",
+                  content = "Sorry, GSEA function is temporarily unavailable due to high user traffic. Please try again later.", append = FALSE)
+      
+      tmp = NULL
+      
+    }
+
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::enable("pathway_gsea_ref_single");shinyjs::enable("pathway_gsea_tcga");shinyjs::enable("pathway_gsea_cptac_rna");shinyjs::enable("pathway_gsea_cptac_protein");shinyjs::enable("pathway_gsea_ref_pm");shinyjs::enable("pathway_gsea_tcga_pm");shinyjs::enable("pathway_gsea_cptac_rna_pm");shinyjs::enable("pathway_gsea_cptac_protein_pm");shinyjs::enable("pathway_gsea_tcga_subtype");shinyjs::enable("pathway_gsea_cptac_rna_subtype");shinyjs::enable("pathway_gsea_cptac_protein_subtype");
@@ -592,7 +609,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   
   one_loader = reactiveVal(0)
   output$GSEA_tab_tcga_subtype = renderReactable({
-    
+    if(is.null(tmp_gsea_tcga_subtype())){return(NULL)}
     if(tmp_gsea_tcga_subtype()$is_alive()){
       
       invalidateLater(millis = 1000, session = session)
@@ -601,6 +618,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
         
         waiter_show(id = "tcga_subtype_GSEA_loader",html = tagList(spin_flower(),h4("GSEA running..."),h5("Please wait for a minute")), color = "black")
         one_loader(one_loader()+1)
+        GSEA_use[[useid]] <<- TRUE
         return(NULL)
         
         
@@ -651,6 +669,8 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       shinyjs::enable(id = "TCGA_gsea_subtype_tabdown")
       one_loader(0)
       write("", status_file)
+      
+      GSEA_use[[useid]] <<- NULL
       return(tmp)
     }
 
@@ -688,19 +708,19 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   output$TCGA_gsea_subtype_tabdown = downloadHandler(
     
     filename = function(){
-      gene = Mutation_subtype_tcga()
+      gene = TCGA_subtype_para()$Mutation_subtype_tcga
       paste0(gene,"_",input$Cancer_type_subtype,".","gsea", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("TCGA_gsea_subtype_tabdown")
       write.csv(x = tmp_gsea_tcga_subtype()$get_result()@result,file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::disable("TCGA_gsea_subtype_tabdown")
     }
   )
   
   
-  row_num_tcga_subtype = eventReactive(input$tcga_subtype_GSEA_show,{input$tcga_subtype_GSEA_show$index})
+  row_num_tcga_subtype = eventReactive(input$tcga_subtype_GSEA_show,{input$tcga_subtype_GSEA_show$index})%>% debounce(500)
   
   output$GSEA_plot_tcga_subtype = renderPlot({
     
@@ -715,8 +735,8 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   output$TCGA_gsea_subtype_down = downloadHandler(
     
     filename = function(){
-      genes = gene_tcga_subtype()
-      Mutation_subtype = Mutation_subtype_tcga()
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
       MT_OR_WT_tcga = MT_OR_WT_tcga()
       if(input$TCGA_gsea_subtype_file == 'pdf'){
         paste0(genes,"_",input$Cancer_type_subtype,"_",Mutation_subtype,"_subtype(",MT_OR_WT_tcga,")",".","gsea", '.',"pdf")
@@ -730,9 +750,10 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       
     },
     content = function(file){
-      Mutation_subtype = Mutation_subtype_tcga()
-      genes = gene_tcga_subtype()
-      cancer_type_subtype = cancer_type_subtype()
+      shinyjs::disable("TCGA_gsea_subtype_down")
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
       TCGA_cohort_subtype = TCGA_cohort_subtype()
       
       if(input$TCGA_gsea_subtype_res <= 300){
@@ -781,6 +802,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       )
       
       dev.off()
+      shinyjs::disable("TCGA_gsea_subtype_down")
     }
   )
   
@@ -809,7 +831,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     }
   })
   
-  observeEvent(input$sec2_subtype,{
+  observe({
     TCGA_cohort_subtype_before = TCGA_cohort_subtype_before()
     
     if(
@@ -825,12 +847,12 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
   
   
   
-  height = reactive({    if(cancer_type_subtype() == "LAML"){350}else{1100}  }) %>% bindCache(cancer_type_subtype())
+  height = reactive({    if(TCGA_subtype_para()$cancer_type_subtype == "LAML"){350}else{1100}  }) %>% bindCache(TCGA_subtype_para()$cancer_type_subtype)
   
   output$TCGA_survival_subtype = renderPlot({
-    Mutation_subtype = Mutation_subtype_tcga()
-    genes = gene_tcga_subtype()
-    cancer_type_subtype = cancer_type_subtype()
+    Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+    genes = TCGA_subtype_para()$gene_tcga_subtype
+    cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
     TCGA_cohort_subtype = TCGA_cohort_subtype()
     
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -866,13 +888,13 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  },width = 1100,height = height) %>% bindCache(Mutation_subtype_tcga(),gene_tcga_subtype(),cancer_type_subtype(),TCGA_cohort_subtype())
+  },width = 1100,height = height) %>% bindCache(TCGA_subtype_para()$Mutation_subtype_tcga,TCGA_subtype_para()$gene_tcga_subtype,TCGA_subtype_para()$cancer_type_subtype,TCGA_cohort_subtype())
   
   output$TCGA_sur_subtype_down = downloadHandler(
     
     filename = function(){
-      genes = gene_tcga_subtype()
-      Mutation_subtype = Mutation_subtype_tcga()
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
       
       if(input$TCGA_sur_subtype_file == 'pdf'){
         paste0(genes,"_",input$Cancer_type_subtype,"_",Mutation_subtype,"_subtype",".","sur", '.',"pdf")
@@ -886,9 +908,10 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       
     },
     content = function(file){
-      Mutation_subtype = Mutation_subtype_tcga()
-      genes = gene_tcga_subtype()
-      cancer_type_subtype = cancer_type_subtype()
+      shinyjs::disable("TCGA_sur_subtype_down")
+      Mutation_subtype = TCGA_subtype_para()$Mutation_subtype_tcga
+      genes = TCGA_subtype_para()$gene_tcga_subtype
+      cancer_type_subtype = TCGA_subtype_para()$cancer_type_subtype
       TCGA_cohort_subtype = TCGA_cohort_subtype()
       
       if(input$TCGA_sur_subtype_res <= 300){
@@ -929,6 +952,7 @@ TCGA_subtype_server <- function(input,output,session,cancer_type_subtype,Mutatio
       print(TCGA_survival_subtype_compare(tmp_data_compare = tmp_data,cancer_type = cancer_type_subtype,genes = genes))
       
       dev.off()
+      shinyjs::disable("TCGA_sur_subtype_down")
     }
   )
   

@@ -33,8 +33,8 @@ TCGA_ui_pm = function(){
             ),
         actionButton(inputId = "sec2_pm",label = "submit",icon = icon("arrow-alt-circle-up",id = "button_tcga_pm"),style="color: #033c73;"),
         hr(),
-        p("Pathway Mutation -- TCGA database",style="text-align:center;font-size=20px;font-weight:bolder;"),
-        p("In the Browse module, Pathway Mutation is designed to help users explore the relationship between interest pathway mutations and immunotherapy efficacy and immune microenvironment in selected cancer types and cohorts. The 'Pathway' contains gene sets from over 30,000 functions and pathways, sourced from the MSigDB database, and you can search for related pathways and functions through keywords. According to your research design, you can select a cancer type or cohort that meets your requirements for detailed analysis, and you can obtain analysis results in the form of graphs and tables. For details of each cancer type and cohort, please see the 'About' module. The TCGA database originates from the Pan-Cancer Atlas (PanCanAtlas) initiative. Although it does not provide information on immune therapy efficacy, the dataset offers multi-omics data and clinical information for over 10,000 patients across 33 different cancer types. With this dataset, we can analyze the relationship between gene mutations and the immune microenvironment in a wider range of cancer types, thereby validating and expanding the results from the Ref_ICI datasets."),
+        p("Pathway Mutation",style="text-align:center;font-size=20px;font-weight:bolder;"),
+        p("In the Inquire module, 'Pathway Mutation' is designed to help users explore the association of altered pathway with ICB outcomes, immune infiltration, immune-related signatures in a chosen cancer type and cohort. The 'Pathway' contains gene sets from over 30,000 functions and pathways, sourced from the MSigDB database. By typing keywords, you can search for related pathways and select a pathway of interest to perform detailed analysis."),
         width = 3,id = "sidebar_id2_pm"
         
       ),
@@ -47,7 +47,7 @@ TCGA_ui_pm = function(){
                                               h2("TCGA database | Mutational Landscape",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("ssGSEA evaluated 28 types of immune cell infiltration in patients with different cancers, and observed the relationship between gene mutations and immune infiltration."))
+                                              box(width = 12,p("For the selected pathway/process, we use a waterfall plot to display the mutation rate, mutation type, and mutation localization of each gene in the pathway. If there are more than 50 genes in the pathway, we only display the top 50 genes with the highest mutation frequency in the pathway. Additionally, we utilize the mafcompare function to analyze the differentially mutated genes between the mutation group and the wildtype, allowing us to identify co-occurring and mutually exclusive mutated genes with the selected gene."))
                                        ),
                                        column(width = 12,bsAlert("warning_tcga_pm")),
                                        box(title = "LollipopPlot",solidHeader = T,collapsible = T,collapsed = F,width = 12,
@@ -56,7 +56,7 @@ TCGA_ui_pm = function(){
                                                   uiOutput(outputId = "mut_tcga_pm_uidown1")
                                                   )
                                            ),
-                                       box(title = "LollipopPlot",solidHeader = T,collapsible = T,collapsed = T,width = 12,
+                                       box(title = "Mafcompare",solidHeader = T,collapsible = T,collapsed = T,width = 12,
                                            withSpinner(plotOutput(outputId = "maf5_pm",width = "100%",height = "1500px"),type = 1),
                                            column(width = 12,
                                                   uiOutput(outputId = "mut_tcga_pm_uidown2")
@@ -77,7 +77,7 @@ TCGA_ui_pm = function(){
                                               h2("TCGA database | Infiltrating immune cells",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("ssGSEA evaluated 28 types of immune cell infiltration in patients with different cancers, and observed the relationship between gene mutations and immune infiltration."))
+                                              box(width = 12,p("To understand how the gene mutation orchestrate the immune infiltration, we have collected 28 gene sets of immune cells and used the ssGSEA algorithm to evaluate the immune cell infiltration. The Wilcoxon rank-sum test is used to assess the statistical significance of the differences between the mutation group and the wild-type group."))
                                        ),
                                        column(width = 12,bsAlert("warning2_tcga_pm")),
                                        box(title = "Immune infiltration",solidHeader = T,collapsible = T,collapsed = F,width = 12,
@@ -131,7 +131,7 @@ TCGA_ui_pm = function(){
                                               h2("TCGA database | Immune-related signatures",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                              box(width = 12,p("To understand how the gene mutation orchestrate the tumor microenvironment (TME), we have collected 8 immune-related signatures and used the ssGSEA algorithm to evaluate the immune-related features. The Wilcoxon rank-sum test is used to assess the statistical significance of the differences between the mutation group and the wild-type group."))
                                        ),
                                        column(width = 12,bsAlert("warning3_tcga_pm")),
                                        box(title = "Immune signatures",solidHeader = T,collapsible = T,collapsed = F,width = 12,
@@ -168,7 +168,7 @@ TCGA_ui_pm = function(){
                                               h2("TCGA database | Differential expression analysis",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                              box(width = 12,p("Identifying the functional impact of somatic mutations on the gene expression pattern is critical for precision oncology and drug discovery. We provide the differential expression gene (DEG) analysis utilizing the limma package. This function allows users to set the parameters to perform customized analysis, aiming to identify the significant DEGs between the mutation group and the wild-type group. We present the specific information in the form of a volcano plot and table. Please note that this function can be performed in TCGA, CPTAC and some ICB datasets containing both genomics and transcriptomics data."))
                                        ),
                                        column(width = 12,bsAlert("warning4_tcga_pm")),
                                        box(width = 12,title = "Volcano Plot",solidHeader = T,collapsible = T,
@@ -212,7 +212,7 @@ TCGA_ui_pm = function(){
                                        h2("TCGA database | GSEA",style="color:#033c73;"),
                                        hr(style="background-color:#033c73;height:1px")),
                                 column(width = 12,
-                                       box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                       box(width = 12,p("In order to further understand the impact of gene mutations on function and pathways, we provide GSEA analysis supported by the clusterProfiler package. Functions/pathways are obtained from the MsigDB database including GO, KEGG, REACTOME, and HALLMARK. Results are presented in the table, including pathway name, set size, enrichment Score, NES, p value, p adjust value, q values, rank, and leading edge parameters. Clicking on the interested pathways in the presented table will lead to the displaying of GSEA plot, which can be downloaded through selected size, resolution, and multiple format types. Please be patient as GSEA analysis is time-consuming."))
                                 ),
                                 column(width = 12,bsAlert("warning5_tcga_pm")),
                                 box(
@@ -249,7 +249,7 @@ TCGA_ui_pm = function(){
                                               h2("TCGA database | Survival analysis",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                              box(width = 12,p("The TCGA PanCanAtlas provides overall survival (OS), disease-specific survival (DFS), and progression-free interval (PFI) data. The log-rank test is used to compare the survival differences between the mutation group and the wildtype group. Furthermore, if less than three patients in either mutation or wildtype group, the results will not be analyzed."))
                                        ),
                                        column(width = 12,bsAlert("warning6_tcga_pm")),
                                        box(width = 12,title = "Survival analysis",solidHeader = T,collapsible = T,collapsed = F,

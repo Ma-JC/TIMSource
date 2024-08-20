@@ -3,7 +3,7 @@ CPTAC_ui_explore_pm = function(){
   tagList(
     br(),
     box(width = 12,
-        h2("Comprehensive Analysis & Visualization of CPTAC database",style="text-align:center;margin-top:10px;margin-bottom:10px;color:#033c73"),
+        h2("Comprehensive Analysis of CPTAC database",style="text-align:center;margin-top:10px;margin-bottom:10px;color:#033c73"),
         reactableOutput(outputId = "CPTAC_detial_pm")
     ),
     box(width = 12,

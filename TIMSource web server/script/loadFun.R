@@ -30,14 +30,15 @@ library("callr")
 library("waiter")
 library("installr")
 library("meta")
-
 myGSEA = function(geneList,TERM2GENE,pvalueCutoff){
   library(clusterProfiler)
   GSEA(geneList = geneList,TERM2GENE = TERM2GENE,pvalueCutoff = pvalueCutoff)
 }
 ##################Ref_datasets##########################
 
-ref_cohort_cal = function(dataset,gene,dataset_mu,Mut_type,Wild_type){
+ref_cohort_cal = function(dataset,gene,dataset_mu,Mut_type,Wild_type,therapy_type){
+  
+  tp = rownames(dataset)[dataset$THERAPY %in% therapy_type]
   
     mut = unique(dataset_mu$ID[
       dataset_mu$Hugo_Symbol == gene & 
@@ -50,6 +51,8 @@ ref_cohort_cal = function(dataset,gene,dataset_mu,Mut_type,Wild_type){
     wt = setdiff(unique(c(dataset_mu$ID,rownames(dataset))),unique(dataset_mu$ID[dataset_mu$Hugo_Symbol == gene]))
   }
   
+    mut = intersect(tp,mut)
+    wt = intersect(tp,wt)
   return(list("mut"=mut,"wt"=wt))
   
 }
@@ -64,6 +67,7 @@ os_survival = function(dataset,gene,dataset_mu,mut,wt){
   
   fit <- do.call(survfit, list(Surv(OS_TIME,OS_STATUS)~groups,data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "Month",
                   pval = T,
                   pval.size = 6,
                   fontsize = 6,
@@ -97,6 +101,7 @@ pfs_survival = function(dataset,gene,dataset_mu,mut,wt){
   
   fit <- do.call(survfit, list(Surv(PFS_TIME,PFS_STATUS)~groups,data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "Month",
                   pval = T,
                   pval.size = 6,
                   fontsize = 6,
@@ -466,7 +471,9 @@ immune_all_datasets = function(datasets_rna_wes,dataset,gene,immune_module,datas
 
 ##################Ref_datasets_pm##########################
 
-ref_cohort_cal_pm = function(dataset,gene,dataset_mu,Mut_type,Wild_type){
+ref_cohort_cal_pm = function(dataset,gene,dataset_mu,Mut_type,Wild_type,therapy_type){
+  
+  tp = rownames(dataset)[dataset$THERAPY %in% therapy_type]
   
   genes = intersect(colnames(dataset),pathway_list[[gene]])
 
@@ -483,6 +490,8 @@ ref_cohort_cal_pm = function(dataset,gene,dataset_mu,Mut_type,Wild_type){
     wt = setdiff(unique(c(dataset_mu$ID,rownames(dataset))),unique(dataset_mu$ID[dataset_mu$Hugo_Symbol %in% genes]))
   }
   
+  mut = intersect(tp,mut)
+  wt = intersect(tp,wt)
   return(list("mut"=mut,"wt"=wt))
   
 }
@@ -498,6 +507,7 @@ os_survival_pm = function(dataset,gene,dataset_mu,mut,wt){
   
   fit <- do.call(survfit, list(Surv(OS_TIME,OS_STATUS)~groups,data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "Month",
                   pval = T,
                   pval.size = 6,
                   fontsize = 6,
@@ -534,6 +544,7 @@ pfs_survival_pm = function(dataset,gene,dataset_mu,mut,wt){
   
   fit <- do.call(survfit, list(Surv(PFS_TIME,PFS_STATUS)~groups,data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "Month",
                   pval = T,
                   pval.size = 6,
                   fontsize = 6,
@@ -1123,6 +1134,7 @@ TCGA_survival = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id){
   
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp_data[,"groups"],data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -1137,6 +1149,7 @@ TCGA_survival = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id){
   if(cancer_type != "LAML"){
     fit <- do.call(survfit, list(Surv(DSS.time,DSS)~tmp_data[,"groups"],data = tmp_data))
     p2 = ggsurvplot(fit,data = tmp_data,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -1149,6 +1162,7 @@ TCGA_survival = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id){
     
     fit <- do.call(survfit, list(Surv(PFI.time,PFI)~tmp_data[,"groups"],data = tmp_data))
     p3 = ggsurvplot(fit,data = tmp_data,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -1412,6 +1426,7 @@ TCGA_survival_pm = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id){
   
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp_data[,"groups"],data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -1427,6 +1442,7 @@ TCGA_survival_pm = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id){
   if(cancer_type != "LAML"){
     fit <- do.call(survfit, list(Surv(DSS.time,DSS)~tmp_data[,"groups"],data = tmp_data))
     p2 = ggsurvplot(fit,data = tmp_data,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -1439,6 +1455,7 @@ TCGA_survival_pm = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id){
     
     fit <- do.call(survfit, list(Surv(PFI.time,PFI)~tmp_data[,"groups"],data = tmp_data))
     p3 = ggsurvplot(fit,data = tmp_data,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -1816,6 +1833,7 @@ CPTAC_survival = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id){
   
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp_data[,"groups"],data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -2194,6 +2212,7 @@ CPTAC_survival_pm = function(TCGA,cancer_type,gene,mut_patient_id,wt_patient_id)
   
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp_data[,"groups"],data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -2978,6 +2997,7 @@ TCGA_survival_subtype = function(TCGA,cancer_type,tmp_data){
   
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp_data[,"groups"],data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -2994,6 +3014,7 @@ TCGA_survival_subtype = function(TCGA,cancer_type,tmp_data){
     
     fit <- do.call(survfit, list(Surv(DSS.time,DSS)~tmp_data[,"groups"],data = tmp_data))
     p2 = ggsurvplot(fit,data = tmp_data,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -3006,6 +3027,7 @@ TCGA_survival_subtype = function(TCGA,cancer_type,tmp_data){
     
     fit <- do.call(survfit, list(Surv(PFI.time,PFI)~tmp_data[,"groups"],data = tmp_data))
     p3 = ggsurvplot(fit,data = tmp_data,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -3100,6 +3122,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
   tmp2 = tmp_data_compare[ tmp_data_compare$module == "All",]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p1 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -3112,6 +3135,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
   tmp2 = tmp_data_compare[ grepl(pattern = "Mutation",tmp_data_compare$module),]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p2 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -3124,6 +3148,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
   tmp2 = tmp_data_compare[ grepl(pattern = "Wildtype",tmp_data_compare$module),]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p3 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -3139,6 +3164,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
     tmp2 = tmp_data_compare[ grepl(pattern = "All",tmp_data_compare$module),]
     fit <- do.call(survfit, list(Surv(DSS.time,DSS)~tmp2[,"groups"],data = tmp2))
     p1 = ggsurvplot(fit,data = tmp2,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -3151,6 +3177,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
     tmp2 = tmp_data_compare[ grepl(pattern = "Mutation",tmp_data_compare$module),]
     fit <- do.call(survfit, list(Surv(DSS.time,DSS)~tmp2[,"groups"],data = tmp2))
     p2 = ggsurvplot(fit,data = tmp2,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -3163,6 +3190,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
     tmp2 = tmp_data_compare[ grepl(pattern = "Wildtype",tmp_data_compare$module),]
     fit <- do.call(survfit, list(Surv(DSS.time,DSS)~tmp2[,"groups"],data = tmp2))
     p3 = ggsurvplot(fit,data = tmp2,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -3178,6 +3206,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
     tmp2 = tmp_data_compare[ grepl(pattern = "All",tmp_data_compare$module),]
     fit <- do.call(survfit, list(Surv(PFI.time,PFI)~tmp2[,"groups"],data = tmp2))
     p1 = ggsurvplot(fit,data = tmp2,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -3190,6 +3219,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
     tmp2 = tmp_data_compare[ grepl(pattern = "Mutation",tmp_data_compare$module),]
     fit <- do.call(survfit, list(Surv(PFI.time,PFI)~tmp2[,"groups"],data = tmp2))
     p2 = ggsurvplot(fit,data = tmp2,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -3202,6 +3232,7 @@ TCGA_survival_subtype_compare = function(tmp_data_compare,cancer_type,genes){
     tmp2 = tmp_data_compare[ grepl(pattern = "Wildtype",tmp_data_compare$module),]
     fit <- do.call(survfit, list(Surv(PFI.time,PFI)~tmp2[,"groups"],data = tmp2))
     p3 = ggsurvplot(fit,data = tmp2,
+                    xlab = "day",
                     pval = T,
                     risk.table = F,
                     cumevents = T,
@@ -4482,6 +4513,7 @@ CPTAC_survival_subtype_rna_fun = function(TCGA,tmp_data){
   
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp_data[,"groups"],data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4558,6 +4590,7 @@ CPTAC_survival_subtype_protein_fun = function(TCGA,tmp_data){
   
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp_data[,"groups"],data = tmp_data))
   p1 = ggsurvplot(fit,data = tmp_data,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4696,6 +4729,7 @@ CPTAC_survival_subtype_fun_compare = function(tmp_data_compare,genes){
   tmp2 = tmp_data_compare[ tmp_data_compare$omics == "RNA" & tmp_data_compare$module == "All",]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p1 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4708,6 +4742,7 @@ CPTAC_survival_subtype_fun_compare = function(tmp_data_compare,genes){
   tmp2 = tmp_data_compare[ tmp_data_compare$omics == "RNA" & grepl(pattern = "Mutation",tmp_data_compare$module),]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p2 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4720,6 +4755,7 @@ CPTAC_survival_subtype_fun_compare = function(tmp_data_compare,genes){
   tmp2 = tmp_data_compare[ tmp_data_compare$omics == "RNA" & grepl(pattern = "Wildtype",tmp_data_compare$module),]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p3 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4735,6 +4771,7 @@ CPTAC_survival_subtype_fun_compare = function(tmp_data_compare,genes){
   tmp2 = tmp_data_compare[ tmp_data_compare$omics == "Protein" & tmp_data_compare$module == "All",]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p1 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4747,6 +4784,7 @@ CPTAC_survival_subtype_fun_compare = function(tmp_data_compare,genes){
   tmp2 = tmp_data_compare[ tmp_data_compare$omics == "Protein" & grepl(pattern = "Mutation",tmp_data_compare$module),]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p2 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4759,6 +4797,7 @@ CPTAC_survival_subtype_fun_compare = function(tmp_data_compare,genes){
   tmp2 = tmp_data_compare[ tmp_data_compare$omics == "Protein" & grepl(pattern = "Wildtype",tmp_data_compare$module),]
   fit <- do.call(survfit, list(Surv(OS.time,OS)~tmp2[,"groups"],data = tmp2))
   p3 = ggsurvplot(fit,data = tmp2,
+                  xlab = "day",
                   pval = T,
                   risk.table = F,
                   cumevents = T,
@@ -4987,7 +5026,7 @@ PFS_single_forest = function(gene){
                txt_gp = fpTxtGp(title = gpar(cex = 2),ticks=gpar(cex=1.1),summary=gpar(cex = 1.8),label = gpar(cex = 1.5)),
                boxsize = 0.5,
                graph.pos = 4,
-               title = paste("Progress Free Survival(PFS)","\n","GOBP_REGULATION_OF_COMPLEMENT_ACTIVATION"),
+               title = paste("Progress Free Survival(PFS)","\n",gene),
                is.summary = c(rep(TRUE, 2), rep(FALSE, nrow(cochrane_from_rmeta2)-3)),
                xlog = TRUE, 
                hrzl_lines = tmp_list,
@@ -5264,7 +5303,7 @@ ref_single_Immune_Infiltration_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 30,column_names_centered = FALSE,
@@ -5323,7 +5362,7 @@ ref_single_Immune_pathway_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 30,column_names_centered = FALSE,
@@ -5381,7 +5420,7 @@ TCGA_single_Immune_Infiltration_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -5439,7 +5478,7 @@ TCGA_single_Immune_pathway_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -5504,7 +5543,7 @@ CPTAC_rna_single_Immune_Infiltration_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -5567,7 +5606,7 @@ CPTAC_protein_single_Immune_Infiltration_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -5631,7 +5670,7 @@ CPTAC_rna_single_Immune_pathway_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -5694,7 +5733,7 @@ CPTAC_protein_single_Immune_pathway_heatmap = function(gene){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -6229,7 +6268,7 @@ ref_pm_Immune_Infiltration_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 30,column_names_centered = FALSE,
@@ -6290,7 +6329,7 @@ ref_pm_Immune_pathway_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 30,column_names_centered = FALSE,
@@ -6348,7 +6387,7 @@ TCGA_pm_Immune_Infiltration_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -6405,7 +6444,7 @@ TCGA_pm_Immune_pathway_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -6470,7 +6509,7 @@ CPTAC_rna_pm_Immune_Infiltration_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -6533,7 +6572,7 @@ CPTAC_protein_pm_Immune_Infiltration_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -6597,7 +6636,7 @@ CPTAC_rna_pm_Immune_pathway_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -6660,7 +6699,7 @@ CPTAC_protein_pm_Immune_pathway_heatmap = function(pathway){
 
   p = Heatmap(All_diff,clustering_method_rows = "ward.D2",clustering_method_columns = "ward.D2",
               #             col = col_fun,
-              cluster_rows = T,name = "logFC",
+              cluster_rows = T,name = "DIFF",
               row_names_gp = gpar(fontface = "bold",cex = 1),
               column_names_gp = gpar(fontface = "bold",cex = 1),
               row_names_side = "left",column_names_rot = 45,column_names_centered = FALSE,
@@ -6700,7 +6739,14 @@ volcano_plot = function(tab,FC,pvalue){
   #     scale_color_manual(values = c("blue","gray","red"))+
   #     theme_classic()
   # return(p)
-  plot_ly(tab,x = ~logFC, y = ~-log10(P.Value),text = ~gene, type = 'scatter',  mode = 'markers',color = ~color,colors = c("blue","gray","red"))
+  
+  
+  plotly::config(plot_ly(tab,x = ~logFC, y = ~-log10(P.Value),text = ~gene, 
+                         type = 'scatter',  mode = 'markers',color = ~color,
+                         colors = c("blue","gray","red")
+                         ),
+         displayModeBar = FALSE
+         )
 }
 
 gsInfo <- function(object, geneSetID) {
@@ -6862,11 +6908,11 @@ my_gseaplot2 = function (x, geneSetID, title = "",self.Description = geneSetID, 
 footer = function(){list(tags$footer(id = "myfooter",style="background-color:#033c73;position:fixed;height:120px;bottom:0px;width: 100%;right:0px;z-index:99999",
                                      fluidRow(
                                        
-                                       div(img(src="snvio.png",style="width:120px;"),class="col-sm-3",style="text-align:right;"),
+                                       div(img(src="TIMSource.png",style="width:120px;"),class="col-sm-3",style="text-align:right;"),
                                        div(class="col-sm-6",style="text-align:center;",
-                                           a(href="http://127.0.0.1:5642/",p("Shenlab, Peking University Cancer Hospital",style="color:white;font-weight:bolder;font-size:20px;text-align:center")),
-                                           a(href="https://www.cancer.gov/",p("Beijing Proteome Research Center, National Center for Protein Sciences (Beijing)",style="color:white;font-weight:bolder;font-size:20px;text-align:center")),
-                                           a(href="https://proteomics.cancer.gov/programs/cptac",p("SIP LifeLink Oncology Research Institute",style="color:white;font-weight:bolder;font-size:20px;text-align:center"))
+                                           a(href="https://www.pku-shenlab.cn",p("Shenlab, Peking University Cancer Hospital",style="color:white;font-weight:bolder;font-size:20px;text-align:center")),
+                                           a(href="http://www.ncpsb.org/",p("Beijing Proteome Research Center, National Center for Protein Sciences (Beijing)",style="color:white;font-weight:bolder;font-size:20px;text-align:center")),
+                                           a(href="http://www.lifelink.cn/sy",p("SIP LifeLink Oncology Research Institute",style="color:white;font-weight:bolder;font-size:20px;text-align:center"))
                                        ),
                                        div(class="col-sm-3",style="text-align:left;",
                                            html('<script type="text/javascript" src="//rf.revolvermaps.com/0/0/2.js?i=5z3og620gr1&amp;m=0&amp;s=120&amp;c=ff0000&amp;t=1" async="async"></script>')

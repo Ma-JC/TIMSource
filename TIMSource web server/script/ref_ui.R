@@ -4,44 +4,7 @@ ref_ui = function(){tagList(
     sidebarPanel(
       h2("Parameters:",actionBttn(inputId = "tutorial_ref_single",label = "Guide",style = "unite",color = "danger",size = "sm"),style="color:white"),
       div(id="dataset_tutorial",
-          shinyInput_label_embed(tag = selectInput(inputId = "dataset",label = "Choose a dataset",choices = c(
-                                                                                                            "1. Samstein et al, Bladder Cancer (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Breast Cancer (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Colorectal Cancer (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Esophagogastric Cancer (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Glioma (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Head and Neck Cancer (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Melanoma (Mixed ICB)",
-                                                                                                            "1. Samstein et al, NSCLC (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Renal Cell Carcinoma (Mixed ICB)",
-                                                                                                            "1. Samstein et al, Pan-cancer (Mixed ICB)",
-                                                                                                            "2. Van Allen et al, Melanoma (Anti-CTLA4)",
-                                                                                                            "3. Miao et al, Bladder Cancer (Mixed ICB)",
-                                                                                                            "3. Miao et al, Melanoma (Mixed ICB)",
-                                                                                                            "3. Miao et al, NSCLC (Mixed ICB)",
-                                                                                                            "3. Miao et al, Microsatellite-stable solid tumors (Mixed ICB)",
-                                                                                                            "4. Janjigian et al, Esophagogastric Cancer (Mixed ICB)",
-                                                                                                            "5. Rizvi et al, NSCLC (Mixed ICB)",
-                                                                                                            "6. Pender, Pan-cancer (Mixed ICB)",
-                                                                                                            "7. Hellmann, et al. NSCLC (Mixed ICB)",
-                                                                                                            "8. Hugo, et al. Melanoma (Anti-PD1/PDL1)",
-                                                                                                            "9. Jiao, et al, Gastrointestinal cancer (Mixed ICB)",
-                                                                                                            "10. Snyder, et al. Melanoma (Anti-CTLA4)",
-                                                                                                            "11. Mariathasan, et al. Urothelial cancer (Anti-PD1/PDL1)",
-                                                                                                            "12. Braun, et al. Clear cell renal cell carcinoma (Anti-PD1/PDL1)",
-                                                                                                            "13. Motzer, et al, renal cell carcinoma (Anti-PD1/PDL1+Axitinib)",
-                                                                                                            "14. Miao et al, Clear cell renal cell carcinoma (Anti-PD1/PDL1)",
-                                                                                                            "15. Zhao et al. Glioblastoma(Anti-PD1/PDL1)",
-                                                                                                            "16. Rizvi et al.(2015) NSCLC(Anti-PD1/PDL1)",
-                                                                                                            "17. Harding et al. Hepatocellular carcinoma(Mixed ICB)",
-                                                                                                            "18. Anagnostou et al. Melanoma(Mixed ICB)",
-                                                                                                            "19. Anagnostou et al. NSCLC(Mixed ICB)",
-                                                                                                            "20. Riaz et al. Melanoma(Mixed ICB)",
-                                                                                                            "21. Liu et al. Melanoma(Mixed ICB)",
-                                                                                                            "22. Bai et al. Gastric cancer(Mixed ICB)",
-                                                                                                            "23. Lu et al.  Neuroendocrine neoplasms(Anti-PD1/PDL1)",
-                                                                                                            "24. Wang et al. Gastrointestinal cancer(Mixed ICB)"
-                                                                                                          ),selected = "1. Samstein et al, Pan-cancer (Mixed ICB)"),
+          shinyInput_label_embed(tag = selectInput(inputId = "dataset",label = "Choose a dataset",choices = c(dataset_name3 ),selected = "Samstein et al, Pan-cancer (Mixed ICB)"),
                                  element = bs_embed_tooltip(tag = shiny_iconlink(name = "question-circle"),title = tooltip_text["dataset",], placement = "top")
                                  )
           
@@ -61,10 +24,14 @@ ref_ui = function(){tagList(
                                  element = bs_embed_tooltip(tag = shiny_iconlink(name = "question-circle"),title = tooltip_text["Wildtype groups",], placement = "top"))
 
           ),
+      div(id = "Therapy_type_ref_single_tutorial",
+          shinyInput_label_embed(tag = pickerInput(inputId = "Therapy_type_ref_single",label = "Immune_checkpoint_blockade",choices = NULL,multiple = T,options = list(`actions-box` = TRUE)),
+                                 element = bs_embed_tooltip(tag = shiny_iconlink(name = "question-circle"),title = tooltip_text["Immune_checkpoint_blockade",], placement = "top"))
+      ),
       actionButton(inputId = "sec",label = "submit",icon = icon(name = "arrow-alt-circle-up",id = "button_ref_single"),style="color: #033c73;"),
       hr(),
-      p("Single Gene -- Ref_ICI datasets",style="text-align:center;font-size=20px;font-weight:bolder;"),
-      p("In the Browse module, the Single Gene function is designed to help users explore the relationship between the selected gene mutations and immunotherapy efficacy and immune microenvironment in a chosen cancer type and cohort. Based on your research design, you can choose a cancer type or cohort that meets your requirements and perform detailed analysis, gaining access to the analysis results in the form of graphs and tables. For specific information on each cancer type and cohort, please see the 'About' module. Ref_ICI datasets is a collection of 24 datasets related to immune checkpoint inhibitor treatments that provides valuable information on immunotherapy efficacy and some of the data also provides RNA-seq data, allowing us to analyze the relationship between gene mutations and immunotherapy efficacy and the immune microenvironment."),
+      p("Single Gene",style="text-align:center;font-size=20px;font-weight:bolder;"),
+      p("In the Inquire module, the Single Gene function is designed to help users explore the association of one single gene mutation with ICB outcomes, immune infiltration, immune-related signatures in a chosen cancer type and cohort. Users can choose one cancer type or cohort, and the mutation types to perform detailed analysis. The immune environment analysis is presented in TCGA and CPTAC section, and some of the ICB datasetss (if the transcriptional data was available in the published clinical study). For detailed information of the cohort, please see the 'About' module."),
       width = 3,id = "sidebar_id1"),
   mainPanel(width = 8,id = "main_id1",
             ############
@@ -73,10 +40,10 @@ ref_ui = function(){tagList(
                 title = "Survival Outcomes",icon = icon("chart-line"),
                 column(width = 12,
                        br(),
-                       h2("Ref_ICI datasets | Survival Outcomes",style="color:#033c73;"),
+                       h2("ICB datasets | Survival Outcomes",style="color:#033c73;"),
                        hr(style="background-color:#033c73;height:1px")),
                 column(width = 12,
-                       box(width = 12,p("The Ref_ICI datasets provide immunotherapy-related survival analysis, including overall survival (OS) and progression-free survival (PFS). The Kaplan-Meier method is used to estimate the survival curve, and the log-rank test is employed to compare the difference in survival curves between the mutation group and the wildtype group. It is important to note that not all datasets contain both OS and PFS. Furthermore, genes or pathways with less than three patients in either the mutation or wildtype group will not be analyzed. This same criterion applies to other modules as well."))
+                       box(width = 12,p("The ICB datasets provide immunotherapy-related survival analysis, including overall survival (OS) and progression-free survival (PFS). Please note that not all datasets contain both OS and PFS. The log-rank test is used to compare the survival differences between the mutation group and the wildtype group. Furthermore, if less than three patients in either mutation or wildtype group, the results will not be analyzed. This same criterion is applicable to other modules as well."))
                 ),
                 # column(width = 12,textOutput(outputId = "warning",inline = F)),
                 column(width = 12,bsAlert("warning")),
@@ -91,10 +58,10 @@ ref_ui = function(){tagList(
               tabPanel(title = "Drugs Response",icon = icon("capsules"),
                        column(width = 12,
                               br(),
-                              h2("Ref_ICI datasets | Drugs Response",style="color:#033c73;"),
+                              h2("ICB datasets | Drugs Response",style="color:#033c73;"),
                               hr(style="background-color:#033c73;height:1px")),
                        column(width = 12,
-                              box(width = 12,p("The Ref_ICI datasets provide information on patients' response to checkpoint inhibitor immunotherapy, including RECIST and clinical benefit, allowing us to analyze the relationship between gene mutations and drug response. We use chi-square or Fisher's tests to compare response differences between the mutation group and the wildtype group. Note that not all datasets provide information on drug response."))
+                              box(width = 12,p("The ICB datasets efficacy data based on radiological response as per Response Evaluation Criteria in Solid Tumors (RECIST) provided by the original authors. Some cohorts employed a definition of 'clinical benefit', including patients with complete response (CR), partial response (PR), or stable disease (SD) lasting a durable time. We followed and utilized these definitions from original papers. The chi-square or Fisher's tests are used to compare the efficacy differences between the mutation group and the wildtype group. Please note that ICB efficacy information may not be available in all datasets."))
                        ),
                        # textOutput(outputId = "warning2",inline = F),  
                        column(width = 12,bsAlert("warning2")),
@@ -108,10 +75,10 @@ ref_ui = function(){tagList(
               tabPanel(title = "Mutation",icon = icon("dna"),
                        column(width = 12,
                               br(),
-                              h2("Ref_ICI datasets | Mutation",style="color:#033c73;"),
+                              h2("ICB datasets | Mutation",style="color:#033c73;"),
                               hr(style="background-color:#033c73;height:1px")),
                        column(width = 12,
-                              box(width = 12,p("For the selected gene mutation, this module displays detailed mutation information including tumor mutation burden, mutation type, and detailed mutation information for each patient. Since the mutation data is derived from post-processed data from different studies, the mutation types displayed in different datasets may not be identical."))
+                              box(width = 12,p("For the selected gene mutation, this module displays detailed mutation information including tumor mutation burden, mutation type, and detailed mutation information for each patient. Please note that the mutation profile is obtained from the post-processed data of individual study, and the mutation types may vary across different studies."))
                        ),
                        column(width = 12,bsAlert("warning3")),
                        box(width = 12,title = "Mutation Plot",solidHeader = T,collapsible = T,
@@ -138,10 +105,10 @@ ref_ui = function(){tagList(
                        icon = icon("table"),
                        column(width = 12,
                               br(),
-                              h2("Ref_ICI datasets | Differential expression analysis",style="color:#033c73;"),
+                              h2("ICB datasets | Differential expression analysis",style="color:#033c73;"),
                               hr(style="background-color:#033c73;height:1px")),
                        column(width = 12,
-                              box(width = 12,p("To further understand the impact of gene mutations on transcriptional processes, we provide differential expression analysis, supported by the limma package. We will analyze the differential expression of genes between the selected gene's mutation group and wild-type group, and provide specific information in the form of a volcano plot and table. We provide three sets of parameters for users to customize differentially expressed genes, see the introduction of each parameter. Note that only some datasets in the Ref_ICI datasets contain both genomics and transcriptomics data, so the cohorts without transcriptomics data cannot provide this analysis capability.This same limitation applies to the GSEA module and the Immune Analysis module."))
+                              box(width = 12,p("Identifying the functional impact of somatic mutations on the gene expression pattern is critical for precision oncology and drug discovery. We provide the differential expression gene (DEG) analysis utilizing the limma package. This function allows users to set the parameters to perform customized analysis, aiming to identify the significant DEGs between the mutation group and the wild-type group. We present the specific information in the form of a volcano plot and table. Please note that this function can be performed in TCGA, CPTAC and some ICB datasets containing both genomics and transcriptomics data."))
                        ),
                        column(width = 12,bsAlert("warning4")),
                        box(width = 12,title = "Volcano Plot",solidHeader = T,collapsible = T,
@@ -179,10 +146,10 @@ ref_ui = function(){tagList(
                 title = "GSEA",icon = icon("chart-area"),
                 column(width = 12,
                        br(),
-                       h2("Ref_ICI datasets | GSEA",style="color:#033c73;"),
+                       h2("ICB datasets | GSEA",style="color:#033c73;"),
                        hr(style="background-color:#033c73;height:1px")),
                 column(width = 12,
-                       box(width = 12,p("In order to further understand the impact of gene mutations on function and pathways, we provide GSEA analysis (supported by the clusterProfiler package). Functions/pathways are obtained from the MSigDB database and include GO, KEGG, REACTOME, and HALLMARK. Results are presented in table form, and when you find a pathway of interest, you can click on the 'GSEA Plot' button in the corresponding row to pop up the GSEA enrichment plot for that pathway. Please be patient as GSEA analysis is time-consuming."))
+                       box(width = 12,p("In order to further understand the impact of gene mutations on function and pathways, we provide GSEA analysis supported by the clusterProfiler package. Functions/pathways are obtained from the MsigDB database including GO, KEGG, REACTOME, and HALLMARK. Results are presented in the table, including pathway name, set size, enrichment Score, NES, p value, p adjust value, q values, and rank, leading edge parameters and core enrichment genes. Clicking on the interested pathways in the presented table will lead to the displaying of GSEA plot, which can be downloaded through selected size, resolution, and multiple format types. Please be patient as GSEA analysis is time-consuming."))
                 ),
                 column(width = 12,bsAlert("warning5")),
                 box(
@@ -225,10 +192,10 @@ ref_ui = function(){tagList(
                 title = "Immune Analysis",icon = icon("chart-bar"),
                 column(width = 12,
                        br(),
-                       h2("Ref_ICI datasets | Immune Analysis",style="color:#033c73;"),
+                       h2("ICB datasets | Immune Analysis",style="color:#033c73;"),
                        hr(style="background-color:#033c73;height:1px")),
                 column(width = 12,
-                       box(width = 12,p(""))
+                       box(width = 12,p("To understand how the gene mutation orchestrate the tumor microenvironment (TME), we use the ssGSEA algorithm to evaluate the immune cell infiltration and immune-related features. The Wilcoxon rank-sum test is used to assess the statistical significance of the differences between the mutation group and the wild-type group."))
                 ),
                 column(width = 12,bsAlert("warning6")),
                 box(width = 12,title = "Immune Infiltration",solidHeader = T,collapsible = T,

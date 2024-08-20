@@ -61,22 +61,22 @@ ref_total_RESPONSE_pm = readRDS("data/Explore/ref_total_RESPONSE_pm.rds")
 ref_total_immune_infiltrating_pm = readRDS("data/Explore/ref_total_immune_infiltration_pm.rds")
 ref_total_immune_pathway_pm = readRDS("data/Explore/ref_total_immune_pathway_pm.rds")
 
-# TCGA_overview = read.csv("data/TCGA/TCGA_overview.csv",quote = "")
-# TCGA_total_immune_infiltration_single = readRDS("data/Explore/TCGA_total_immune_infiltration.rds")
-# TCGA_total_immune_pathway_single = readRDS("data/Explore/TCGA_total_immune_pathway.rds")
-# TCGA_total_immune_infiltration_pm = readRDS("data/Explore/TCGA_total_immune_infiltration_pm.rds")
-# TCGA_total_immune_pathway_pm = readRDS("data/Explore/TCGA_total_immune_pathway_pm.rds")
-# 
-# CPTAC_overview = read.csv("data/CPTAC/CPTAC_overview.csv",quote = "")
-# CPTAC_total_immune_infiltration_rna_single = readRDS("data/Explore/CPTAC_total_immune_infiltration_rna.rds")
-# CPTAC_total_immune_pathway_rna_single = readRDS("data/Explore/CPTAC_total_immune_pathway_rna.rds")
-# CPTAC_total_immune_infiltration_rna_pm = readRDS("data/Explore/CPTAC_total_immune_infiltration_rna_pm.rds")
-# CPTAC_total_immune_pathway_rna_pm = readRDS("data/Explore/CPTAC_total_immune_pathway_rna_pm.rds")
-# 
-# CPTAC_total_immune_infiltration_protein_single = readRDS("data/Explore/CPTAC_total_immune_infiltration_protein.rds")
-# CPTAC_total_immune_pathway_protein_single = readRDS("data/Explore/CPTAC_total_immune_pathway_protein.rds")
-# CPTAC_total_immune_infiltration_protein_pm = readRDS("data/Explore/CPTAC_total_immune_infiltration_protein_pm.rds")
-# CPTAC_total_immune_pathway_protein_pm = readRDS("data/Explore/CPTAC_total_immune_pathway_protein_pm.rds")
+TCGA_overview = read.csv("data/TCGA/TCGA_overview.csv",quote = "")
+TCGA_total_immune_infiltration_single = readRDS("data/Explore/TCGA_total_immune_infiltration.rds")
+TCGA_total_immune_pathway_single = readRDS("data/Explore/TCGA_total_immune_pathway.rds")
+TCGA_total_immune_infiltration_pm = readRDS("data/Explore/TCGA_total_immune_infiltration_pm.rds")
+TCGA_total_immune_pathway_pm = readRDS("data/Explore/TCGA_total_immune_pathway_pm.rds")
+
+CPTAC_overview = read.csv("data/CPTAC/CPTAC_overview.csv",quote = "")
+CPTAC_total_immune_infiltration_rna_single = readRDS("data/Explore/CPTAC_total_immune_infiltration_rna.rds")
+CPTAC_total_immune_pathway_rna_single = readRDS("data/Explore/CPTAC_total_immune_pathway_rna.rds")
+CPTAC_total_immune_infiltration_rna_pm = readRDS("data/Explore/CPTAC_total_immune_infiltration_rna_pm.rds")
+CPTAC_total_immune_pathway_rna_pm = readRDS("data/Explore/CPTAC_total_immune_pathway_rna_pm.rds")
+
+CPTAC_total_immune_infiltration_protein_single = readRDS("data/Explore/CPTAC_total_immune_infiltration_protein.rds")
+CPTAC_total_immune_pathway_protein_single = readRDS("data/Explore/CPTAC_total_immune_pathway_protein.rds")
+CPTAC_total_immune_infiltration_protein_pm = readRDS("data/Explore/CPTAC_total_immune_infiltration_protein_pm.rds")
+CPTAC_total_immune_pathway_protein_pm = readRDS("data/Explore/CPTAC_total_immune_pathway_protein_pm.rds")
 
 ###################Explore data clean & preprocess ######################################
 
@@ -116,9 +116,9 @@ for(i in names(ref_total_RESPONSE_single)){
 for(i in names(ref_total_RESPONSE_single)){
   
   
-  ref_total_RESPONSE_single[[i]]$OR = 1/ref_total_RESPONSE_single[[i]]$OR
-  a = 1/ref_total_RESPONSE_single[[i]]$`Lower(95%)`
-  b = 1/ref_total_RESPONSE_single[[i]]$`Upper(95%)`
+  ref_total_RESPONSE_single[[i]]$OR = round(1/ref_total_RESPONSE_single[[i]]$OR,3)
+  a = round(1/ref_total_RESPONSE_single[[i]]$`Lower(95%)`,3)
+  b = round(1/ref_total_RESPONSE_single[[i]]$`Upper(95%)`,3)
   ref_total_RESPONSE_single[[i]]$`Lower(95%)` = b
   ref_total_RESPONSE_single[[i]]$`Upper(95%)` = a
 }
@@ -184,9 +184,9 @@ for(i in names(ref_total_RESPONSE_pm)){
 for(i in names(ref_total_RESPONSE_pm)){
   
   
-  ref_total_RESPONSE_pm[[i]]$OR = 1/ref_total_RESPONSE_pm[[i]]$OR
-  a = 1/ref_total_RESPONSE_pm[[i]]$`Lower(95%)`
-  b = 1/ref_total_RESPONSE_pm[[i]]$`Upper(95%)`
+  ref_total_RESPONSE_pm[[i]]$OR = round(1/ref_total_RESPONSE_pm[[i]]$OR,3)
+  a = round(1/ref_total_RESPONSE_pm[[i]]$`Lower(95%)`,3)
+  b = round(1/ref_total_RESPONSE_pm[[i]]$`Upper(95%)`,3)
   ref_total_RESPONSE_pm[[i]]$`Lower(95%)` = b
   ref_total_RESPONSE_pm[[i]]$`Upper(95%)` = a
 }
@@ -213,158 +213,144 @@ for(i in names(ref_total_immune_pathway_pm)){
   }
 }
 
-# for(i in names(TCGA_total_immune_infiltration_single)){
-#   for(j in names(TCGA_total_immune_infiltration_single[[i]])){
-#     tmp = TCGA_total_immune_infiltration_single[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
-#     rownames(tmp) = rownames(TCGA_total_immune_infiltration_single[[i]][[j]])
-#     TCGA_total_immune_infiltration_single[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(TCGA_total_immune_pathway_single)){
-#   for(j in names(TCGA_total_immune_pathway_single[[i]])){
-#     tmp = TCGA_total_immune_pathway_single[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
-#     rownames(tmp) = rownames(TCGA_total_immune_pathway_single[[i]][[j]])
-#     TCGA_total_immune_pathway_single[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(TCGA_total_immune_infiltration_pm)){
-#   for(j in names(TCGA_total_immune_infiltration_pm[[i]])){
-#     tmp = TCGA_total_immune_infiltration_pm[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
-#     rownames(tmp) = rownames(TCGA_total_immune_infiltration_pm[[i]][[j]])
-#     TCGA_total_immune_infiltration_pm[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(TCGA_total_immune_pathway_pm)){
-#   for(j in names(TCGA_total_immune_pathway_pm[[i]])){
-#     tmp = TCGA_total_immune_pathway_pm[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
-#     rownames(tmp) = rownames(TCGA_total_immune_pathway_pm[[i]][[j]])
-#     TCGA_total_immune_pathway_pm[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_infiltration_rna_single)){
-#   for(j in names(CPTAC_total_immune_infiltration_rna_single[[i]])){
-#     tmp = CPTAC_total_immune_infiltration_rna_single[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
-#     rownames(tmp) = rownames(CPTAC_total_immune_infiltration_rna_single[[i]][[j]])
-#     CPTAC_total_immune_infiltration_rna_single[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_pathway_rna_single)){
-#   for(j in names(CPTAC_total_immune_pathway_rna_single[[i]])){
-#     tmp = CPTAC_total_immune_pathway_rna_single[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
-#     rownames(tmp) = rownames(CPTAC_total_immune_pathway_rna_single[[i]][[j]])
-#     CPTAC_total_immune_pathway_rna_single[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_infiltration_protein_single)){
-#   for(j in names(CPTAC_total_immune_infiltration_protein_single[[i]])){
-#     tmp = CPTAC_total_immune_infiltration_protein_single[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
-#     rownames(tmp) = rownames(CPTAC_total_immune_infiltration_protein_single[[i]][[j]])
-#     CPTAC_total_immune_infiltration_protein_single[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_pathway_protein_single)){
-#   for(j in names(CPTAC_total_immune_pathway_protein_single[[i]])){
-#     tmp = CPTAC_total_immune_pathway_protein_single[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
-#     rownames(tmp) = rownames(CPTAC_total_immune_pathway_protein_single[[i]][[j]])
-#     CPTAC_total_immune_pathway_protein_single[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_infiltration_rna_pm)){
-#   for(j in names(CPTAC_total_immune_infiltration_rna_pm[[i]])){
-#     tmp = CPTAC_total_immune_infiltration_rna_pm[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
-#     rownames(tmp) = rownames(CPTAC_total_immune_infiltration_rna_pm[[i]][[j]])
-#     CPTAC_total_immune_infiltration_rna_pm[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_pathway_rna_pm)){
-#   for(j in names(CPTAC_total_immune_pathway_rna_pm[[i]])){
-#     tmp = CPTAC_total_immune_pathway_rna_pm[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
-#     rownames(tmp) = rownames(CPTAC_total_immune_pathway_rna_pm[[i]][[j]])
-#     CPTAC_total_immune_pathway_rna_pm[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_infiltration_protein_pm)){
-#   for(j in names(CPTAC_total_immune_infiltration_protein_pm[[i]])){
-#     tmp = CPTAC_total_immune_infiltration_protein_pm[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
-#     rownames(tmp) = rownames(CPTAC_total_immune_infiltration_protein_pm[[i]][[j]])
-#     CPTAC_total_immune_infiltration_protein_pm[[i]][[j]] = tmp
-#   }
-# }
-# 
-# for(i in names(CPTAC_total_immune_pathway_protein_pm)){
-#   for(j in names(CPTAC_total_immune_pathway_protein_pm[[i]])){
-#     tmp = CPTAC_total_immune_pathway_protein_pm[[i]][[j]]
-#     tmp[ tmp == "None" ] = NA
-#     tmp = as.data.frame(tmp)
-#     tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
-#     rownames(tmp) = rownames(CPTAC_total_immune_pathway_protein_pm[[i]][[j]])
-#     CPTAC_total_immune_pathway_protein_pm[[i]][[j]] = tmp
-#   }
-# }
-##########################################################################################
-library("msigdbr")
-KEGG = msigdbr(species="Homo sapiens",category="C2",subcategory = "CP:KEGG") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
-REACTOME = msigdbr(species="Homo sapiens",category="C2",subcategory = "CP:REACTOME") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
-HALLMARK = msigdbr(species="Homo sapiens",category="H") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
-GO_BP = msigdbr(species="Homo sapiens",category="C5",subcategory = "GO:BP") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
-GO_CC = msigdbr(species="Homo sapiens",category="C5",subcategory = "GO:CC") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
-GO_MF = msigdbr(species="Homo sapiens",category="C5",subcategory = "GO:MF") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
+for(i in names(TCGA_total_immune_infiltration_single)){
+  for(j in names(TCGA_total_immune_infiltration_single[[i]])){
+    tmp = TCGA_total_immune_infiltration_single[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
+    rownames(tmp) = rownames(TCGA_total_immune_infiltration_single[[i]][[j]])
+    TCGA_total_immune_infiltration_single[[i]][[j]] = tmp
+  }
+}
 
-pathway_database = list("GO_BP"=GO_BP,"GO_CC"=GO_CC,"GO_MF"=GO_MF,"KEGG"=KEGG,"REACTOME"=REACTOME,"HALLMARK"=HALLMARK)
+for(i in names(TCGA_total_immune_pathway_single)){
+  for(j in names(TCGA_total_immune_pathway_single[[i]])){
+    tmp = TCGA_total_immune_pathway_single[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
+    rownames(tmp) = rownames(TCGA_total_immune_pathway_single[[i]][[j]])
+    TCGA_total_immune_pathway_single[[i]][[j]] = tmp
+  }
+}
 
+for(i in names(TCGA_total_immune_infiltration_pm)){
+  for(j in names(TCGA_total_immune_infiltration_pm[[i]])){
+    tmp = TCGA_total_immune_infiltration_pm[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
+    rownames(tmp) = rownames(TCGA_total_immune_infiltration_pm[[i]][[j]])
+    TCGA_total_immune_infiltration_pm[[i]][[j]] = tmp
+  }
+}
 
-CPTAC_name = c("2021_GBM","2021_PDAC","2020_BI","2020_OVA","2020_LSCC","2020_LUAD","2020_HNSCC","2020_UCEC","2020_CCRCC","2019_Colon")
-TCGA_name = names(TCGA)
-ref_name = names(datasets)
+for(i in names(TCGA_total_immune_pathway_pm)){
+  for(j in names(TCGA_total_immune_pathway_pm[[i]])){
+    tmp = TCGA_total_immune_pathway_pm[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
+    rownames(tmp) = rownames(TCGA_total_immune_pathway_pm[[i]][[j]])
+    TCGA_total_immune_pathway_pm[[i]][[j]] = tmp
+  }
+}
 
-#TCGA mutation type as same as CPTAC
-TCGA_mutation_type = c("All","Missense_Mutation","Frame_Shift_Del","Splice_Site","Nonsense_Mutation","Frame_Shift_Ins","In_Frame_Del","In_Frame_Ins","Nonstop_Mutation","Translation_Start_Site")
+for(i in names(CPTAC_total_immune_infiltration_rna_single)){
+  for(j in names(CPTAC_total_immune_infiltration_rna_single[[i]])){
+    tmp = CPTAC_total_immune_infiltration_rna_single[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
+    rownames(tmp) = rownames(CPTAC_total_immune_infiltration_rna_single[[i]][[j]])
+    CPTAC_total_immune_infiltration_rna_single[[i]][[j]] = tmp
+  }
+}
 
-Mcolor = c("red","blue")
-names(Mcolor) = c("Mutation","Wildtype")
+for(i in names(CPTAC_total_immune_pathway_rna_single)){
+  for(j in names(CPTAC_total_immune_pathway_rna_single[[i]])){
+    tmp = CPTAC_total_immune_pathway_rna_single[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
+    rownames(tmp) = rownames(CPTAC_total_immune_pathway_rna_single[[i]][[j]])
+    CPTAC_total_immune_pathway_rna_single[[i]][[j]] = tmp
+  }
+}
+
+for(i in names(CPTAC_total_immune_infiltration_protein_single)){
+  for(j in names(CPTAC_total_immune_infiltration_protein_single[[i]])){
+    tmp = CPTAC_total_immune_infiltration_protein_single[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
+    rownames(tmp) = rownames(CPTAC_total_immune_infiltration_protein_single[[i]][[j]])
+    CPTAC_total_immune_infiltration_protein_single[[i]][[j]] = tmp
+  }
+}
+
+for(i in names(CPTAC_total_immune_pathway_protein_single)){
+  for(j in names(CPTAC_total_immune_pathway_protein_single[[i]])){
+    tmp = CPTAC_total_immune_pathway_protein_single[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(apply(tmp,2,function(x){round(as.numeric(x),3)}))
+    rownames(tmp) = rownames(CPTAC_total_immune_pathway_protein_single[[i]][[j]])
+    CPTAC_total_immune_pathway_protein_single[[i]][[j]] = tmp
+  }
+}
+
+for(i in names(CPTAC_total_immune_infiltration_rna_pm)){
+  for(j in names(CPTAC_total_immune_infiltration_rna_pm[[i]])){
+    tmp = CPTAC_total_immune_infiltration_rna_pm[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
+    rownames(tmp) = rownames(CPTAC_total_immune_infiltration_rna_pm[[i]][[j]])
+    CPTAC_total_immune_infiltration_rna_pm[[i]][[j]] = tmp
+  }
+}
+
+for(i in names(CPTAC_total_immune_pathway_rna_pm)){
+  for(j in names(CPTAC_total_immune_pathway_rna_pm[[i]])){
+    tmp = CPTAC_total_immune_pathway_rna_pm[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
+    rownames(tmp) = rownames(CPTAC_total_immune_pathway_rna_pm[[i]][[j]])
+    CPTAC_total_immune_pathway_rna_pm[[i]][[j]] = tmp
+  }
+}
+
+for(i in names(CPTAC_total_immune_infiltration_protein_pm)){
+  for(j in names(CPTAC_total_immune_infiltration_protein_pm[[i]])){
+    tmp = CPTAC_total_immune_infiltration_protein_pm[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
+    rownames(tmp) = rownames(CPTAC_total_immune_infiltration_protein_pm[[i]][[j]])
+    CPTAC_total_immune_infiltration_protein_pm[[i]][[j]] = tmp
+  }
+}
+
+for(i in names(CPTAC_total_immune_pathway_protein_pm)){
+  for(j in names(CPTAC_total_immune_pathway_protein_pm[[i]])){
+    tmp = CPTAC_total_immune_pathway_protein_pm[[i]][[j]]
+    tmp[ tmp == "None" ] = NA
+    tmp = as.data.frame(tmp)
+    tmp = as.data.frame(cbind(apply(tmp[1:2],2,function(x){round(as.numeric(x),3)}),tmp[3],apply(tmp[4:6],2,function(x){round(as.numeric(x),3)})))
+    rownames(tmp) = rownames(CPTAC_total_immune_pathway_protein_pm[[i]][[j]])
+    CPTAC_total_immune_pathway_protein_pm[[i]][[j]] = tmp
+  }
+}
+
+################### dataset2 something bad ################
+ref_total_OS_single$dataset2 = ref_total_OS_single$dataset2[rownames(ref_total_OS_single$dataset2) %in% gene_fre$dataset2,]
+ref_total_PFS_single$dataset2 = ref_total_PFS_single$dataset2[rownames(ref_total_PFS_single$dataset2) %in% gene_fre$dataset2,]
+ref_total_RECIST_single$dataset2 = ref_total_RECIST_single$dataset2[rownames(ref_total_RECIST_single$dataset2) %in% gene_fre$dataset2,]
+ref_total_RESPONSE_single$dataset2 = ref_total_RESPONSE_single$dataset2[rownames(ref_total_RESPONSE_single$dataset2) %in% gene_fre$dataset2,]
+
 inf_names = factor(
   c('Activated B cell',
     'Activated CD4 T cell',
@@ -407,6 +393,39 @@ sig_names = factor(
   )
 )
 
+for(i in inf_names){
+  ref_total_immune_infiltrating_single$dataset2[[i]] = ref_total_immune_infiltrating_single$dataset2[[i]][rownames(ref_total_immune_infiltrating_single$dataset2[[i]]) %in% gene_fre$dataset2,]
+}
+
+for(i in sig_names){
+  ref_total_immune_pathway_single$dataset2[[i]] = ref_total_immune_pathway_single$dataset2[[i]][rownames(ref_total_immune_pathway_single$dataset2[[i]]) %in% gene_fre$dataset2,]
+}
+
+##########################################################################################
+library("msigdbr")
+KEGG = msigdbr(species="Homo sapiens",category="C2",subcategory = "CP:KEGG") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
+REACTOME = msigdbr(species="Homo sapiens",category="C2",subcategory = "CP:REACTOME") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
+HALLMARK = msigdbr(species="Homo sapiens",category="H") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
+GO_BP = msigdbr(species="Homo sapiens",category="C5",subcategory = "GO:BP") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
+GO_CC = msigdbr(species="Homo sapiens",category="C5",subcategory = "GO:CC") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
+GO_MF = msigdbr(species="Homo sapiens",category="C5",subcategory = "GO:MF") %>% dplyr::select(gs_name, entrez_gene, gene_symbol)
+
+pathway_database = list("GO_BP"=GO_BP,"GO_CC"=GO_CC,"GO_MF"=GO_MF,"KEGG"=KEGG,"REACTOME"=REACTOME,"HALLMARK"=HALLMARK)
+
+
+CPTAC_name = c("2021_GBM","2021_PDAC","2020_BI","2020_OVA","2020_LSCC","2020_LUAD","2020_HNSCC","2020_UCEC","2020_CCRCC","2019_Colon")
+TCGA_name = names(TCGA)
+
+
+ref_name = names(datasets)
+
+#TCGA mutation type as same as CPTAC
+TCGA_mutation_type = c("All","Missense_Mutation","Frame_Shift_Del","Splice_Site","Nonsense_Mutation","Frame_Shift_Ins","In_Frame_Del","In_Frame_Ins","Nonstop_Mutation","Translation_Start_Site")
+
+Mcolor = c("red","blue")
+names(Mcolor) = c("Mutation","Wildtype")
+
+
 # for(i in names(datasets_mu)){
 #   for(j in colnames(datasets_mu[[i]])){
 #     if(!j %in% c("Start_Position","End_Position","Position")){
@@ -415,3 +434,23 @@ sig_names = factor(
 #   }
 # }
 
+################### remove dataset6 ##############
+
+datasets_overview = datasets_overview[ rownames(datasets_overview) != "dataset6",]
+ref_name = setdiff(ref_name,"dataset6")
+gene_fre$dataset6 = NULL
+dataset_name2 = dataset_name2[ dataset_name2 != dataset_name2["dataset6"] ]
+dataset_name = dataset_name[ dataset_name != "dataset6" ]
+
+dataset_name3 = dataset_name2
+names(dataset_name3) = NULL
+
+therapy_types = list()
+for(i in names(datasets)){
+  therapy_types[[i]] = unique(na.omit(datasets[[i]]$THERAPY))
+  if( i %in% c("dataset17","dataset20") ){
+    therapy_types[[i]] = "anti-PD1/PDL1"
+  }
+}
+
+therapy_types$dataset6 = NULL

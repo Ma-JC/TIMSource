@@ -1,24 +1,28 @@
-Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,datasets,datasets_mu,Mut_type_ref_pm,Wild_type_ref_pm,min.pct_ref_pm,FC_ref_pm,pvalue_ref_pm){
+Ref_datasets_server_pm <- function(input,output,session,ref_pm_para,datasets,datasets_mu,min.pct_ref_pm,FC_ref_pm,pvalue_ref_pm,useid){
   
-  width = reactive({if(datasource_pm() %in% c("dataset2","dataset3.1","dataset3.2","dataset3.3","dataset3","dataset4","dataset6","dataset9","dataset12","dataset14","dataset15","dataset17","dataset18","dataset19","dataset20","dataset21","dataset22","dataset23","dataset24")){900}else{500}})
-  width2 = reactive({if(datasource_pm() %in% c("dataset2","dataset3.1","dataset3.2","dataset3.3","dataset3","dataset7","dataset12","dataset14","dataset16","dataset24")){1200}else{600}})
-  width3 = reactive({if(datasource_pm() %in% c("dataset1.1","dataset1.2","dataset1.3","dataset1.4","dataset1.5","dataset1.6","dataset1.7","dataset1.8","dataset1.9","dataset3.1","dataset3.2","dataset3.3","dataset3",
+  useid <- paste(useid,"Refpm",sep = "_")
+  
+  width = reactive({if(ref_pm_para()$datasource_pm %in% c("dataset2","dataset3.1","dataset3.2","dataset3.3","dataset3","dataset4","dataset6","dataset9","dataset12","dataset14","dataset15","dataset17","dataset18","dataset19","dataset20","dataset21","dataset22","dataset23","dataset24")){900}else{500}})
+  width2 = reactive({if(ref_pm_para()$datasource_pm %in% c("dataset2","dataset3.1","dataset3.2","dataset3.3","dataset3","dataset7","dataset12","dataset14","dataset16","dataset24")){1200}else{600}})
+  width3 = reactive({if(ref_pm_para()$datasource_pm %in% c("dataset1.1","dataset1.2","dataset1.3","dataset1.4","dataset1.5","dataset1.6","dataset1.7","dataset1.8","dataset1.9","dataset3.1","dataset3.2","dataset3.3","dataset3",
                                                "dataset1","dataset2","dataset4","dataset5","dataset6","dataset7","dataset8","dataset9","dataset10","dataset12","dataset14","dataset15","dataset16","dataset17","dataset20","dataset21")){1600}else{1000}})
   
   
   ref_cohort_pm = reactive({
-    gene = gene_pm()
-    ds = datasource_pm()
-    Mut_type_ref_pm = Mut_type_ref_pm()
-    Wild_type_ref_pm = Wild_type_ref_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
+    Mut_type_ref_pm = ref_pm_para()$Mut_type_ref_pm
+    Wild_type_ref_pm = ref_pm_para()$Wild_type_ref_pm
+    Therapy_type_ref_pm = ref_pm_para()$Therapy_type_ref_pm
+    
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
-    ref_cohort_cal_pm(dataset = datasets[[ds]],gene = gene,dataset_mu = datasets_mu[[ds]],Mut_type = Mut_type_ref_pm,Wild_type = Wild_type_ref_pm)
-  }) %>% bindCache(datasource_pm(),gene_pm(),Mut_type_ref_pm(),Wild_type_ref_pm())
+    ref_cohort_cal_pm(dataset = datasets[[ds]],gene = gene,dataset_mu = datasets_mu[[ds]],Mut_type = Mut_type_ref_pm,Wild_type = Wild_type_ref_pm,therapy_type=Therapy_type_ref_pm)
+  }) %>% bindCache(ref_pm_para()$datasource_pm,ref_pm_para()$gene_pm,ref_pm_para()$Mut_type_ref_pm,ref_pm_para()$Wild_type_ref_pm,ref_pm_para()$Therapy_type_ref_pm)
   
   #################################################### survival #################################
   output$sur_pm_uidown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -44,33 +48,34 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     }
   })
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
-    ds = datasource_pm()
-
+  observe({
+    
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     if(ds %in% c("dataset5","dataset7","dataset13","dataset16")){
       closeAlert(session,"warning_id_pm")
       createAlert(session, "warning_pm", "warning_id_pm", title = "Tips",
-                  content = paste(ds,"didn't provide overall survival"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide overall survival"), append = FALSE)
     }else if(ds %in% c("dataset1.1","dataset1.2","dataset1.3","dataset1.4","dataset1.5","dataset1.6","dataset1.7","dataset1.8","dataset1.9",
                        "dataset1","dataset8","dataset10","dataset11")){
       closeAlert(session,"warning_id_pm")
       createAlert(session, "warning_pm", "warning_id_pm", title = "Tips",
-                  content = paste(ds,"didn't provide progression-free survival"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide progression-free survival"), append = FALSE)
     }else{
+
       closeAlert(session,"warning_id_pm")
     }
     
     if(!any(pathway_list[[gene]] %in% colnames(datasets[[ds]]))){
       closeAlert(session,"warning_id_pm")
       createAlert(session, "warning_pm", "warning_id_pm", title = "Warning",style = "danger",
-                  content = paste("The genes of",gene,"does not exist in",ds,sep = " "), append = FALSE)
+                  content = paste("The genes of",gene,"does not exist in",dataset_name2[[ds]],sep = " "), append = FALSE)
     }
     
   })
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
     ref_cohort_pm = ref_cohort_pm()
     
     if(length(ref_cohort_pm$mut) <3 | length(ref_cohort_pm$wt) < 3){
@@ -83,8 +88,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   
   output$Survival_pm = renderPlot({
     
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     width = width()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
@@ -132,7 +137,7 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   output$ref_sur_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       
       if(input$ref_sur_pm_file == 'pdf'){
         paste0(gene,"_",input$dataset_pm,".","sur", '.',"pdf")
@@ -146,8 +151,9 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       
     },
     content = function(file){
-      gene = gene_pm()
-      ds = datasource_pm()
+      shinyjs::disable("ref_sur_pm_down")
+      gene = ref_pm_para()$gene_pm
+      ds = ref_pm_para()$datasource_pm
       ref_cohort_pm = ref_cohort_pm()
       
       if(input$ref_sur_pm_res <= 300){
@@ -203,12 +209,13 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
         print(pfs_survival_pm(dataset = datasets[[ds]],gene = gene,dataset_mu = datasets_mu[[ds]],mut = ref_cohort_pm$mut,wt = ref_cohort_pm$wt))
       }
       dev.off()
+      shinyjs::enable("ref_sur_pm_down")
     }
   )
   
   # output$warning_pm = renderText({
-  #   gene = gene_pm()
-  #   ds = datasource_pm()
+  #   gene = ref_pm_para()$gene_pm
+  #   ds = ref_pm_para()$datasource_pm
   #   if(ds %in% c("dataset5","dataset7","dataset13","dataset16")){
   #     paste(ds,"didn't provide overall survival")
   #   }else if(ds %in% c("dataset1","dataset8","dataset10","dataset11")){
@@ -220,8 +227,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   ######################################################  Response  ################################################
   
   output$res_pm_uidown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -248,25 +255,25 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     }
   })
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
-    ds = datasource_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     
     if(ds %in% c("dataset1.1","dataset1.2","dataset1.3","dataset1.4","dataset1.5","dataset1.6","dataset1.7","dataset1.8","dataset1.9",
                  "dataset1","dataset13")){
       closeAlert(session,"warning_id2_pm")
       createAlert(session, "warning2_pm", "warning_id2_pm", title = "Warning",style = "danger",
-                  content = paste(ds,"did not provide any data on the efficacy of immunotherapy"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"did not provide any data on the efficacy of immunotherapy"), append = FALSE)
       
     }else if(ds %in% c("dataset5","dataset6","dataset9","dataset10","dataset15","dataset19")){
       closeAlert(session,"warning_id2_pm")
       createAlert(session, "warning2_pm", "warning_id2_pm", title = "Tips",
-                  content = paste(ds,"didn't provide data about RECIST"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about RECIST"), append = FALSE)
       
     }else if(ds %in% c("dataset4","dataset8","dataset11","dataset17","dataset18","dataset20","dataset21","dataset22","dataset23")){
       closeAlert(session,"warning_id2_pm")
       createAlert(session, "warning2_pm", "warning_id2_pm", title = "Tips",
-                  content = paste(ds,"didn't provide data about DCB"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about DCB"), append = FALSE)
     }else{
       closeAlert(session,"warning_id2_pm")
     }
@@ -274,13 +281,13 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     if(!any(pathway_list[[gene]] %in% colnames(datasets[[ds]]))){
       closeAlert(session,"warning_id2_pm")
       createAlert(session, "warning2_pm", "warning_id2_pm", title = "Warning",style = "danger",
-                  content = paste("The genes of",gene,"does not exist in",ds,sep = " "), append = FALSE)
+                  content = paste("The genes of",gene,"does not exist in",dataset_name2[[ds]],sep = " "), append = FALSE)
     }
     
   })
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
     ref_cohort_pm = ref_cohort_pm()
     
     if(length(ref_cohort_pm$mut) <3 | length(ref_cohort_pm$wt) < 3){
@@ -292,8 +299,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   })
   
   output$response_pm = renderPlot({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     width2 = width2()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
@@ -333,7 +340,7 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   output$ref_res_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       
       if(input$ref_res_pm_file == 'pdf'){
         paste0(gene,"_",input$dataset_pm,".","res", '.',"pdf")
@@ -347,8 +354,9 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       
     },
     content = function(file){
-      gene = gene_pm()
-      ds = datasource_pm()
+      shinyjs::disable("ref_res_pm_down")
+      gene = ref_pm_para()$gene_pm
+      ds = ref_pm_para()$datasource_pm
       ref_cohort_pm = ref_cohort_pm()
       
       if(input$ref_res_pm_res <= 300){
@@ -395,12 +403,13 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
         print(CRPR_pm(datasets[[ds]],gene,dataset_mu = datasets_mu[[ds]],mut = ref_cohort_pm$mut,wt = ref_cohort_pm$wt))
       }
       dev.off()
+      shinyjs::enable("ref_res_pm_down")
     }
   )
   
   # output$warning2_pm = renderText({
-  #   gene = gene_pm()
-  #   ds = datasource_pm()
+  #   gene = ref_pm_para()$gene_pm
+  #   ds = ref_pm_para()$datasource_pm
   #   validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),paste("The genes of",gene,"does not exist in",ds,sep = " ")))
   #   if(ds %in% c("dataset1","dataset13")){
   #     "Data set 1 did not provide any data on the efficacy of immunotherapy"
@@ -415,8 +424,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   ######################################################### Mutation #######################################
   
   output$mut_pm_uidown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -443,8 +452,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   })
   
   output$mut_pm_uitabledown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -453,19 +462,19 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   })
   
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
-    ds = datasource_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
 
     if(ds %in% c("dataset18","dataset19","dataset22","dataset23")){
       closeAlert(session,"warning_id3_pm")
       createAlert(session, "warning3_pm", "warning_id3_pm", title = "Tips",
-                  content = paste(ds,"did not provide TMB data"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"did not provide TMB data"), append = FALSE)
       
     }else if(ds %in% c("dataset11","dataset13")){
       closeAlert(session,"warning_id3_pm")
       createAlert(session, "warning3_pm", "warning_id3_pm", title = "Tips",
-                  content = paste(ds,"didn't provide detial information about gene mutation"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide detial information about gene mutation"), append = FALSE)
       
     }else{
       closeAlert(session,"warning_id3_pm")
@@ -474,14 +483,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     if(!any(pathway_list[[gene]] %in% colnames(datasets[[ds]]))){
       closeAlert(session,"warning_id3_pm")
       createAlert(session, "warning3_pm", "warning_id3_pm", title = "Warning",style = "danger",
-                  content = paste("The genes of",gene,"does not exist in",ds,sep = " "), append = FALSE)
+                  content = paste("The genes of",gene,"does not exist in",dataset_name2[[ds]],sep = " "), append = FALSE)
     }
     
   })
   
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
     ref_cohort_pm = ref_cohort_pm()
     
     if(length(ref_cohort_pm$mut) <3 | length(ref_cohort_pm$wt) < 3){
@@ -494,8 +503,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   
   
   output$TMB_pm = renderPlot({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     width3 = width3()
     outline = input$outline_pm
@@ -538,7 +547,7 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   output$ref_mut_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       
       if(input$ref_mut_pm_file == 'pdf'){
         paste0(gene,"_",input$dataset_pm,".","mut", '.',"pdf")
@@ -552,8 +561,9 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       
     },
     content = function(file){
-      gene = gene_pm()
-      ds = datasource_pm()
+      shinyjs::disable("ref_mut_pm_down")
+      gene = ref_pm_para()$gene_pm
+      ds = ref_pm_para()$datasource_pm
       ref_cohort_pm = ref_cohort_pm()
       
       if(input$ref_mut_pm_res <= 300){
@@ -605,13 +615,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
         print(TMB_pm(datasets[[ds]],gene,remove_outlier = TRUE,dataset_mu = datasets_mu[[ds]],mut = ref_cohort_pm$mut,wt = ref_cohort_pm$wt))
       }
       dev.off()
+      shinyjs::enable("ref_mut_pm_down")
     }
   )
   
   output$SPLOT_pm = renderReactable({
-    ds = datasource_pm()
-    gene = gene_pm()
-    Mut_type_ref_pm = Mut_type_ref_pm()
+    ds = ref_pm_para()$datasource_pm
+    gene = ref_pm_para()$gene_pm
+    Mut_type_ref_pm = ref_pm_para()$Mut_type_ref_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(! ds %in% c("dataset11","dataset13"),message = FALSE))
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
@@ -657,32 +668,32 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     
     return(tmp)
-  }) %>% bindCache(datasource_pm(),gene_pm(),ref_cohort_pm(),width3(),Mut_type_ref_pm())
+  }) %>% bindCache(ref_pm_para()$datasource_pm,ref_pm_para()$gene_pm,ref_cohort_pm(),width3(),ref_pm_para()$Mut_type_ref_pm)
   
   output$ref_mut_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       paste0(gene,"_",input$dataset_pm,".","mut", '.',"csv")
       
     },
     content = function(file){
-      
-      ds = datasource_pm()
-      gene = gene_pm()
-      Mut_type_ref_pm = Mut_type_ref_pm()
+      shinyjs::disable("ref_mut_pm_tabdown")
+      ds = ref_pm_para()$datasource_pm
+      gene = ref_pm_para()$gene_pm
+      Mut_type_ref_pm = ref_pm_para()$Mut_type_ref_pm
       
 
-        write.csv(x = datasets_mu[[ds]][datasets_mu[[ds]]$Hugo_Symbol %in% pathway_list[[gene]] & datasets_mu[[ds]]$Variant_Classification %in% Mut_type_ref_pm,],file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      write.csv(x = datasets_mu[[ds]][datasets_mu[[ds]]$Hugo_Symbol %in% pathway_list[[gene]] & datasets_mu[[ds]]$Variant_Classification %in% Mut_type_ref_pm,],file = file, sep = ',', col.names = T, row.names = T, quote = F)
+      shinyjs::enable("ref_mut_pm_tabdown")
     }
   )
   
   ###################################################ref DEG ################################################
   
   output$DEG_pm_uitabledown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -690,14 +701,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     downloadButton('ref_diff_pm_tabdown',label = 'Download Table')
   })
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
-    ds = datasource_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
 
     if(!ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20")){
       closeAlert(session,"warning_id4_pm")
       createAlert(session, "warning4_pm", "warning_id4_pm", title = "Warning",style = "danger",
-                  content = paste("The dataset",ds,"didn't provide RNA-seq data",sep = " "), append = FALSE)
+                  content = paste("The dataset",dataset_name2[[ds]],"didn't provide RNA-seq data",sep = " "), append = FALSE)
     }else{
       closeAlert(session,"warning_id4_pm")
     }
@@ -705,14 +716,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     if(!any(pathway_list[[gene]] %in% colnames(datasets[[ds]]))){
       closeAlert(session,"warning_id4_pm")
       createAlert(session, "warning4_pm", "warning_id4_pm", title = "Warning",style = "danger",
-                  content = paste("The genes of",gene,"does not exist in",ds,sep = " "), append = FALSE)
+                  content = paste("The genes of",gene,"does not exist in",dataset_name2[[ds]],sep = " "), append = FALSE)
     }
 
   })
   
-  observeEvent(input$sec_pm,{
+  observe({
     
-    gene = gene_pm()
+    gene = ref_pm_para()$gene_pm
     ref_cohort_pm = ref_cohort_pm()
     
     if(length(ref_cohort_pm$mut) <3 | length(ref_cohort_pm$wt) < 3){
@@ -723,8 +734,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   })
   
   DEG_table = reactive({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     min.pct_ref_pm = min.pct_ref_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
@@ -750,7 +761,7 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     
     return(tmp)
     
-    }) %>% bindCache(datasource_pm(),gene_pm(),ref_cohort_pm(),min.pct_ref_pm())
+    }) %>% bindCache(ref_pm_para()$datasource_pm,ref_pm_para()$gene_pm,ref_cohort_pm(),min.pct_ref_pm())
   
   output$DEG_tab_ref_pm = renderReactable({
     DEG_table = DEG_table()
@@ -792,19 +803,20 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   output$ref_diff_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       paste0(gene,"_",input$dataset_pm,".","diff", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("ref_diff_pm_tabdown")
       write.csv(x = DEG_table(),file = file, sep = ',', col.names = T, row.names = T, quote = F)
+      shinyjs::enable("ref_diff_pm_tabdown")
     }
   )
   
   
   output$volcano_ref_pm = renderPlotly({
-    ds = datasource_pm()
+    ds = ref_pm_para()$datasource_pm
     validate(need(ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20"),message = FALSE))
     tab = DEG_table()
     FC_ref_pm = FC_ref_pm()
@@ -828,12 +840,12 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     
     return(tmp)
-  }) %>% bindCache(datasource_pm(),DEG_table(),FC_ref_pm(),pvalue_ref_pm())
+  }) %>% bindCache(ref_pm_para()$datasource_pm,DEG_table(),FC_ref_pm(),pvalue_ref_pm())
   
   #################################################ref GSEA######################################################
   output$GSEA_pm_uitabledown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -841,14 +853,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     downloadButton('ref_gsea_pm_tabdown',label = 'Download Table')
   })
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
-    ds = datasource_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     
     if(!ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20")){
       closeAlert(session,"warning_id5_pm")
       createAlert(session, "warning5_pm", "warning_id5_pm", title = "Warning",style = "danger",
-                  content = paste("The dataset",ds,"didn't provide RNA-seq data",sep = " "), append = FALSE)
+                  content = paste("The dataset",dataset_name2[[ds]],"didn't provide RNA-seq data",sep = " "), append = FALSE)
     }else{
       closeAlert(session,"warning_id5_pm")
     }
@@ -856,14 +868,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     if(!any(pathway_list[[gene]] %in% colnames(datasets[[ds]]))){
       closeAlert(session,"warning_id5_pm")
       createAlert(session, "warning5_pm", "warning_id5_pm", title = "Warning",style = "danger",
-                  content = paste("The genes of",gene,"does not exist in",ds,sep = " "), append = FALSE)
+                  content = paste("The genes of",gene,"does not exist in",dataset_name2[[ds]],sep = " "), append = FALSE)
     }
     
   })
   
-  observeEvent(input$sec_pm,{
+  observe({
     
-    gene = gene_pm()
+    gene = ref_pm_para()$gene_pm
     ref_cohort_pm = ref_cohort_pm()
     
     if(length(ref_cohort_pm$mut) <3 | length(ref_cohort_pm$wt) < 3){
@@ -921,9 +933,22 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
     
-    installr::kill_pid(pid = scan(status_file))
-    tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_ref_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
-    write(tmp$get_pid(), status_file)
+    if( length(GSEA_use) < 5 | useid %in% names(GSEA_use) ){
+      
+      installr::kill_pid(pid = scan(status_file))
+      tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_ref_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
+      write(tmp$get_pid(), status_file)
+      
+    }else{
+      
+      closeAlert(session,"warning_id5_pm")
+      createAlert(session, "warning5_pm", "warning_id5_pm", title = "Warning",style = "danger",
+                  content = "Sorry, GSEA function is temporarily unavailable due to high user traffic. Please try again later.", append = FALSE)
+      
+      tmp = NULL
+      
+    }
+
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::enable("pathway_gsea_ref_single");shinyjs::enable("pathway_gsea_tcga");shinyjs::enable("pathway_gsea_cptac_rna");shinyjs::enable("pathway_gsea_cptac_protein");shinyjs::enable("pathway_gsea_ref_pm");shinyjs::enable("pathway_gsea_tcga_pm");shinyjs::enable("pathway_gsea_cptac_rna_pm");shinyjs::enable("pathway_gsea_cptac_protein_pm");shinyjs::enable("pathway_gsea_tcga_subtype");shinyjs::enable("pathway_gsea_cptac_rna_subtype");shinyjs::enable("pathway_gsea_cptac_protein_subtype");
@@ -940,7 +965,7 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   one_loader = reactiveVal(0)
   output$GSEA_tab_ref_pm = renderReactable({
     
-    
+    if(is.null(tmp_gsea_pm())){return(NULL)}
     if(tmp_gsea_pm()$is_alive()){
       
       invalidateLater(millis = 1000, session = session)
@@ -949,6 +974,7 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
         
         waiter_show(id = "ref_pm_GSEA_loader",html = tagList(spin_flower(),h4("GSEA running..."),h5("Please wait for a minute")), color = "black")
         one_loader(one_loader()+1)
+        GSEA_use[[useid]] <<- TRUE
         return(NULL)
         
         
@@ -1000,6 +1026,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       shinyjs::enable(id = "ref_gsea_pm_tabdown")
       one_loader(0)
       write("", status_file)
+      
+      GSEA_use[[useid]] <<- NULL
       return(tmp)
     }
     
@@ -1008,18 +1036,19 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   output$ref_gsea_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       paste0(gene,"_",input$dataset_pm,".","gsea", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("ref_gsea_pm_tabdown")
       write.csv(x = tmp_gsea_pm()$get_result()@result,file = file, sep = ',', col.names = T, row.names = T, quote = F)
+      shinyjs::enable("ref_gsea_pm_tabdown")
     }
   )
   
   
-  row_num_pm = eventReactive(input$ref_pm_GSEA_show,{input$ref_pm_GSEA_show$index})
+  row_num_pm = eventReactive(input$ref_pm_GSEA_show,{input$ref_pm_GSEA_show$index})%>% debounce(500)
   
   output$GSEA_plot_ref_pm = renderPlot({
     my_gseaplot2(tmp_gsea_pm()$get_result(),geneSetID = tmp_gsea_pm()$get_result()@result$ID[row_num_pm()],
@@ -1033,7 +1062,7 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   output$ref_gsea_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       
       if(input$ref_gsea_pm_file == 'pdf'){
         paste0(gene,"_",input$dataset_pm,".","gsea", '.',"pdf")
@@ -1047,8 +1076,9 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       
     },
     content = function(file){
-      gene = gene_pm()
-      ds = datasource_pm()
+      shinyjs::disable("ref_gsea_pm_down")
+      gene = ref_pm_para()$gene_pm
+      ds = ref_pm_para()$datasource_pm
       ref_cohort_pm = ref_cohort_pm()
       
       if(input$ref_gsea_pm_res <= 300){
@@ -1096,12 +1126,13 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       
       
       dev.off()
+      shinyjs::enable("ref_gsea_pm_down")
     }
   )
   ################################################ref immune #################################################
   output$inf_pm_uidown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -1128,8 +1159,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   })
   
   output$sig_pm_uidown = renderUI({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3 ,message = FALSE))
     validate(need(any(pathway_list[[gene]] %in% colnames(datasets[[ds]])),message = FALSE))
@@ -1155,14 +1186,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     }
   })
   
-  observeEvent(input$sec_pm,{
-    gene = gene_pm()
-    ds = datasource_pm()
+  observe({
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     
     if(!ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20")){
       closeAlert(session,"warning_id6_pm")
       createAlert(session, "warning6_pm", "warning_id6_pm", title = "Warning",style = "danger",
-                  content = paste("The dataset",ds,"didn't provide RNA-seq data",sep = " "), append = FALSE)
+                  content = paste("The dataset",dataset_name2[[ds]],"didn't provide RNA-seq data",sep = " "), append = FALSE)
     }else{
       closeAlert(session,"warning_id6_pm")
     }
@@ -1170,14 +1201,14 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     if(!any(pathway_list[[gene]] %in% colnames(datasets[[ds]]))){
       closeAlert(session,"warning_id6_pm")
       createAlert(session, "warning6_pm", "warning_id6_pm", title = "Warning",style = "danger",
-                  content = paste("The genes of",gene,"does not exist in",ds,sep = " "), append = FALSE)
+                  content = paste("The genes of",gene,"does not exist in",dataset_name2[[ds]],sep = " "), append = FALSE)
     }
     
   })
   
-  observeEvent(input$sec_pm,{
+  observe({
     
-    gene = gene_pm()
+    gene = ref_pm_para()$gene_pm
     ref_cohort_pm = ref_cohort_pm()
     
     if(length(ref_cohort_pm$mut) <3 | length(ref_cohort_pm$wt) < 3){
@@ -1188,8 +1219,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
   })
   
   output$immune_infiltration_datasets_all_pm = renderPlotly({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
     validate(need(ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20"),message = FALSE))
@@ -1204,8 +1235,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     
     p = immune_all_datasets_pm(datasets_rna_wes = datasets_rna_wes,dataset = ds,gene = gene,immune_module = "immune_infiltration",dataset_mu = datasets_mu[[ds]],mut = ref_cohort_pm$mut,wt = ref_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-            rangeslider(start = 0,end = 15.5)
+            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+            rangeslider(start = 0,end = 15.5) %>% plotly::config(displayModeBar = FALSE)
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -1216,12 +1247,12 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     
     return(tmp)
-  }) %>% bindCache(datasource_pm(),gene_pm(),ref_cohort_pm())
+  }) %>% bindCache(ref_pm_para()$datasource_pm,ref_pm_para()$gene_pm,ref_cohort_pm())
   
   output$ref_inf_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       
       if(input$ref_inf_pm_file == 'pdf'){
         paste0(gene,"_",input$dataset_pm,".","inf", '.',"pdf")
@@ -1235,8 +1266,9 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       
     },
     content = function(file){
-      gene = gene_pm()
-      ds = datasource_pm()
+      shinyjs::disable("ref_inf_pm_down")
+      gene = ref_pm_para()$gene_pm
+      ds = ref_pm_para()$datasource_pm
       ref_cohort_pm = ref_cohort_pm()
       
       if(input$ref_inf_pm_res <= 300){
@@ -1276,12 +1308,13 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       print(immune_all_datasets_pm(datasets_rna_wes = datasets_rna_wes,dataset = ds,gene = gene,immune_module = "immune_infiltration",dataset_mu = datasets_mu[[ds]],mut = ref_cohort_pm$mut,wt = ref_cohort_pm$wt))
       
       dev.off()
+      shinyjs::enable("ref_inf_pm_down")
     }
   )
   
   output$immune_signature_datasets_all_pm = renderPlotly({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
     validate(need(ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20"),message = FALSE))
@@ -1296,8 +1329,8 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     
     p = immune_all_datasets_pm(datasets_rna_wes = datasets_rna_wes,dataset = ds,gene = gene,immune_module = "immune_pathway",dataset_mu = datasets_mu[[ds]],mut = ref_cohort_pm$mut,wt = ref_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-      layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-      rangeslider(start = 0,end = nrow(datasets_rna_wes[[ds]]$immune_pathway)+1)
+      layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+      rangeslider(start = 0,end = nrow(datasets_rna_wes[[ds]]$immune_pathway)+1) %>% plotly::config(displayModeBar = FALSE)
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -1308,13 +1341,13 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(datasource_pm(),gene_pm(),ref_cohort_pm())
+  }) %>% bindCache(ref_pm_para()$datasource_pm,ref_pm_para()$gene_pm,ref_cohort_pm())
   
   
   output$ref_sig_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_pm()
+      gene = ref_pm_para()$gene_pm
       
       if(input$ref_sig_pm_file == 'pdf'){
         paste0(gene,"_",input$dataset_pm,".","sig", '.',"pdf")
@@ -1328,8 +1361,9 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       
     },
     content = function(file){
-      gene = gene_pm()
-      ds = datasource_pm()
+      shinyjs::disable("ref_sig_pm_down")
+      gene = ref_pm_para()$gene_pm
+      ds = ref_pm_para()$datasource_pm
       ref_cohort_pm = ref_cohort_pm()
       
       if(input$ref_sig_pm_res <= 300){
@@ -1369,12 +1403,13 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
       print(immune_all_datasets_pm(datasets_rna_wes = datasets_rna_wes,dataset = ds,gene = gene,immune_module = "immune_pathway",dataset_mu = datasets_mu[[ds]],mut = ref_cohort_pm$mut,wt = ref_cohort_pm$wt))
       
       dev.off()
+      shinyjs::enable("ref_sig_pm_down")
     }
   )
   
   output$immune_infiltration_datasets_one_pm = renderPlot({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
     validate(need(ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20"),message = FALSE))
@@ -1398,11 +1433,11 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    }) %>% bindCache(datasource_pm(),gene_pm(),ref_cohort_pm(),input$immune_infiltration_datasets_input_pm,input$outlier_datasets_pm)
+    }) %>% bindCache(ref_pm_para()$datasource_pm,ref_pm_para()$gene_pm,ref_cohort_pm(),input$immune_infiltration_datasets_input_pm,input$outlier_datasets_pm)
   
   output$immune_signature_datasets_one_pm = renderPlot({
-    gene = gene_pm()
-    ds = datasource_pm()
+    gene = ref_pm_para()$gene_pm
+    ds = ref_pm_para()$datasource_pm
     ref_cohort_pm = ref_cohort_pm()
     validate(need(length(ref_cohort_pm$mut) >=3 & length(ref_cohort_pm$wt) >= 3,message = FALSE))
     validate(need(ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20"),message = FALSE))
@@ -1426,5 +1461,5 @@ Ref_datasets_server_pm <- function(input,output,session,gene_pm,datasource_pm,da
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(datasource_pm(),gene_pm(),ref_cohort_pm(),input$immune_signature_datasets_input_pm,input$outlier_datasets_pm)
+  }) %>% bindCache(ref_pm_para()$datasource_pm,ref_pm_para()$gene_pm,ref_cohort_pm(),input$immune_signature_datasets_input_pm,input$outlier_datasets_pm)
 }

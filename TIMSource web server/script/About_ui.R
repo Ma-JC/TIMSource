@@ -1,17 +1,53 @@
 About_ui = function(){
   tagList(
     br(),
-    box(title = "Ref_ICI_datasets",width = 12,solidHeader = T,collapsible = T,collapsed = F,
+    h3(icon("audio-description"),"Tutorial",style="color:#033c73;font-weight: bold;"),
+    hr(style="background-color:#033c73;height:4px"),
+    box(width = 12,title = "Inquire",
+        
+        strong(style="font-size:18px","Learn how to use Inquire module with our step-by-step video tutorials."),
+        br(),
+        br(),
+        # img(src="Inquire_Tutorial.gif",width="50%")
+        # tags$video(src = "test.mp4", type = "video/mp4", width="50%",controls = TRUE)
+
+        
+    ),
+    box(width = 12,title = "Explore",
+        
+        strong(style="font-size:18px","Learn how to use Explore module with our step-by-step video tutorials."),
+        br(),
+        br(),
+        # img(src="Explore_Tutorial.gif",width="50%")
+        # tags$video(src = "test.mp4", type = "video/mp4", width="50%", controls = TRUE)
+        
+        
+    ),
+    box(width = 12,title = "Pancancer Investigation",
+        
+        strong(style="font-size:18px","Learn how to use Pancancer Investigation module with our step-by-step video tutorials."),
+        br(),
+        br(),
+        # img(src="Pancancer_Tutorial.gif",width="50%")
+        # tags$video(src = "test.mp4", type = "video/mp4", width="50%", controls = TRUE)
+        
+        
+    ),
+    
+  
+    h3(icon("database"),"Data Source",style="color:#033c73;font-weight: bold;"),
+    hr(style="background-color:#033c73;height:4px"),
+    box(title = "ICB datasets",width = 12,solidHeader = T,collapsible = T,collapsed = F,
         p("1. Samstein et al, Pan-cancer (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Samstein, Robert M et al. 'Tumor mutational load predicts survival after immunotherapy across multiple cancer types.' Nature genetics vol. 51,2 (2019): 202-206. doi:10.1038/s41588-018-0312-8",
             href="https://www.nature.com/articles/s41588-018-0312-8"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
-
+        
         p("2. Van Allen et al, Melanoma (CTLA-4):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Van Allen, Eliezer M et al. 'Genomic correlates of response to CTLA-4 blockade in metastatic melanoma.' Science (New York, N.Y.) vol. 350,6257 (2015): 207-211. doi:10.1126/science.aad0095",
             href="https://www.science.org/doi/10.1126/science.aad0095"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
-
+        
         p("3. Miao et al, Microsatellite-stable solid tumors (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Miao, Diana et al. 'Genomic correlates of response to immune checkpoint blockade in microsatellite-stable solid tumors.' Nature genetics vol. 50,9 (2018): 1271-1281. doi:10.1038/s41588-018-0200-2",
             href="https://www.nature.com/articles/s41588-018-0200-2"),
@@ -27,104 +63,104 @@ About_ui = function(){
             href="https://ascopubs.org/doi/10.1200/JCO.2017.75.3384"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("6. Pender, Pan-cancer (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
-        p(a("Pender, Alexandra et al. 'Genome and Transcriptome Biomarkers of Response to Immune Checkpoint Inhibitors in Advanced Solid Tumors.' Clinical cancer research : an official journal of the American Association for Cancer Research vol. 27,1 (2021): 202-212. doi:10.1158/1078-0432.CCR-20-1163",
-            href="https://clincancerres.aacrjournals.org/content/27/1/202"),
-          style="text-indent:1cm;font-size:15px;font-weight:bold;"),
+        # p("6. Pender, Pan-cancer (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        # p(a("Pender, Alexandra et al. 'Genome and Transcriptome Biomarkers of Response to Immune Checkpoint Inhibitors in Advanced Solid Tumors.' Clinical cancer research : an official journal of the American Association for Cancer Research vol. 27,1 (2021): 202-212. doi:10.1158/1078-0432.CCR-20-1163",
+        #     href="https://clincancerres.aacrjournals.org/content/27/1/202"),
+        #   style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("7. Hellmann, et al. NSCLC (Anti-PD-1):",style="font-weight: bolder;font-size: 16px;"),
+        p("6. Hellmann, et al. NSCLC (Anti-PD-1):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Hellmann, Matthew D et al. 'Genomic Features of Response to Combination Immunotherapy in Patients with Advanced Non-Small-Cell Lung Cancer.' Cancer cell vol. 33,5 (2018): 843-852.e4. doi:10.1016/j.ccell.2018.03.018",
             href="https://www.sciencedirect.com/science/article/pii/S1535610818301235?via%3Dihub"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("8. Hugo, et al. Melanoma (Anti-PD1):",style="font-weight: bolder;font-size: 16px;"),
+        p("7. Hugo, et al. Melanoma (Anti-PD1):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Hugo, Willy et al. 'Genomic and Transcriptomic Features of Response to Anti-PD-1 Therapy in Metastatic Melanoma.' Cell vol. 165,1 (2016): 35-44. doi:10.1016/j.cell.2016.02.065",
             href="https://www.sciencedirect.com/science/article/pii/S009286741630215X?via%3Dihub"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("9. Jiao, et al, Gastrointestinal cancer (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("8. Jiao, et al, Gastrointestinal cancer (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Jiao, Xi et al. 'A genomic mutation signature predicts the clinical outcomes of immunotherapy and characterizes immunophenotypes in gastrointestinal cancer.' NPJ precision oncology vol. 5,1 36. 4 May. 2021, doi:10.1038/s41698-021-00172-5",
             href="https://www.nature.com/articles/s41698-021-00172-5"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("10. Snyder, et al. Melanoma (Anti-CTLA4):",style="font-weight: bolder;font-size: 16px;"),
+        p("9. Snyder, et al. Melanoma (Anti-CTLA4):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Snyder, Alexandra et al. 'Genetic basis for clinical response to CTLA-4 blockade in melanoma.' The New England journal of medicine vol. 371,23 (2014): 2189-2199. doi:10.1056/NEJMoa1406498",
             href="https://www.nejm.org/doi/10.1056/NEJMoa1406498"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("11. Mariathasan, et al. Urothelial cancer (Anti-PDL1):",style="font-weight: bolder;font-size: 16px;"),
+        p("10. Mariathasan, et al. Urothelial cancer (Anti-PDL1):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Mariathasan, Sanjeev et al. 'TGFβ attenuates tumour response to PD-L1 blockade by contributing to exclusion of T cells.' Nature vol. 554,7693 (2018): 544-548. doi:10.1038/nature25501",
             href="https://www.nature.com/articles/nature25501"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("12. Braun, et al. Clear cell renal cell carcinoma (Anti-PD1):",style="font-weight: bolder;font-size: 16px;"),
+        p("11. Braun, et al. Clear cell renal cell carcinoma (Anti-PD1):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Braun, David A et al. 'Interplay of somatic alterations and immune infiltration modulates response to PD-1 blockade in advanced clear cell renal cell carcinoma.' Nature medicine vol. 26,6 (2020): 909-918. doi:10.1038/s41591-020-0839-y",
             href="https://www.nature.com/articles/s41591-020-0839-y"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("13. Motzer, et al, renal cell carcinoma (Anti-PD-L1+Axitinib):",style="font-weight: bolder;font-size: 16px;"),
+        p("12. Motzer, et al, renal cell carcinoma (Anti-PD-L1+Axitinib):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Motzer, Robert J et al. 'Avelumab plus axitinib versus sunitinib in advanced renal cell carcinoma: biomarker analysis of the phase 3 JAVELIN Renal 101 trial.' Nature medicine vol. 26,11 (2020): 1733-1741. doi:10.1038/s41591-020-1044-8",
             href="https://www.nature.com/articles/s41591-020-1044-8"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("14. Miao et al, Clear cell renal cell carcinoma (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("13. Miao et al, Clear cell renal cell carcinoma (Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Miao, Diana et al. 'Genomic correlates of response to immune checkpoint therapies in clear cell renal cell carcinoma.' Science (New York, N.Y.) vol. 359,6377 (2018): 801-806. doi:10.1126/science.aan5951",
             href="https://www.science.org/doi/10.1126/science.aan5951"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("15. Zhao et al. Glioblastoma(Anti-PD-1):",style="font-weight: bolder;font-size: 16px;"),
+        p("14. Zhao et al. Glioblastoma(Anti-PD-1):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Zhao, Junfei et al. 'Immune and genomic correlates of response to anti-PD-1 immunotherapy in glioblastoma.' Nature medicine vol. 25,3 (2019): 462-469. doi:10.1038/s41591-019-0349-y",
             href="https://www.nature.com/articles/s41591-019-0349-y"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("16. Rizvi et al.(2015) NSCLC(Anti-PD-1):",style="font-weight: bolder;font-size: 16px;"),
+        p("15. Rizvi et al.(2015) NSCLC(Anti-PD-1):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Rizvi, Naiyer A et al. 'Cancer immunology. Mutational landscape determines sensitivity to PD-1 blockade in non-small cell lung cancer.' Science (New York, N.Y.) vol. 348,6230 (2015): 124-8. doi:10.1126/science.aaa1348",
             href="https://www.science.org/doi/10.1126/science.aaa1348"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("17. Harding et al. Hepatocellular carcinoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("16. Harding et al. Hepatocellular carcinoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Harding, James J et al. 'Prospective Genotyping of Hepatocellular Carcinoma: Clinical Implications of Next-Generation Sequencing for Matching Patients to Targeted and Immune Therapies.' Clinical cancer research : an official journal of the American Association for Cancer Research vol. 25,7 (2019): 2116-2126. doi:10.1158/1078-0432.CCR-18-2293",
             href="https://clincancerres.aacrjournals.org/content/25/7/2116"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("18. Anagnostou et al. Melanoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("17. Anagnostou et al. Melanoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Anagnostou, Valsamo et al. 'Integrative Tumor and Immune Cell Multi-omic Analyses Predict Response to Immune Checkpoint Blockade in Melanoma.' Cell reports. Medicine vol. 1,8 100139. 17 Nov. 2020, doi:10.1016/j.xcrm.2020.100139",
             href="Integrative Tumor and Immune Cell Multi-omic Analyses Predict Response to Immune Checkpoint Blockade in Melanoma "),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("19. Anagnostou et al. NSCLC(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("18. Anagnostou et al. NSCLC(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Anagnostou, Valsamo et al. 'Multimodal genomic features predict outcome of immune checkpoint blockade in non-small-cell lung cancer.' Nature cancer vol. 1,1 (2020): 99-111. doi:10.1038/s43018-019-0008-8",
             href="https://www.nature.com/articles/s43018-019-0008-8"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("20. Riaz et al. Melanoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("19. Riaz et al. Melanoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Riaz, Nadeem et al. 'Tumor and Microenvironment Evolution during Immunotherapy with Nivolumab.' Cell vol. 171,4 (2017): 934-949.e16. doi:10.1016/j.cell.2017.09.028",
             href="https://www.sciencedirect.com/science/article/pii/S0092867417311224?via%3Dihub"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("21. Liu et al. Melanoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("20. Liu et al. Melanoma(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Liu, David et al. 'Integrative molecular and clinical modeling of clinical outcomes to PD1 blockade in patients with metastatic melanoma.' Nature medicine vol. 25,12 (2019): 1916-1927. doi:10.1038/s41591-019-0654-5",
             href="https://www.nature.com/articles/s41591-019-0654-5"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("22. Bai et al. Gastric cancer(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("21. Bai et al. Gastric cancer(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Bai, Yuezong et al. 'Efficacy and predictive biomarkers of immunotherapy in Epstein-Barr virus-associated gastric cancer.' Journal for immunotherapy of cancer vol. 10,3 (2022): e004080. doi:10.1136/jitc-2021-004080",
             href="https://jitc.bmj.com/content/10/3/e004080"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("23. Lu et al.  Neuroendocrine neoplasms(Anti-PD1/PDL1):",style="font-weight: bolder;font-size: 16px;"),
+        p("22. Lu et al.  Neuroendocrine neoplasms(Anti-PD1/PDL1):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Lu, Ming et al. 'Efficacy, Safety, and Biomarkers of Toripalimab in Patients with Recurrent or Metastatic Neuroendocrine Neoplasms: A Multiple-Center Phase Ib Trial.' Clinical cancer research : an official journal of the American Association for Cancer Research vol. 26,10 (2020): 2337-2345. doi:10.1158/1078-0432.CCR-19-4000",
             href="https://aacrjournals.org/clincancerres/article/26/10/2337/82394/Efficacy-Safety-and-Biomarkers-of-Toripalimab-in"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
-        p("24. Wang et al. Gastrointestinal cancer(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
+        p("23. Wang et al. Gastrointestinal cancer(Mixed ICB):",style="font-weight: bolder;font-size: 16px;"),
         p(a("Wang, Zhenghang et al. 'Combination of AKT1 and CDH1 mutations predicts primary resistance to immunotherapy in dMMR/MSI-H gastrointestinal cancer.' Journal for immunotherapy of cancer vol. 10,6 (2022): e004703. doi:10.1136/jitc-2022-004703",
             href="https://jitc.bmj.com/content/10/6/e004703"),
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
-        ),
+    ),
     
     
-    box(title = "CPTAC_datanase",width = 12,solidHeader = T,collapsible = T,collapsed = F,
+    box(title = "CPTAC datasets",width = 12,solidHeader = T,collapsible = T,collapsed = F,
         p("1. Vasaikar et al. Colon cancer:",style="font-weight: bolder;font-size: 16px;"),
         p(a("Vasaikar, Suhas et al. 'Proteogenomic Analysis of Human Colon Cancer Reveals New Therapeutic Opportunities.' Cell vol. 177,4 (2019): 1035-1049.e19. doi:10.1016/j.cell.2019.03.030",
             href="https://www.sciencedirect.com/science/article/pii/S0092867419302922?via%3Dihub"),
@@ -179,8 +215,8 @@ About_ui = function(){
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
         
-        ),
-    box(title = "TCGA_database",width = 12,solidHeader = T,collapsible = T,collapsed = F,
+    ),
+    box(title = "TCGA datasets",width = 12,solidHeader = T,collapsible = T,collapsed = F,
         
         p("PanCanAtlas | RNA:",style="font-weight: bolder;font-size: 16px;"),
         p(a("EBPlusPlusAdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp.tsv",
@@ -198,7 +234,26 @@ About_ui = function(){
           style="text-indent:1cm;font-size:15px;font-weight:bold;"),
         
         
-        ),
+    ),
+    
+    h3(icon("address-card"),"Contact us",style="color:#033c73;font-weight: bold;"),
+    hr(style="background-color:#033c73;height:4px"),
+    box(width = 12,
+        
+        strong(style="font-size:18px","Feel free to contac us if you have any questions or suggestions."),
+        br(),
+        br(),
+        strong(style="font-size:16px","Ma Jia Cheng - Website Developer & Bioinformatics Analyst"),
+        br(),
+        strong(style="font-size:16px",icon("envelope"),"Email:"),span(style="font-size:16px",em("mjc.madrid.horse@gmail.com ")),
+        br(),
+        strong(style="font-size:16px",icon("envelope"),"Email:"),span(style="font-size:16px",em(" mjc19@mails.tsinghua.edu.cn"))
+        
+        
+    ),
+    
+    
+    
     div(style="height:200px;display: inline-block;width: 20px;")
 
   )

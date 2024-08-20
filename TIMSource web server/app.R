@@ -1,4 +1,4 @@
-# source("./script/loadData.R")
+source("./script/loadData.R")
 source("./script/loadFun.R")
 source("./script/ref_ui.R")
 source("./script/ref_ui_pm.R")
@@ -10,7 +10,7 @@ source("./script/TCGA_ui.R")
 source("./script/TCGA_ui_pm.R")
 source("./script/TCGA_server.R")
 source("./script/TCGA_server_pm.R")
-source("./script/TCGA_subtye_ui.R")
+# source("./script/TCGA_subtye_ui.R")
 source("./script/TCGA_subtye_server.R")
 source("./script/TCGA_ui_explore.R")
 source("./script/TCGA_ui_explore_pm.R")
@@ -19,21 +19,23 @@ source("./script/CPTAC_ui_pm.R")
 source("./script/CPTAC_server.R")
 source("./script/CPTAC_server_pm.R")
 source("./script/CPTAC_subtype_ui.R")
-source("./script/CPTAC_subtype_server.R")
+# source("./script/CPTAC_subtype_server.R")
 source("./script/CPTAC_ui_explore.R")
 source("./script/CPTAC_ui_explore_pm.R")
 source("./script/Guide_ui.R")
 source("./script/About_ui.R")
 source("./script/All_tutorial.R")
 
+GSEA_use <<- list()
 
-ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
-                tags$head(tags$link(rel="shortcut icon",href="snvio.png")),
+ui <- fluidPage(id="fluid_id",title="TIMSource",theme = shinytheme("cerulean"),
+                tags$head(tags$link(rel="shortcut icon",href="TIMSource.png")),
                 use_cicerone(),
                 shinyjs::useShinyjs(),
                 use_bs_tooltip(),
                 useWaiter(),
-                navbarPage(title = p("Single Nucleotide Variant Immune Oncology (SNVIO)",style = "margin:0 0 0 25px"),
+                shinyalert::useShinyalert(),
+                navbarPage(title = p("Tumor Immune SNV source (TIMSource)",style = "margin:0 0 0 25px"),
                            id = "navbar_id",
                            collapsible = T,
                            fluid = T,
@@ -42,28 +44,28 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                            #home#
                            tabPanel(title = icon("home"),
                                     value = "home",
-                                    includeHTML(path = "www/shiny_home_v5.html")   
+                                    includeHTML(path = "www/shiny_home_v5.1.html")   
                            ),
                            
-                           navbarMenu(title = "Broswe",
+                           navbarMenu(title = "Inquire",
                                       icon = icon("arrows-alt"),
                                       tabPanel(title = "Single Gene",icon = icon("dna"),value = "Single gene",
                                                tabsetPanel(id = "second_menus1",
                                                            tabPanel(
                                                              icon = icon('database'),
-                                                             title = "Ref_ICI datasets",
+                                                             title = "ICB datasets",
                                                              style = "padding:10px",
                                                              ref_ui()
                                                            ),
                                                            tabPanel(
                                                              icon = icon('database'),
-                                                             title = "TCGA database",
+                                                             title = "TCGA datasets",
                                                              style = "padding:10px",
                                                              TCGA_ui()
                                                            ),
                                                            tabPanel(
                                                              icon = icon('database'),
-                                                             title = "CPTAC database",
+                                                             title = "CPTAC datasets",
                                                              style = "padding:10px",
                                                              CPTAC_ui()
                                                            )
@@ -73,41 +75,41 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                                                tabsetPanel(id = "second_menus2",
                                                            tabPanel(
                                                              icon = icon('database'),
-                                                             title = "Ref_ICI datasets",
+                                                             title = "ICB datasets",
                                                              style = "padding:10px",
                                                              ref_ui_pm()
                                                            ),
                                                            tabPanel(
                                                              icon = icon('database'),
-                                                             title = "TCGA database",
+                                                             title = "TCGA datasets",
                                                              style = "padding:10px",
                                                              TCGA_ui_pm()
                                                            ),
                                                            tabPanel(
                                                              icon = icon('database'),
-                                                             title = "CPTAC database",
+                                                             title = "CPTAC datasets",
                                                              style = "padding:10px",
                                                              CPTAC_ui_pm()
                                                            )
                                                            
                                                            )
-                                               ),
-                                      tabPanel(title = "Mutation Subtype",icon = icon("network-wired"),
-                                               tabsetPanel(id = "second_menus3",
-                                                           tabPanel(
-                                                             icon = icon('database'),
-                                                             title = "TCGA database",
-                                                             style = "padding:10px",
-                                                             TCGA_subtype_ui()
-                                                           ),
-                                                           tabPanel(
-                                                             icon = icon('database'),
-                                                             title = "CPTAC database",
-                                                             style = "padding:10px",
-                                                             CPTAC_subtype_ui()
-                                                           )
                                                )
-                                               )
+                                      # tabPanel(title = "Mutation Subtype",icon = icon("network-wired"),
+                                      #          tabsetPanel(id = "second_menus3",
+                                      #                      tabPanel(
+                                      #                        icon = icon('database'),
+                                      #                        title = "TCGA datasets",
+                                      #                        style = "padding:10px",
+                                      #                        TCGA_subtype_ui()
+                                      #                      ),
+                                      #                      tabPanel(
+                                      #                        icon = icon('database'),
+                                      #                        title = "CPTAC datasets",
+                                      #                        style = "padding:10px",
+                                      #                        CPTAC_subtype_ui()
+                                      #                      )
+                                      #          )
+                                      #          )
                                       
                                       
                           ),
@@ -119,7 +121,7 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                                      tabsetPanel(id = "second_menus1",
                                                  tabPanel(
                                                    icon = icon('database'),
-                                                   title = "Ref_ICI datasets",
+                                                   title = "ICB datasets",
                                                    style = "padding:10px",
                                                    ref_ui_explore()
 
@@ -127,13 +129,13 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                                                  ),
                                                  tabPanel(
                                                    icon = icon('database'),
-                                                   title = "TCGA database",
+                                                   title = "TCGA datasets",
                                                    style = "padding:10px",
                                                    TCGA_ui_explore()
                                                  ),
                                                  tabPanel(
                                                    icon = icon('database'),
-                                                   title = "CPTAC database",
+                                                   title = "CPTAC datasets",
                                                    style = "padding:10px",
                                                    CPTAC_ui_explore()
 
@@ -144,20 +146,20 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                                      tabsetPanel(id = "second_menus2",
                                                  tabPanel(
                                                    icon = icon('database'),
-                                                   title = "Ref_ICI datasets",
+                                                   title = "ICB datasets",
                                                    style = "padding:10px",
                                                    ref_ui_explore_pm()
 
                                                  ),
                                                  tabPanel(
                                                    icon = icon('database'),
-                                                   title = "TCGA database",
+                                                   title = "TCGA datasets",
                                                    style = "padding:10px",
                                                    TCGA_ui_explore_pm()
                                                  ),
                                                  tabPanel(
                                                    icon = icon('database'),
-                                                   title = "CPTAC database",
+                                                   title = "CPTAC datasets",
                                                    style = "padding:10px",
                                                    CPTAC_ui_explore_pm()
 
@@ -169,13 +171,13 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                             #          tabsetPanel(id = "second_menus3",
                             #                      tabPanel(
                             #                        icon = icon('database'),
-                            #                        title = "TCGA database",
+                            #                        title = "TCGA datasets",
                             #                        style = "padding:10px"
                             #
                             #                      ),
                             #                      tabPanel(
                             #                        icon = icon('database'),
-                            #                        title = "CPTAC database",
+                            #                        title = "CPTAC datasets",
                             #                        style = "padding:10px"
                             #
                             #                      )
@@ -187,7 +189,7 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                           ),
 
 						              #About#
-						              navbarMenu(title = "Query",
+						              navbarMenu(title = "Pancancer Investigation",
 						                         icon = icon("search"),
 						                         tabPanel(title = "Single Gene",
 						                                  icon = icon("dna"),
@@ -214,10 +216,11 @@ ui <- fluidPage(id="fluid_id",title="SNVIO",theme = shinytheme("cerulean"),
                 )
 )
 
+
 server <- function(input,output,session){
+ 
+  useid <- paste("USER",round(runif(n = 1,min = 100000,max = 999999)),sep = "_")
   
-
-
   ###################################HOME####################################################
   observeEvent(input$start,{
     updateTabsetPanel(session = session, inputId = "navbar_id", selected = "Single gene")
@@ -243,14 +246,22 @@ server <- function(input,output,session){
   ref2$add_rule("pvalue_ref_single",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
   ref2$enable()
   
-  gene = eventReactive(input$sec,{req(ref$is_valid());input$gene_symbol})
-  datasource  = eventReactive(input$sec,{req(ref$is_valid());dataset_name[input$dataset]})
-  Mut_type_ref_single  = eventReactive(input$sec,{req(ref$is_valid());input$Mut_type_ref_single})
-  Wild_type_ref_single  = eventReactive(input$sec,{req(ref$is_valid());input$Wild_type_ref_single})
   
-  min.pct_ref_single  = eventReactive(input$min.pct_ref_single,{req(ref2$is_valid());input$min.pct_ref_single})
-  FC_ref_single  = eventReactive(input$FC_ref_single,{req(ref2$is_valid());input$FC_ref_single})
-  pvalue_ref_single  = eventReactive(input$pvalue_ref_single,{req(ref2$is_valid());input$pvalue_ref_single})
+  ref_single_para =   eventReactive(input$sec,{
+                                                req(ref$is_valid())
+                                                list(gene = input$gene_symbol,
+                                                     datasource = dataset_name[input$dataset],
+                                                     Mut_type_ref_single = input$Mut_type_ref_single,
+                                                     Wild_type_ref_single = input$Wild_type_ref_single,
+                                                     Therapy_type_ref_single = input$Therapy_type_ref_single
+                                                )
+                                              })%>% debounce(500)
+
+  
+  
+  min.pct_ref_single  = eventReactive(input$min.pct_ref_single,{req(ref2$is_valid());input$min.pct_ref_single})%>% debounce(500)
+  FC_ref_single  = eventReactive(input$FC_ref_single,{req(ref2$is_valid());input$FC_ref_single})%>% debounce(500)
+  pvalue_ref_single  = eventReactive(input$pvalue_ref_single,{req(ref2$is_valid());input$pvalue_ref_single})%>% debounce(500)
   
   observeEvent(input$dataset,{
     choices1 = gene_fre[[dataset_name[input$dataset]]]
@@ -258,6 +269,9 @@ server <- function(input,output,session){
 
     choices2 = unique(datasets_mu[[dataset_name[input$dataset]]]$Variant_Classification)
     updatePickerInput(session,inputId = "Mut_type_ref_single",choices = choices2,selected = choices2)
+    
+    choices3 = therapy_types[[dataset_name[input$dataset]]]
+    updatePickerInput(session,inputId = "Therapy_type_ref_single",choices = choices3,selected = choices3)
 
   })
   
@@ -265,7 +279,8 @@ server <- function(input,output,session){
   observeEvent(input$tutorial_ref_single,{
     guide$init()$start()
   })
-  Ref_datasets_server(input,output,session,gene,datasource,datasets,datasets_mu,pathway_database,Mut_type_ref_single,Wild_type_ref_single,min.pct_ref_single,FC_ref_single,pvalue_ref_single)
+
+  Ref_datasets_server(input,output,session,ref_single_para,datasets,datasets_mu,pathway_database,min.pct_ref_single,FC_ref_single,pvalue_ref_single,useid)
 
   ###################################TCGA_datasets################################################
   tcga = InputValidator$new()
@@ -281,15 +296,18 @@ server <- function(input,output,session){
   tcga2$add_rule("pvalue",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
   tcga2$enable()
   
+  TCGA_single_para =   eventReactive(input$sec2,{
+                                                  req(tcga$is_valid())
+                                                  list(gene_tcga = input$gene_symbol_TCGA,
+                                                       cancer_type = input$Cancer_type,
+                                                       Mut_type_tcga_single = input$Mut_type_tcga_single,
+                                                       Wild_type_tcga_single = input$Wild_type_tcga_single
+                                                  )
+                                                })%>% debounce(500)
   
-  gene_tcga = eventReactive(input$sec2,{req(tcga$is_valid());input$gene_symbol_TCGA})
-  cancer_type  = eventReactive(input$sec2,{req(tcga$is_valid());input$Cancer_type})
-  Mut_type_tcga_single  = eventReactive(input$sec2,{req(tcga$is_valid());input$Mut_type_tcga_single})
-  Wild_type_tcga_single  = eventReactive(input$sec2,{req(tcga$is_valid());input$Wild_type_tcga_single})
-  
-  min.pct  = eventReactive(input$min.pct,{req(tcga2$is_valid());input$min.pct})
-  FC  = eventReactive(input$FC,{req(tcga2$is_valid());input$FC})
-  pvalue  = eventReactive(input$pvalue,{req(tcga2$is_valid());input$pvalue})
+  min.pct  = eventReactive(input$min.pct,{req(tcga2$is_valid());input$min.pct})%>% debounce(500)
+  FC  = eventReactive(input$FC,{req(tcga2$is_valid());input$FC})%>% debounce(500)
+  pvalue  = eventReactive(input$pvalue,{req(tcga2$is_valid());input$pvalue})%>% debounce(500)
   
   observeEvent(input$Cancer_type,{
     #根据某一个输入来改变另一个输入的选项或数值，在shiny都是一类update开头的函数
@@ -302,7 +320,7 @@ server <- function(input,output,session){
     guide_tcga_single$init()$start()
   })
   
-  TCGA_server(input,output,session,gene_tcga,cancer_type,TCGA,pathway_database,Mut_type_tcga_single,Wild_type_tcga_single,min.pct,FC,pvalue)
+  TCGA_server(input,output,session,TCGA_single_para,TCGA,pathway_database,min.pct,FC,pvalue,useid)
 
   ###################################CPTAC_datasets################################################
   cptac = InputValidator$new()
@@ -324,19 +342,24 @@ server <- function(input,output,session){
   cptac3$add_rule("pvalue_CPTAC_protein",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
   cptac3$enable()
   
+  CPTAC_single_para =   eventReactive(input$sec3,{
+    req(cptac$is_valid())
+    list(gene_cptac = input$gene_symbol_CPTAC,
+         cancer_type2 = input$Cancer_type2,
+         Mut_type_cptac_single = input$Mut_type_cptac_single,
+         Wild_type_cptac_single = input$Wild_type_cptac_single
+    )
+  })%>% debounce(500)
   
-  gene_cptac = eventReactive(input$sec3,{req(cptac$is_valid());input$gene_symbol_CPTAC})
-  cancer_type2  = eventReactive(input$sec3,{req(cptac$is_valid());input$Cancer_type2})
-  Mut_type_cptac_single  = eventReactive(input$sec3,{req(cptac$is_valid());input$Mut_type_cptac_single})
-  Wild_type_cptac_single  = eventReactive(input$sec3,{req(cptac$is_valid());input$Wild_type_cptac_single})
+
   
-  min.pct_CPTAC_rna  = eventReactive(input$min.pct_CPTAC_rna,{req(cptac2$is_valid());input$min.pct_CPTAC_rna})
-  FC_CPTAC_rna  = eventReactive(input$FC_CPTAC_rna,{req(cptac2$is_valid());input$FC_CPTAC_rna})
-  pvalue_CPTAC_rna  = eventReactive(input$pvalue_CPTAC_rna,{req(cptac2$is_valid());input$pvalue_CPTAC_rna})
+  min.pct_CPTAC_rna  = eventReactive(input$min.pct_CPTAC_rna,{req(cptac2$is_valid());input$min.pct_CPTAC_rna})%>% debounce(500)
+  FC_CPTAC_rna  = eventReactive(input$FC_CPTAC_rna,{req(cptac2$is_valid());input$FC_CPTAC_rna})%>% debounce(500)
+  pvalue_CPTAC_rna  = eventReactive(input$pvalue_CPTAC_rna,{req(cptac2$is_valid());input$pvalue_CPTAC_rna})%>% debounce(500)
   
-  min.pct_CPTAC_protein  = eventReactive(input$min.pct_CPTAC_protein,{req(cptac3$is_valid());input$min.pct_CPTAC_protein})
-  FC_CPTAC_protein  = eventReactive(input$FC_CPTAC_protein,{req(cptac3$is_valid());input$FC_CPTAC_protein})
-  pvalue_CPTAC_protein  = eventReactive(input$pvalue_CPTAC_protein,{req(cptac3$is_valid());input$pvalue_CPTAC_protein})
+  min.pct_CPTAC_protein  = eventReactive(input$min.pct_CPTAC_protein,{req(cptac3$is_valid());input$min.pct_CPTAC_protein})%>% debounce(500)
+  FC_CPTAC_protein  = eventReactive(input$FC_CPTAC_protein,{req(cptac3$is_valid());input$FC_CPTAC_protein})%>% debounce(500)
+  pvalue_CPTAC_protein  = eventReactive(input$pvalue_CPTAC_protein,{req(cptac3$is_valid());input$pvalue_CPTAC_protein})%>% debounce(500)
   
   observeEvent(input$Cancer_type2,{
     #根据某一个输入来改变另一个输入的选项或数值，在shiny都是一类update开头的函数
@@ -350,8 +373,8 @@ server <- function(input,output,session){
     guide_cptac_single$init()$start()
   })
   
-  CPTAC_server(input,output,session,gene_cptac,cancer_type2,CPTAC,pathway_database,Mut_type_cptac_single,Wild_type_cptac_single,
-               min.pct_CPTAC_rna,FC_CPTAC_rna,pvalue_CPTAC_rna,min.pct_CPTAC_protein,FC_CPTAC_protein,pvalue_CPTAC_protein)
+  CPTAC_server(input,output,session,CPTAC_single_para,CPTAC,pathway_database,
+               min.pct_CPTAC_rna,FC_CPTAC_rna,pvalue_CPTAC_rna,min.pct_CPTAC_protein,FC_CPTAC_protein,pvalue_CPTAC_protein,useid)
 
 
   ###################################Ref_datasets_pm################################################
@@ -369,16 +392,20 @@ server <- function(input,output,session){
   ref_pm2$add_rule("pvalue_ref_pm",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
   ref_pm2$enable()
   
+  ref_pm_para = eventReactive(input$sec_pm,{
+    req(ref_pm$is_valid())
+    list(gene_pm = input$gene_symbol_pm,
+         datasource_pm = dataset_name[input$dataset_pm],
+         Mut_type_ref_pm = input$Mut_type_ref_pm,
+         Wild_type_ref_pm = input$Wild_type_ref_pm,
+         Therapy_type_ref_pm = input$Therapy_type_ref_pm
+    )
+  })%>% debounce(500)
   
-
-  gene_pm = eventReactive(input$sec_pm,{req(ref_pm$is_valid());input$gene_symbol_pm})
-  datasource_pm  = eventReactive(input$sec_pm,{req(ref_pm$is_valid());dataset_name[input$dataset_pm]})
-  Mut_type_ref_pm  = eventReactive(input$sec_pm,{req(ref_pm$is_valid());input$Mut_type_ref_pm})
-  Wild_type_ref_pm  = eventReactive(input$sec_pm,{req(ref_pm$is_valid());input$Wild_type_ref_pm})
   
-  min.pct_ref_pm  = eventReactive(input$min.pct_ref_pm,{req(ref_pm2$is_valid());input$min.pct_ref_pm})
-  FC_ref_pm  = eventReactive(input$FC_ref_pm,{req(ref_pm2$is_valid());input$FC_ref_pm})
-  pvalue_ref_pm  = eventReactive(input$pvalue_ref_pm,{req(ref_pm2$is_valid());input$pvalue_ref_pm})
+  min.pct_ref_pm  = eventReactive(input$min.pct_ref_pm,{req(ref_pm2$is_valid());input$min.pct_ref_pm})%>% debounce(500)
+  FC_ref_pm  = eventReactive(input$FC_ref_pm,{req(ref_pm2$is_valid());input$FC_ref_pm})%>% debounce(500)
+  pvalue_ref_pm  = eventReactive(input$pvalue_ref_pm,{req(ref_pm2$is_valid());input$pvalue_ref_pm})%>% debounce(500)
   
   
   observeEvent(input$SUB_WORD,{
@@ -391,6 +418,9 @@ server <- function(input,output,session){
 
       choices2 = unique(c(datasets_mu[[dataset_name[input$dataset_pm]]]$Variant_Classification))
       updatePickerInput(session,inputId = "Mut_type_ref_pm",choices = choices2,selected = choices2)
+      
+      choices3 = therapy_types[[dataset_name[input$dataset_pm]]]
+      updatePickerInput(session,inputId = "Therapy_type_ref_pm",choices = choices3,selected = choices3)
 
 
   })
@@ -400,8 +430,8 @@ server <- function(input,output,session){
     guide_pm$init()$start()
     
   })
-  Ref_datasets_server_pm(input,output,session,gene_pm,datasource_pm,datasets,datasets_mu,Mut_type_ref_pm,Wild_type_ref_pm,min.pct_ref_pm,FC_ref_pm,pvalue_ref_pm)
-
+  Ref_datasets_server_pm(input,output,session,ref_pm_para,datasets,datasets_mu,min.pct_ref_pm,FC_ref_pm,pvalue_ref_pm,useid)
+  
   ###################################TCGA_datasets_pm################################################
   tcga_pm = InputValidator$new()
   tcga_pm$add_rule("gene_symbol_TCGA_pm",sv_required())
@@ -416,14 +446,19 @@ server <- function(input,output,session){
   tcga_pm2$add_rule("pvalue_pm",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
   tcga_pm2$enable()
   
-  gene_tcga_pm = eventReactive(input$sec2_pm,{req(tcga_pm$is_valid());input$gene_symbol_TCGA_pm})
-  cancer_type_pm  = eventReactive(input$sec2_pm,{req(tcga_pm$is_valid());input$Cancer_type_pm})
-  Mut_type_tcga_pm  = eventReactive(input$sec2_pm,{req(tcga_pm$is_valid());input$Mut_type_tcga_pm})
-  Wild_type_tcga_pm  = eventReactive(input$sec2_pm,{req(tcga_pm$is_valid());input$Wild_type_tcga_pm})
   
-  min.pct_pm  = eventReactive(input$min.pct_pm,{req(tcga_pm2$is_valid());input$min.pct_pm})
-  FC_pm  = eventReactive(input$FC_pm,{req(tcga_pm2$is_valid());input$FC_pm})
-  pvalue_pm  = eventReactive(input$pvalue_pm,{req(tcga_pm2$is_valid());input$pvalue_pm})
+  TCGA_pm_para =   eventReactive(input$sec2_pm,{
+    req(tcga_pm$is_valid())
+    list(gene_tcga_pm = input$gene_symbol_TCGA_pm,
+         cancer_type_pm = input$Cancer_type_pm,
+         Mut_type_tcga_pm = input$Mut_type_tcga_pm,
+         Wild_type_tcga_pm = input$Wild_type_tcga_pm
+    )
+  })%>% debounce(500)
+  
+  min.pct_pm  = eventReactive(input$min.pct_pm,{req(tcga_pm2$is_valid());input$min.pct_pm})%>% debounce(500)
+  FC_pm  = eventReactive(input$FC_pm,{req(tcga_pm2$is_valid());input$FC_pm})%>% debounce(500)
+  pvalue_pm  = eventReactive(input$pvalue_pm,{req(tcga_pm2$is_valid());input$pvalue_pm})%>% debounce(500)
   
   observeEvent(input$SUB_WORD_tcga,{
 
@@ -437,7 +472,7 @@ server <- function(input,output,session){
     
   })
   
-  TCGA_server_pm(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA,pathway_database,Mut_type_tcga_pm,Wild_type_tcga_pm,min.pct_pm,FC_pm,pvalue_pm)
+  TCGA_server_pm(input,output,session,TCGA_pm_para,TCGA,pathway_database,min.pct_pm,FC_pm,pvalue_pm,useid)
   ###################################CPTAC_datasets_pm################################################
   cptac_pm = InputValidator$new()
   cptac_pm$add_rule("gene_symbol_CPTAC_pm",sv_required())
@@ -458,18 +493,23 @@ server <- function(input,output,session){
   cptac_pm3$add_rule("pvalue_CPTAC_protein_pm",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
   cptac_pm3$enable()
   
-  gene_cptac_pm = eventReactive(input$sec3_pm,{req(cptac_pm$is_valid());input$gene_symbol_CPTAC_pm})
-  cancer_type2_pm  = eventReactive(input$sec3_pm,{req(cptac_pm$is_valid());input$Cancer_type2_pm})
-  Mut_type_cptac_pm  = eventReactive(input$sec3_pm,{req(cptac_pm$is_valid());input$Mut_type_cptac_pm})
-  Wild_type_cptac_pm  = eventReactive(input$sec3_pm,{req(cptac_pm$is_valid());input$Wild_type_cptac_pm})
+  CPTAC_pm_para =   eventReactive(input$sec3_pm,{
+    req(cptac_pm$is_valid())
+    list(gene_cptac_pm = input$gene_symbol_CPTAC_pm,
+         cancer_type2_pm = input$Cancer_type2_pm,
+         Mut_type_cptac_pm = input$Mut_type_cptac_pm,
+         Wild_type_cptac_pm = input$Wild_type_cptac_pm
+    )
+  })%>% debounce(500)
   
-  min.pct_CPTAC_rna_pm  = eventReactive(input$min.pct_CPTAC_rna_pm,{req(cptac_pm2$is_valid());input$min.pct_CPTAC_rna_pm})
-  FC_CPTAC_rna_pm  = eventReactive(input$FC_CPTAC_rna_pm,{req(cptac_pm2$is_valid());input$FC_CPTAC_rna_pm})
-  pvalue_CPTAC_rna_pm  = eventReactive(input$pvalue_CPTAC_rna_pm,{req(cptac_pm2$is_valid());input$pvalue_CPTAC_rna_pm})
   
-  min.pct_CPTAC_protein_pm  = eventReactive(input$min.pct_CPTAC_protein_pm,{req(cptac_pm3$is_valid());input$min.pct_CPTAC_protein_pm})
-  FC_CPTAC_protein_pm  = eventReactive(input$FC_CPTAC_protein_pm,{req(cptac_pm3$is_valid());input$FC_CPTAC_protein_pm})
-  pvalue_CPTAC_protein_pm  = eventReactive(input$pvalue_CPTAC_protein_pm,{req(cptac_pm3$is_valid());input$pvalue_CPTAC_protein_pm})
+  min.pct_CPTAC_rna_pm  = eventReactive(input$min.pct_CPTAC_rna_pm,{req(cptac_pm2$is_valid());input$min.pct_CPTAC_rna_pm})%>% debounce(500)
+  FC_CPTAC_rna_pm  = eventReactive(input$FC_CPTAC_rna_pm,{req(cptac_pm2$is_valid());input$FC_CPTAC_rna_pm})%>% debounce(500)
+  pvalue_CPTAC_rna_pm  = eventReactive(input$pvalue_CPTAC_rna_pm,{req(cptac_pm2$is_valid());input$pvalue_CPTAC_rna_pm})%>% debounce(500)
+  
+  min.pct_CPTAC_protein_pm  = eventReactive(input$min.pct_CPTAC_protein_pm,{req(cptac_pm3$is_valid());input$min.pct_CPTAC_protein_pm})%>% debounce(500)
+  FC_CPTAC_protein_pm  = eventReactive(input$FC_CPTAC_protein_pm,{req(cptac_pm3$is_valid());input$FC_CPTAC_protein_pm})%>% debounce(500)
+  pvalue_CPTAC_protein_pm  = eventReactive(input$pvalue_CPTAC_protein_pm,{req(cptac_pm3$is_valid());input$pvalue_CPTAC_protein_pm})%>% debounce(500)
   
   observeEvent(input$SUB_WORD_cptac,{
 
@@ -483,115 +523,136 @@ server <- function(input,output,session){
     
   })
   
-  CPTAC_server_pm(input,output,session,gene_cptac_pm,cancer_type2_pm,CPTAC,pathway_database,Mut_type_cptac_pm,Wild_type_cptac_pm,
-                  min.pct_CPTAC_rna_pm,FC_CPTAC_rna_pm,pvalue_CPTAC_rna_pm,min.pct_CPTAC_protein_pm,FC_CPTAC_protein_pm,pvalue_CPTAC_protein_pm)
+  CPTAC_server_pm(input,output,session,CPTAC_pm_para,CPTAC,pathway_database,
+                  min.pct_CPTAC_rna_pm,FC_CPTAC_rna_pm,pvalue_CPTAC_rna_pm,min.pct_CPTAC_protein_pm,FC_CPTAC_protein_pm,pvalue_CPTAC_protein_pm,useid)
 
 
-  ###################################TCGA_Subtype##################################################
-  tcga_subtype = InputValidator$new()
-  tcga_subtype$add_rule("Cancer_type_subtype",sv_required())
-  tcga_subtype$add_rule("Subtype_tcga",sv_required())
-  tcga_subtype$add_rule("gene_symbol_TCGA_subtype",sv_required())
-  tcga_subtype$add_rule("Mut_type_tcga_subtype",sv_required())
-  tcga_subtype$add_rule("Wild_type_tcga_subtype",sv_required())
-  tcga_subtype$enable()
-
-  tcga_subtype2 = InputValidator$new()
-  tcga_subtype2$add_rule("MT_OR_WT_tcga",sv_required())
-  tcga_subtype2$add_rule("min.pct_subtype",function(x){if(x >0.95 | x< 0.05){"warning: 0.05 < min.pct < 0.95"}})
-  tcga_subtype2$add_rule("FC_subtype",function(x){if(x <0){"warning: |log2FC| > 0"}})
-  tcga_subtype2$add_rule("pvalue_subtype",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
-  tcga_subtype2$enable()
-  
-  
-  
-  cancer_type_subtype  = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Cancer_type_subtype})
-  Mutation_subtype_tcga = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Subtype_tcga})
-  gene_tcga_subtype = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$gene_symbol_TCGA_subtype})
-  Mut_type_tcga_subtype = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Mut_type_tcga_subtype})
-  Wild_type_tcga_subtype = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Wild_type_tcga_subtype})
-  
-  MT_OR_WT_tcga = eventReactive(input$MT_OR_WT_tcga,{req(tcga_subtype2$is_valid());input$MT_OR_WT_tcga})
-  min.pct_subtype = eventReactive(input$min.pct_subtype,{req(tcga_subtype2$is_valid());input$min.pct_subtype})
-  FC_subtype = eventReactive(input$FC_subtype,{req(tcga_subtype2$is_valid());input$FC_subtype})
-  pvalue_subtype = eventReactive(input$pvalue_subtype,{req(tcga_subtype2$is_valid());input$pvalue_subtype})
-  
-  
-  observeEvent(input$Cancer_type_subtype,{
-    #根据某一个输入来改变另一个输入的选项或数值，在shiny都是一类update开头的函数
-    se = input$Cancer_type_subtype
-    choices1 = TCGA[[se]]$maf@gene.summary$Hugo_Symbol
-    choices2 = rownames(TCGA[[se]]$rna)
-    updateSelectizeInput(session,inputId = "Subtype_tcga",choices = choices1,server = T)
-    updateSelectizeInput(session,inputId = "gene_symbol_TCGA_subtype",choices = choices2,server = T)
-  })
-
-  observeEvent(input$tutorial_tcga_subtype,{
-    
-    guide_tcga_subtype$init()$start()
-    
-  })
-  
-  TCGA_subtype_server(input,output,session,cancer_type_subtype,Mutation_subtype_tcga,gene_tcga_subtype,TCGA,pathway_database,Mut_type_tcga_subtype,Wild_type_tcga_subtype,MT_OR_WT_tcga,min.pct_subtype,FC_subtype,pvalue_subtype)
-
-  ###################################CPTAC_Subtype#################################################
-  cptac_subtype = InputValidator$new()
-  cptac_subtype$add_rule("Cancer_type2_subtype",sv_required())
-  cptac_subtype$add_rule("Subtype_cptac",sv_required())
-  cptac_subtype$add_rule("Mut_type_cptac_subtype",sv_required())
-  cptac_subtype$add_rule("Wild_type_cptac_subtype",sv_required())
-  cptac_subtype$add_rule("gene_symbol_CPTAC_subtype",sv_required())
-  cptac_subtype$enable()
-  
-  cptac_subtype2 = InputValidator$new()
-  cptac_subtype2$add_rule("MT_OR_WT_cptac_rna",sv_required())
-  cptac_subtype2$add_rule("min.pct_CPTAC_rna_subtype",function(x){if(x >0.95 | x< 0.05){"warning: 0.05 < min.pct < 0.95"}})
-  cptac_subtype2$add_rule("FC_CPTAC_rna_subtype",function(x){if(x <0){"warning: |log2FC| > 0"}})
-  cptac_subtype2$add_rule("pvalue_CPTAC_rna_subtype",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
-  cptac_subtype2$enable()
-  
-  cptac_subtype3 = InputValidator$new()
-  cptac_subtype3$add_rule("MT_OR_WT_cptac_protein",sv_required())
-  cptac_subtype3$add_rule("min.pct_CPTAC_protein_subtype",function(x){if(x >0.95 | x< 0.05){"warning: 0.05 < min.pct < 0.95"}})
-  cptac_subtype3$add_rule("FC_CPTAC_protein_subtype",function(x){if(x <0){"warning: |log2FC| > 0"}})
-  cptac_subtype3$add_rule("pvalue_CPTAC_protein_subtype",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
-  cptac_subtype3$enable()
-
-  cancer_type2_subtype  = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Cancer_type2_subtype})
-  Mutation_subtype_cptac = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Subtype_cptac})
-  gene_cptac_subtype = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$gene_symbol_CPTAC_subtype})
-  Mut_type_cptac_subtype = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Mut_type_cptac_subtype})
-  Wild_type_cptac_subtype = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Wild_type_cptac_subtype})
-  
-  MT_OR_WT_cptac_rna = eventReactive(input$MT_OR_WT_cptac_rna,{req(cptac_subtype2$is_valid());input$MT_OR_WT_cptac_rna})
-  min.pct_CPTAC_rna_subtype = eventReactive(input$MT_OR_WT_cptac_rna,{req(cptac_subtype2$is_valid());input$min.pct_CPTAC_rna_subtype})
-  FC_CPTAC_rna_subtype = eventReactive(input$FC_CPTAC_rna_subtype,{req(cptac_subtype2$is_valid());input$FC_CPTAC_rna_subtype})
-  pvalue_CPTAC_rna_subtype = eventReactive(input$pvalue_CPTAC_rna_subtype,{req(cptac_subtype2$is_valid());input$pvalue_CPTAC_rna_subtype})
-  
-  MT_OR_WT_cptac_protein = eventReactive(input$MT_OR_WT_cptac_protein,{req(cptac_subtype3$is_valid());input$MT_OR_WT_cptac_protein})
-  min.pct_CPTAC_protein_subtype = eventReactive(input$min.pct_CPTAC_protein_subtype,{req(cptac_subtype3$is_valid());input$min.pct_CPTAC_protein_subtype})
-  FC_CPTAC_protein_subtype = eventReactive(input$FC_CPTAC_protein_subtype,{req(cptac_subtype3$is_valid());input$FC_CPTAC_protein_subtype})
-  pvalue_CPTAC_protein_subtype = eventReactive(input$pvalue_CPTAC_protein_subtype,{req(cptac_subtype3$is_valid());input$pvalue_CPTAC_protein_subtype})
-  
-  observeEvent(input$Cancer_type2_subtype,{
-    #根据某一个输入来改变另一个输入的选项或数值，在shiny都是一类update开头的函数
-    se = input$Cancer_type2_subtype
-    choices1 = CPTAC[[se]]$maf@gene.summary$Hugo_Symbol
-    choices2 = intersect(rownames(CPTAC[[se]]$rna),rownames(CPTAC[[se]]$protein))
-    updateSelectizeInput(session,inputId = "Subtype_cptac",choices = choices1,server = T)
-    updateSelectizeInput(session,inputId = "gene_symbol_CPTAC_subtype",choices = choices2,server = T)
-  })
-
-  observeEvent(input$tutorial_cptac_subtype,{
-    
-    guide_cptac_subtype$init()$start()
-    
-  })
-
-  CPTAC_subtype_server(input,output,session,cancer_type2_subtype,Mutation_subtype_cptac,gene_cptac_subtype,CPTAC,pathway_database,Mut_type_cptac_subtype,Wild_type_cptac_subtype,
-                       MT_OR_WT_cptac_rna,min.pct_CPTAC_rna_subtype,FC_CPTAC_rna_subtype,pvalue_CPTAC_rna_subtype,MT_OR_WT_cptac_protein,min.pct_CPTAC_protein_subtype,FC_CPTAC_protein_subtype,pvalue_CPTAC_protein_subtype)
-
-
+  # ###################################TCGA_Subtype##################################################
+  # tcga_subtype = InputValidator$new()
+  # tcga_subtype$add_rule("Cancer_type_subtype",sv_required())
+  # tcga_subtype$add_rule("Subtype_tcga",sv_required())
+  # tcga_subtype$add_rule("gene_symbol_TCGA_subtype",sv_required())
+  # tcga_subtype$add_rule("Mut_type_tcga_subtype",sv_required())
+  # tcga_subtype$add_rule("Wild_type_tcga_subtype",sv_required())
+  # tcga_subtype$enable()
+  # 
+  # tcga_subtype2 = InputValidator$new()
+  # tcga_subtype2$add_rule("MT_OR_WT_tcga",sv_required())
+  # tcga_subtype2$add_rule("min.pct_subtype",function(x){if(x >0.95 | x< 0.05){"warning: 0.05 < min.pct < 0.95"}})
+  # tcga_subtype2$add_rule("FC_subtype",function(x){if(x <0){"warning: |log2FC| > 0"}})
+  # tcga_subtype2$add_rule("pvalue_subtype",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
+  # tcga_subtype2$enable()
+  # 
+  # TCGA_subtype_para =   eventReactive(input$sec2_subtype,{
+  #   req(tcga_subtype$is_valid())
+  #   list(Mutation_subtype_tcga = input$Subtype_tcga,
+  #        cancer_type_subtype = input$Cancer_type_subtype,
+  #        gene_tcga_subtype = input$gene_symbol_TCGA_subtype,
+  #        Mut_type_tcga_subtype = input$Mut_type_tcga_subtype,
+  #        Wild_type_tcga_subtype = input$Wild_type_tcga_subtype
+  #   )
+  # })%>% debounce(500)
+  # 
+  # 
+  # cancer_type_subtype  = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Cancer_type_subtype})%>% debounce(500)
+  # Mutation_subtype_tcga = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Subtype_tcga})%>% debounce(500)
+  # gene_tcga_subtype = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$gene_symbol_TCGA_subtype})%>% debounce(500)
+  # Mut_type_tcga_subtype = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Mut_type_tcga_subtype})%>% debounce(500)
+  # Wild_type_tcga_subtype = eventReactive(input$sec2_subtype,{req(tcga_subtype$is_valid());input$Wild_type_tcga_subtype})%>% debounce(500)
+  # 
+  # MT_OR_WT_tcga = eventReactive(input$MT_OR_WT_tcga,{req(tcga_subtype2$is_valid());input$MT_OR_WT_tcga})%>% debounce(500)
+  # min.pct_subtype = eventReactive(input$min.pct_subtype,{req(tcga_subtype2$is_valid());input$min.pct_subtype})%>% debounce(500)
+  # FC_subtype = eventReactive(input$FC_subtype,{req(tcga_subtype2$is_valid());input$FC_subtype})%>% debounce(500)
+  # pvalue_subtype = eventReactive(input$pvalue_subtype,{req(tcga_subtype2$is_valid());input$pvalue_subtype})%>% debounce(500)
+  # 
+  # 
+  # observeEvent(input$Cancer_type_subtype,{
+  #   #根据某一个输入来改变另一个输入的选项或数值，在shiny都是一类update开头的函数
+  #   se = input$Cancer_type_subtype
+  #   choices1 = TCGA[[se]]$maf@gene.summary$Hugo_Symbol
+  #   choices2 = rownames(TCGA[[se]]$rna)
+  #   updateSelectizeInput(session,inputId = "Subtype_tcga",choices = choices1,server = T)
+  #   updateSelectizeInput(session,inputId = "gene_symbol_TCGA_subtype",choices = choices2,server = T)
+  # })
+  # 
+  # observeEvent(input$tutorial_tcga_subtype,{
+  #   
+  #   guide_tcga_subtype$init()$start()
+  #   
+  # })
+  # 
+  # TCGA_subtype_server(input,output,session,TCGA_subtype_para,TCGA,pathway_database,MT_OR_WT_tcga,min.pct_subtype,FC_subtype,pvalue_subtype,useid)
+  # 
+  # ###################################CPTAC_Subtype#################################################
+  # cptac_subtype = InputValidator$new()
+  # cptac_subtype$add_rule("Cancer_type2_subtype",sv_required())
+  # cptac_subtype$add_rule("Subtype_cptac",sv_required())
+  # cptac_subtype$add_rule("Mut_type_cptac_subtype",sv_required())
+  # cptac_subtype$add_rule("Wild_type_cptac_subtype",sv_required())
+  # cptac_subtype$add_rule("gene_symbol_CPTAC_subtype",sv_required())
+  # cptac_subtype$enable()
+  # 
+  # cptac_subtype2 = InputValidator$new()
+  # cptac_subtype2$add_rule("MT_OR_WT_cptac_rna",sv_required())
+  # cptac_subtype2$add_rule("min.pct_CPTAC_rna_subtype",function(x){if(x >0.95 | x< 0.05){"warning: 0.05 < min.pct < 0.95"}})
+  # cptac_subtype2$add_rule("FC_CPTAC_rna_subtype",function(x){if(x <0){"warning: |log2FC| > 0"}})
+  # cptac_subtype2$add_rule("pvalue_CPTAC_rna_subtype",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
+  # cptac_subtype2$enable()
+  # 
+  # cptac_subtype3 = InputValidator$new()
+  # cptac_subtype3$add_rule("MT_OR_WT_cptac_protein",sv_required())
+  # cptac_subtype3$add_rule("min.pct_CPTAC_protein_subtype",function(x){if(x >0.95 | x< 0.05){"warning: 0.05 < min.pct < 0.95"}})
+  # cptac_subtype3$add_rule("FC_CPTAC_protein_subtype",function(x){if(x <0){"warning: |log2FC| > 0"}})
+  # cptac_subtype3$add_rule("pvalue_CPTAC_protein_subtype",function(x){if(x >0.1 | x< 0){"warning: 0 < pvalue < 0.1"}})
+  # cptac_subtype3$enable()
+  # 
+  # 
+  # CPTAC_subtype_para =   eventReactive(input$sec3_subtype,{
+  #   req(cptac_subtype$is_valid())
+  #   list(Mutation_subtype_cptac = input$Subtype_cptac,
+  #        cancer_type2_subtype = input$Cancer_type2_subtype,
+  #        gene_cptac_subtype = input$gene_symbol_CPTAC_subtype,
+  #        Mut_type_cptac_subtype = input$Mut_type_cptac_subtype,
+  #        Wild_type_cptac_subtype = input$Wild_type_cptac_subtype
+  #   )
+  # })%>% debounce(500)
+  # 
+  # 
+  # cancer_type2_subtype  = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Cancer_type2_subtype})%>% debounce(500)
+  # Mutation_subtype_cptac = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Subtype_cptac})%>% debounce(500)
+  # gene_cptac_subtype = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$gene_symbol_CPTAC_subtype})%>% debounce(500)
+  # Mut_type_cptac_subtype = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Mut_type_cptac_subtype})%>% debounce(500)
+  # Wild_type_cptac_subtype = eventReactive(input$sec3_subtype,{req(cptac_subtype$is_valid());input$Wild_type_cptac_subtype})%>% debounce(500)
+  # 
+  # MT_OR_WT_cptac_rna = eventReactive(input$MT_OR_WT_cptac_rna,{req(cptac_subtype2$is_valid());input$MT_OR_WT_cptac_rna})%>% debounce(500)
+  # min.pct_CPTAC_rna_subtype = eventReactive(input$MT_OR_WT_cptac_rna,{req(cptac_subtype2$is_valid());input$min.pct_CPTAC_rna_subtype})%>% debounce(500)
+  # FC_CPTAC_rna_subtype = eventReactive(input$FC_CPTAC_rna_subtype,{req(cptac_subtype2$is_valid());input$FC_CPTAC_rna_subtype})%>% debounce(500)
+  # pvalue_CPTAC_rna_subtype = eventReactive(input$pvalue_CPTAC_rna_subtype,{req(cptac_subtype2$is_valid());input$pvalue_CPTAC_rna_subtype})%>% debounce(500)
+  # 
+  # MT_OR_WT_cptac_protein = eventReactive(input$MT_OR_WT_cptac_protein,{req(cptac_subtype3$is_valid());input$MT_OR_WT_cptac_protein})%>% debounce(500)
+  # min.pct_CPTAC_protein_subtype = eventReactive(input$min.pct_CPTAC_protein_subtype,{req(cptac_subtype3$is_valid());input$min.pct_CPTAC_protein_subtype})%>% debounce(500)
+  # FC_CPTAC_protein_subtype = eventReactive(input$FC_CPTAC_protein_subtype,{req(cptac_subtype3$is_valid());input$FC_CPTAC_protein_subtype})%>% debounce(500)
+  # pvalue_CPTAC_protein_subtype = eventReactive(input$pvalue_CPTAC_protein_subtype,{req(cptac_subtype3$is_valid());input$pvalue_CPTAC_protein_subtype})%>% debounce(500)
+  # 
+  # observeEvent(input$Cancer_type2_subtype,{
+  #   #根据某一个输入来改变另一个输入的选项或数值，在shiny都是一类update开头的函数
+  #   se = input$Cancer_type2_subtype
+  #   choices1 = CPTAC[[se]]$maf@gene.summary$Hugo_Symbol
+  #   choices2 = intersect(rownames(CPTAC[[se]]$rna),rownames(CPTAC[[se]]$protein))
+  #   updateSelectizeInput(session,inputId = "Subtype_cptac",choices = choices1,server = T)
+  #   updateSelectizeInput(session,inputId = "gene_symbol_CPTAC_subtype",choices = choices2,server = T)
+  # })
+  # 
+  # observeEvent(input$tutorial_cptac_subtype,{
+  #   
+  #   guide_cptac_subtype$init()$start()
+  #   
+  # })
+  # 
+  # CPTAC_subtype_server(input,output,session,CPTAC_subtype_para,CPTAC,pathway_database,
+  #                      MT_OR_WT_cptac_rna,min.pct_CPTAC_rna_subtype,FC_CPTAC_rna_subtype,pvalue_CPTAC_rna_subtype,MT_OR_WT_cptac_protein,min.pct_CPTAC_protein_subtype,FC_CPTAC_protein_subtype,pvalue_CPTAC_protein_subtype,useid)
+  # 
+  # 
 
   ###################################Ref_datasets_Explore_single########################################
   output$ref_datasets_detial_single = renderReactable({
@@ -641,13 +702,13 @@ server <- function(input,output,session){
     if(ds %in% c("dataset5","dataset7","dataset13","dataset16")){
       closeAlert(session,"warning_explore_single_OS2")
       createAlert(session, "warning_explore_single_OS", "warning_explore_single_OS2", title = "Tips",
-                  content = paste(ds,"didn't provide overall survival"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide overall survival"), append = FALSE)
       closeAlert(session,"warning_explore_single_PFS2")
     }else if(ds %in% c("dataset1.1","dataset1.2","dataset1.3","dataset1.4","dataset1.5","dataset1.6","dataset1.7","dataset1.8","dataset1.9",
                        "dataset1","dataset8","dataset10","dataset11")){
       closeAlert(session,"warning_explore_single_PFS2")
       createAlert(session, "warning_explore_single_PFS", "warning_explore_single_PFS2", title = "Tips",
-                  content = paste(ds,"didn't provide progression-free survival"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide progression-free survival"), append = FALSE)
       closeAlert(session,"warning_explore_single_OS2")
     }else{
       closeAlert(session,"warning_explore_single_OS2")
@@ -764,19 +825,19 @@ server <- function(input,output,session){
       closeAlert(session,"warning_explore_single_recist2")
       closeAlert(session,"warning_explore_single_res2")
       createAlert(session, "warning_explore_single_recist", "warning_explore_single_recist2", title = "Warning",style = "danger",
-                  content = paste(ds,"didn't provide data about RECIST"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about RECIST"), append = FALSE)
       createAlert(session, "warning_explore_single_res", "warning_explore_single_res2", title = "Warning",style = "danger",
-                  content = paste(ds,"didn't provide data about DCB"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about DCB"), append = FALSE)
 
     }else if(ds %in% c("dataset5","dataset6","dataset9","dataset10","dataset15","dataset19")){
       closeAlert(session,"warning_explore_single_recist2")
       createAlert(session, "warning_explore_single_recist", "warning_explore_single_recist2", title = "Tips",
-                  content = paste(ds,"didn't provide data about RECIST"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about RECIST"), append = FALSE)
       closeAlert(session,"warning_explore_single_res2")
     }else if(ds %in% c("dataset4","dataset8","dataset11","dataset17","dataset18","dataset20","dataset21","dataset22","dataset23")){
       closeAlert(session,"warning_explore_single_res2")
       createAlert(session, "warning_explore_single_res", "warning_explore_single_res2", title = "Tips",
-                  content = paste(ds,"didn't provide data about DCB"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about DCB"), append = FALSE)
       closeAlert(session,"warning_explore_single_recist2")
     }else{
       closeAlert(session,"warning_explore_single_recist2")
@@ -903,9 +964,9 @@ server <- function(input,output,session){
       closeAlert(session,"warning_explore_single_inf4")
       closeAlert(session,"warning_explore_single_sig4")
       createAlert(session, "warning_explore_single_inf", "warning_explore_single_inf4", title = "Warning",style = "danger",
-                  content = paste("The dataset",ds,"didn't provide RNA-seq data",sep = " "), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide RNA-seq data",sep = " "), append = FALSE)
       createAlert(session, "warning_explore_single_sig", "warning_explore_single_sig4", title = "Warning",style = "danger",
-                  content = paste("The dataset",ds,"didn't provide RNA-seq data",sep = " "), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide RNA-seq data",sep = " "), append = FALSE)
     }else{
       closeAlert(session,"warning_explore_single_inf4")
       closeAlert(session,"warning_explore_single_sig4")
@@ -1047,13 +1108,13 @@ server <- function(input,output,session){
       closeAlert(session,"warning_explore_pm_OS2")
       closeAlert(session,"warning_explore_pm_PFS2")
       createAlert(session, "warning_explore_pm_OS", "warning_explore_pm_OS2", title = "Tips",
-                  content = paste(ds,"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
       createAlert(session, "warning_explore_pm_PFS", "warning_explore_pm_PFS2", title = "Tips",
-                  content = paste(ds,"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
     }else if(ds %in% c("dataset5","dataset7","dataset13","dataset16")){
       closeAlert(session,"warning_explore_pm_OS2")
       createAlert(session, "warning_explore_pm_OS", "warning_explore_pm_OS2", title = "Tips",
-                  content = paste(ds,"didn't provide overall survival"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide overall survival"), append = FALSE)
       closeAlert(session,"warning_explore_pm_PFS2")
     }else if(ds %in% c("dataset1.1","dataset1.2","dataset1.3","dataset1.4","dataset1.5","dataset1.6","dataset1.7","dataset1.8","dataset1.9",
                        "dataset1","dataset8","dataset10","dataset11")){
@@ -1178,27 +1239,27 @@ server <- function(input,output,session){
       closeAlert(session,"warning_explore_pm_recist2")
       closeAlert(session,"warning_explore_pm_res2")
       createAlert(session, "warning_explore_pm_recist", "warning_explore_pm_recist2", title = "Tips",
-                  content = paste(ds,"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
       createAlert(session, "warning_explore_pm_res", "warning_explore_pm_res2", title = "Tips",
-                  content = paste(ds,"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
     }else if(ds %in% c("dataset1.1","dataset1.2","dataset1.3","dataset1.4","dataset1.5","dataset1.6","dataset1.7","dataset1.8","dataset1.9",
                  "dataset1","dataset13")){
       closeAlert(session,"warning_explore_pm_recist2")
       closeAlert(session,"warning_explore_pm_res2")
       createAlert(session, "warning_explore_pm_recist", "warning_explore_pm_recist2", title = "Warning",style = "danger",
-                  content = paste(ds,"didn't provide data about RECIST"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about RECIST"), append = FALSE)
       createAlert(session, "warning_explore_pm_res", "warning_explore_pm_res2", title = "Warning",style = "danger",
-                  content = paste(ds,"didn't provide data about DCB"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about DCB"), append = FALSE)
 
     }else if(ds %in% c("dataset5","dataset6","dataset9","dataset10","dataset15","dataset19")){
       closeAlert(session,"warning_explore_pm_recist2")
       createAlert(session, "warning_explore_pm_recist", "warning_explore_pm_recist2", title = "Tips",
-                  content = paste(ds,"didn't provide data about RECIST"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about RECIST"), append = FALSE)
       closeAlert(session,"warning_explore_pm_res2")
     }else if(ds %in% c("dataset4","dataset8","dataset11","dataset17","dataset18","dataset20","dataset21","dataset22","dataset23")){
       closeAlert(session,"warning_explore_pm_res2")
       createAlert(session, "warning_explore_pm_res", "warning_explore_pm_res2", title = "Tips",
-                  content = paste(ds,"didn't provide data about DCB"), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide data about DCB"), append = FALSE)
       closeAlert(session,"warning_explore_pm_recist2")
     }else{
       closeAlert(session,"warning_explore_pm_recist2")
@@ -1330,17 +1391,17 @@ server <- function(input,output,session){
       closeAlert(session,"warning_explore_pm_inf4")
       closeAlert(session,"warning_explore_pm_sig4")
       createAlert(session, "warning_explore_pm_inf", "warning_explore_pm_inf4", title = "Tips",
-                  content = paste(ds,"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
       createAlert(session, "warning_explore_pm_sig", "warning_explore_pm_sig4", title = "Tips",
-                  content = paste(ds,"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"consists of Panel sequencing data, which is not suitable for pathway mutation analysis."), append = FALSE)
 
     }else if(!ds %in% c("dataset2","dataset6","dataset8","dataset10","dataset11","dataset12","dataset13","dataset14","dataset20")){
       closeAlert(session,"warning_explore_pm_inf4")
       closeAlert(session,"warning_explore_pm_sig4")
       createAlert(session, "warning_explore_pm_inf", "warning_explore_pm_inf4", title = "Warning",style = "danger",
-                  content = paste("The dataset",ds,"didn't provide RNA-seq data",sep = " "), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide RNA-seq data",sep = " "), append = FALSE)
       createAlert(session, "warning_explore_pm_sig", "warning_explore_pm_sig4", title = "Warning",style = "danger",
-                  content = paste("The dataset",ds,"didn't provide RNA-seq data",sep = " "), append = FALSE)
+                  content = paste(dataset_name2[[ds]],"didn't provide RNA-seq data",sep = " "), append = FALSE)
     }else{
       closeAlert(session,"warning_explore_pm_inf4")
       closeAlert(session,"warning_explore_pm_sig4")
@@ -2096,9 +2157,26 @@ server <- function(input,output,session){
   })
 
   ####################################Search single gene###############################################
-  search_gene = eventReactive(input$search_single,{input$search_gene})
+  search_gene = eventReactive(input$search_single,{
+    shinyalert::shinyalert(
+                          title = "Submission successful",
+                          text = paste(input$search_gene,"has been successfully uploaded to the server. You can click the '+' on the right side of the corresponding module according to their needs, and the module will expand and initiate the analysis."),
+                          size = "s", 
+                          closeOnEsc = TRUE,
+                          closeOnClickOutside = TRUE,
+                          html = FALSE,
+                          type = "success",
+                          showConfirmButton = TRUE,
+                          showCancelButton = FALSE,
+                          confirmButtonText = "OK",
+                          confirmButtonCol = "#AEDEF4",
+                          timer = 0,
+                          imageUrl = NULL,
+                          animation = TRUE
+                        )
+    input$search_gene}) %>% debounce(1000)
 
-  output$gene_detial = renderUI({HTML(Gene_detial_information(search_gene()))})
+  # output$gene_detial = renderUI({HTML(Gene_detial_information(search_gene()))})
   output$OS_single_forest = renderPlot({OS_single_forest(search_gene())})
   output$PFS_single_forest = renderPlot({PFS_single_forest(search_gene())})
   output$RECIST_single_forest = renderPlot({RECIST_single_forest(search_gene())})
@@ -2118,7 +2196,26 @@ server <- function(input,output,session){
     updatePickerInput(session,inputId = "search_pathway",choices = target_pathway,selected = target_pathway[1])
   })
 
-  search_pathway = eventReactive(input$search_pm,{input$search_pathway})
+  search_pathway = eventReactive(input$search_pm,{
+    
+    shinyalert::shinyalert(
+      title = "Submission successful",
+      text = "The pathway/function has been successfully uploaded to the server. You can click the '+' on the right side of the corresponding module according to their needs, and the module will expand and initiate the analysis.",
+      size = "s", 
+      closeOnEsc = TRUE,
+      closeOnClickOutside = TRUE,
+      html = FALSE,
+      type = "success",
+      showConfirmButton = TRUE,
+      showCancelButton = FALSE,
+      confirmButtonText = "OK",
+      confirmButtonCol = "#AEDEF4",
+      timer = 0,
+      imageUrl = NULL,
+      animation = TRUE
+    )
+
+    input$search_pathway}) %>% debounce(1000)
 
   output$OS_pm_forest = renderPlot({OS_pm_forest(search_pathway())})
   output$PFS_pm_forest = renderPlot({PFS_pm_forest(search_pathway())})

@@ -35,8 +35,8 @@ CPTAC_subtype_ui = function(){
             ),
         actionButton(inputId = "sec3_subtype",label = "submit",icon = icon("arrow-alt-circle-up",id = "button_cptac_subtype"),style="color: #033c73;"),
         hr(),
-        p("Mutation Subtype -- CPTAC database",style="text-align:center;font-size=20px;font-weight:bolder;"),
-        p("Currently, gene-based transcriptome studies or web servers often don't take into account the patient's genetic mutation status. A large number of studies have shown that patients with different mutation backgrounds (especially driver mutations) have significant differences in gene regulation patterns and intercellular interactions, and even some genes have opposing prognostic values. Therefore, in the Browse module, the Mutation Subtype provides different gene mutation backgrounds for users to further compare and explore the relationship between gene expression and the immune microenvironment (or patient prognosis). The CPTAC database provides multi-omics data from over 1,000 patients across 10 different cancer types or cohorts, which can be accessed from the Proteomic Data Commons (PDC). The biggest difference between the CPTAC database and the Ref_ICI datasets and TCGA database is that the CPTAC database provides proteomic data along with paired genomic and transcriptomic data. This allows us to explore the relationship between gene mutations and the immune microenvironment at the protein level and even compare the differences between transcriptomic and proteomic analysis results."),
+        p("Mutation Subtype",style="text-align:center;font-size=20px;font-weight:bolder;"),
+        p("It has been extensively accepted that tumors can be stratified by the key genetic events, and treatment strategies should be designed for cancer subtypes harboring specific genetic alterations. Therefore, it is essential to separate these cancer subtypes and in-depth explore the genetic factors associated microenvironment in each type. In this section, we focus on the mutation subtype, which allows the users to explore the relationship between gene expression and the immune microenvironment (or patient prognosis) in different gene mutation backgrounds."),
         width = 3,id = "sidebar_id3_subtype"
         
       ),
@@ -50,7 +50,7 @@ CPTAC_subtype_ui = function(){
                           h2("CPTAC database | Infiltrating immune cells",style="color:#033c73;"),
                           hr(style="background-color:#033c73;height:1px")),
                    column(width = 12,
-                          box(width = 12,p("ssGSEA evaluated 28 types of immune cell infiltration in patients with different cancers, and observed the relationship between gene mutations and immune infiltration."))
+                          box(width = 12,p(""))
                    ),
                    column(width = 12,bsAlert("warning_cptac_subtype")),
                    box(title = "Immune infiltration (RNA)",solidHeader = T,collapsible = T,collapsed = F,width = 12,
@@ -111,7 +111,7 @@ CPTAC_subtype_ui = function(){
                           h2("CPTAC database | Immune-related signatures",style="color:#033c73;"),
                           hr(style="background-color:#033c73;height:1px")),
                    column(width = 12,
-                          box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                          box(width = 12,p(""))
                    ),
                    column(width = 12,bsAlert("warning2_cptac_subtype")),
                    box(title = "Immune signatures (RNA)",solidHeader = T,collapsible = T,collapsed = F,width = 12,
@@ -155,7 +155,7 @@ CPTAC_subtype_ui = function(){
                           h2("CPTAC database | Differential expression analysis",style="color:#033c73;"),
                           hr(style="background-color:#033c73;height:1px")),
                    column(width = 12,
-                          box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                          box(width = 12,p(""))
                    ),
                    column(width = 12,bsAlert("warning3_cptac_subtype")),
                    box(width = 12,title = "Volcano Plot (RNA)",solidHeader = T,collapsible = T,
@@ -246,7 +246,7 @@ CPTAC_subtype_ui = function(){
                    h2("CPTAC database | GSEA",style="color:#033c73;"),
                    hr(style="background-color:#033c73;height:1px")),
             column(width = 12,
-                   box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                   box(width = 12,p(""))
             ),
             column(width = 12,bsAlert("warning4_cptac_subtype")),
             box(
@@ -299,24 +299,24 @@ CPTAC_subtype_ui = function(){
                      uiOutput(outputId = "GSEAp_cptac_subtype_uitabledown")
               )
             )
-          ),
-          tabPanel(title = "Survival analysis",icon = icon("chart-line"),
-                   column(width = 12,
-                          br(),
-                          h2("CPTAC database | Survival analysis",style="color:#033c73;"),
-                          hr(style="background-color:#033c73;height:1px")),
-                   column(width = 12,
-                          box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
-                   ),
-                   column(width = 12,bsAlert("warning5_cptac_subtype")),
-                   box(width = 12,title = "Survival analysis",solidHeader = T,collapsible = T,collapsed = F,
-                     column(width = 12,withSpinner(plotOutput(outputId = "CPTAC_survival_subtype",height = 810),type = 1)),
-                     column(width = 12,
-                            uiOutput(outputId = "sur_cptac_subtype_uidown")
-                            )
-                   )
-				          
           )
+          # tabPanel(title = "Survival analysis",icon = icon("chart-line"),
+          #          column(width = 12,
+          #                 br(),
+          #                 h2("CPTAC database | Survival analysis",style="color:#033c73;"),
+          #                 hr(style="background-color:#033c73;height:1px")),
+          #          column(width = 12,
+          #                 box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+          #          ),
+          #          column(width = 12,bsAlert("warning5_cptac_subtype")),
+          #          box(width = 12,title = "Survival analysis",solidHeader = T,collapsible = T,collapsed = F,
+          #            column(width = 12,withSpinner(plotOutput(outputId = "CPTAC_survival_subtype",height = 810),type = 1)),
+          #            column(width = 12,
+          #                   uiOutput(outputId = "sur_cptac_subtype_uidown")
+          #                   )
+          #          )
+          #     
+          # )
           
           
         )

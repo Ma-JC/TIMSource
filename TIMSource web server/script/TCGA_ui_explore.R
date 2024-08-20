@@ -3,7 +3,7 @@ TCGA_ui_explore = function(){
   tagList(
     br(),
     box(width = 12,
-        h2("Comprehensive Analysis & Visualization of TCGA database",style="text-align:center;margin-top:10px;margin-bottom:10px;color:#033c73"),
+        h2("Comprehensive Analysis of TCGA database",style="text-align:center;margin-top:10px;margin-bottom:10px;color:#033c73"),
         reactableOutput(outputId = "TCGA_detial_single")
     ),
     box(width = 12,

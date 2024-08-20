@@ -1,15 +1,16 @@
-TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA,pathway_database,Mut_type_tcga_pm,Wild_type_tcga_pm,min.pct_pm,FC_pm,pvalue_pm){
+TCGA_server_pm <- function(input,output,session,TCGA_pm_para,TCGA,pathway_database,min.pct_pm,FC_pm,pvalue_pm,useid){
   
+  useid <- paste(useid,"TCGApm",sep = "_")
   
   TCGA_cohort_pm = reactive({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
-    Mut_type_tcga_pm = Mut_type_tcga_pm()
-    Wild_type_tcga_pm = Wild_type_tcga_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
+    Mut_type_tcga_pm = TCGA_pm_para()$Mut_type_tcga_pm
+    Wild_type_tcga_pm = TCGA_pm_para()$Wild_type_tcga_pm
     # validate(need(any(pathway_list[[gene]] %in% TCGA[[cancer_type]][["maf"]]@data$SYMBOL),paste("The genes of ",gene,"does not exist in",cancer_type,sep = " ")))
     validate(need(any(pathway_list[[gene]] %in% TCGA[[cancer_type]][["maf"]]@data$SYMBOL),message = FALSE))
     TCGA_cohort_cal_pm(TCGA = TCGA,cancer_type = cancer_type,gene = gene,Mut_type = Mut_type_tcga_pm,Wild_type = Wild_type_tcga_pm)
-  }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),Mut_type_tcga_pm(),Wild_type_tcga_pm())
+  }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_pm_para()$Mut_type_tcga_pm,TCGA_pm_para()$Wild_type_tcga_pm)
   
   ##################################TCGA_mutation################################################
   
@@ -69,10 +70,10 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     )
   })
   
-  observeEvent(input$sec2_pm,{
-    gene = gene_tcga_pm()
+  observe({
+    gene = TCGA_pm_para()$gene_tcga_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
-    cancer_type = cancer_type_pm()
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     
     if(length(TCGA_cohort_pm$mut) <3 | length(TCGA_cohort_pm$wt) <3){
       closeAlert(session,"warning_tcga_pm_id")
@@ -88,8 +89,8 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   })
   
   Mut_res_pm =reactive({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
     validate(need(length(TCGA_cohort_pm$mut) >=3 & length(TCGA_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -112,14 +113,14 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),TCGA_cohort_pm())
+  }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_cohort_pm())
   
   
   
   output$maf4_pm = renderPlot({
 
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     Mut_res_pm = Mut_res_pm()
     
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -155,12 +156,12 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),Mut_res_pm())
+  }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,Mut_res_pm())
   
   output$TCGA_mut_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       
       if(input$TCGA_mut_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type_pm,".","mut", '.',"pdf")
@@ -174,8 +175,9 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       
     },
     content = function(file){
-      gene = gene_tcga_pm()
-      cancer_type = cancer_type_pm()
+      shinyjs::disable("TCGA_mut_pm_down")
+      gene = TCGA_pm_para()$gene_tcga_pm
+      cancer_type = TCGA_pm_para()$cancer_type_pm
       Mut_res_pm = Mut_res_pm()
       
       if(input$TCGA_mut_pm_res <= 300){
@@ -228,12 +230,13 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
                genes = Mut_res_pm$genes)
 
       dev.off()
+      shinyjs::enable("TCGA_mut_pm_down")
     }
   )
 
   output$maf5_pm = renderPlot({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     Mut_res_pm = Mut_res_pm()
     num = length(Mut_res_pm$fvsm$results$Hugo_Symbol)
     if(num > 30){
@@ -272,12 +275,12 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
-  }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),Mut_res_pm())
+  }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,Mut_res_pm())
   
   output$TCGA_cm_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       
       if(input$TCGA_cm_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type_pm,".","cm", '.',"pdf")
@@ -291,8 +294,9 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       
     },
     content = function(file){
-      gene = gene_tcga_pm()
-      cancer_type = cancer_type_pm()
+      shinyjs::disable("TCGA_cm_pm_down")
+      gene = TCGA_pm_para()$gene_tcga_pm
+      cancer_type = TCGA_pm_para()$cancer_type_pm
       Mut_res_pm = Mut_res_pm()
       
       if(input$TCGA_cm_pm_res <= 300){
@@ -351,6 +355,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
                keepGeneOrder = T)
       
       dev.off()
+      shinyjs::enable("TCGA_cm_pm_down")
     }
   )
   
@@ -395,14 +400,14 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   output$TCGA_cm_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       paste0(gene,"_",input$Cancer_type_pm,".","cm", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("TCGA_cm_pm_tabdown")
       write.csv(x = Mut_res_pm()$fvsm$results,file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("TCGA_cm_pm_tabdown")
     }
   )
   ###################################################TCGA immune_infiltration ################################################
@@ -431,10 +436,10 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     }
   })
   
-  observeEvent(input$sec2_pm,{
-    gene = gene_tcga_pm()
+  observe({
+    gene = TCGA_pm_para()$gene_tcga_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
-    cancer_type = cancer_type_pm()
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     
     if(length(TCGA_cohort_pm$mut) <3 | length(TCGA_cohort_pm$wt) <3){
       closeAlert(session,"warning2_tcga_pm_id")
@@ -451,8 +456,8 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   
   
   output$immune_infiltration1_pm = renderPlotly({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
     validate(need(length(TCGA_cohort_pm$mut) >=3 & length(TCGA_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -466,8 +471,8 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     
     p = immune_infiltration_pm(TCGA = TCGA,gene = gene,cancer_type = cancer_type,mut_patient_id = TCGA_cohort_pm$mut,wt_patient_id = TCGA_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-            rangeslider(start = 0,end = 15.5)
+            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+            rangeslider(start = 0,end = 15.5) %>% plotly::config(displayModeBar = FALSE)
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -478,12 +483,12 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),TCGA_cohort_pm())
+  }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_cohort_pm())
   
   output$TCGA_inf_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       
       if(input$TCGA_inf_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type_pm,".","inf", '.',"pdf")
@@ -497,8 +502,9 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       
     },
     content = function(file){
-      gene = gene_tcga_pm()
-      cancer_type = cancer_type_pm()
+      shinyjs::disable("TCGA_inf_pm_down")
+      gene = TCGA_pm_para()$gene_tcga_pm
+      cancer_type = TCGA_pm_para()$cancer_type_pm
       TCGA_cohort_pm = TCGA_cohort_pm()
       
       if(input$TCGA_inf_pm_res <= 300){
@@ -538,12 +544,13 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       print(    immune_infiltration_pm(TCGA = TCGA,gene = gene,cancer_type = cancer_type,mut_patient_id = TCGA_cohort_pm$mut,wt_patient_id = TCGA_cohort_pm$wt)  )
       
       dev.off()
+      shinyjs::enable("TCGA_inf_pm_down")
     }
   )
   
   output$immune_infiltration2_pm = renderPlot({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
     validate(need(length(TCGA_cohort_pm$mut) >=3 & length(TCGA_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -566,7 +573,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    },width = 600,height = 600) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),TCGA_cohort_pm(),input$immune_cell_type_pm,input$outlier2_pm)
+    },width = 600,height = 600) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_cohort_pm(),input$immune_cell_type_pm,input$outlier2_pm)
   ###################################################TCGA immune_signature ################################################
   
   output$sig_tcga_pm_uidown = renderUI({
@@ -593,10 +600,10 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     }
   })
   
-  observeEvent(input$sec2_pm,{
-    gene = gene_tcga_pm()
+  observe({
+    gene = TCGA_pm_para()$gene_tcga_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
-    cancer_type = cancer_type_pm()
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     
     if(length(TCGA_cohort_pm$mut) <3 | length(TCGA_cohort_pm$wt) <3){
       closeAlert(session,"warning3_tcga_pm_id")
@@ -612,8 +619,8 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   })
   
   output$immune_signature1_pm = renderPlotly({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
     validate(need(length(TCGA_cohort_pm$mut) >=3 & length(TCGA_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -627,8 +634,8 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     
     p = immune_signature_pm(TCGA = TCGA,gene = gene,cancer_type = cancer_type,mut_patient_id = TCGA_cohort_pm$mut,wt_patient_id = TCGA_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-            rangeslider(start = 0,end = 9)
+            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+            rangeslider(start = 0,end = 9) %>% plotly::config(displayModeBar = FALSE)
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -639,13 +646,13 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),TCGA_cohort_pm())
+  }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_cohort_pm())
   
   
   output$TCGA_sig_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       
       if(input$TCGA_sig_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type_pm,".","sig", '.',"pdf")
@@ -659,8 +666,9 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       
     },
     content = function(file){
-      gene = gene_tcga_pm()
-      cancer_type = cancer_type_pm()
+      shinyjs::disable("TCGA_sig_pm_down")
+      gene = TCGA_pm_para()$gene_tcga_pm
+      cancer_type = TCGA_pm_para()$cancer_type_pm
       TCGA_cohort_pm = TCGA_cohort_pm()
       
       
@@ -701,12 +709,13 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       print(immune_signature_pm(TCGA = TCGA,gene = gene,cancer_type = cancer_type,mut_patient_id = TCGA_cohort_pm$mut,wt_patient_id = TCGA_cohort_pm$wt)  )
       
       dev.off()
+      shinyjs::enable("TCGA_sig_pm_down")
     }
   )
   
   output$immune_signature2_pm = renderPlot({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
     validate(need(length(TCGA_cohort_pm$mut) >=3 & length(TCGA_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -729,7 +738,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    },width = 600,height = 600) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),TCGA_cohort_pm(),input$immune_signature_pm,input$outlier3_pm)
+    },width = 600,height = 600) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_cohort_pm(),input$immune_signature_pm,input$outlier3_pm)
   
   
   ###################################################TCGA DEG ################################################
@@ -740,10 +749,10 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     downloadButton('TCGA_diff_pm_tabdown',label = 'Download Table')
   })
   
-  observeEvent(input$sec2_pm,{
-    gene = gene_tcga_pm()
+  observe({
+    gene = TCGA_pm_para()$gene_tcga_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
-    cancer_type = cancer_type_pm()
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     
     if(length(TCGA_cohort_pm$mut) <3 | length(TCGA_cohort_pm$wt) <3){
       closeAlert(session,"warning4_tcga_pm_id")
@@ -759,8 +768,8 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   })
   
   DEG_table_pm = reactive({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
     min.pct_pm = min.pct_pm()
     validate(need(length(TCGA_cohort_pm$mut) >=3 & length(TCGA_cohort_pm$wt) >= 3,FALSE))
@@ -784,7 +793,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),TCGA_cohort_pm(),min.pct_pm())
+    }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_cohort_pm(),min.pct_pm())
   
   output$DEG_tab_pm = renderReactable({
     DEG_table_pm = DEG_table_pm()
@@ -827,21 +836,21 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   output$TCGA_diff_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       paste0(gene,"_",input$Cancer_type_pm,".","diff", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("TCGA_diff_pm_tabdown")
       write.csv(x = DEG_table_pm(),file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("TCGA_diff_pm_tabdown")
     }
   )
   
   
   output$volcano_pm = renderPlotly({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     tab = DEG_table_pm()
     FC_pm = FC_pm()
     pvalue_pm = pvalue_pm()
@@ -865,7 +874,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type_pm(),gene_tcga_pm(),DEG_table_pm(),FC_pm(),pvalue_pm())
+  }) %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,DEG_table_pm(),FC_pm(),pvalue_pm())
   
   
   
@@ -877,10 +886,10 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     downloadButton('TCGA_gsea_pm_tabdown',label = 'Download Table')
   })
   
-  observeEvent(input$sec2_pm,{
-    gene = gene_tcga_pm()
+  observe({
+    gene = TCGA_pm_para()$gene_tcga_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
-    cancer_type = cancer_type_pm()
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     
     if(length(TCGA_cohort_pm$mut) <3 | length(TCGA_cohort_pm$wt) <3){
       closeAlert(session,"warning5_tcga_pm_id")
@@ -913,9 +922,22 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
     
-    installr::kill_pid(pid = scan(status_file))
-    tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_tcga_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
-    write(tmp$get_pid(), status_file)
+    if( length(GSEA_use) < 5 | useid %in% names(GSEA_use) ){
+      
+      installr::kill_pid(pid = scan(status_file))
+      tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_tcga_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
+      write(tmp$get_pid(), status_file)
+      
+    }else{
+      
+      closeAlert(session,"warning5_tcga_pm_id")
+      createAlert(session, "warning5_tcga_pm", "warning5_tcga_pm_id", title = "Warning",style = "danger",
+                  content = "Sorry, GSEA function is temporarily unavailable due to high user traffic. Please try again later.", append = FALSE)
+      
+      tmp = NULL
+      
+    }
+
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::enable("pathway_gsea_ref_single");shinyjs::enable("pathway_gsea_tcga");shinyjs::enable("pathway_gsea_cptac_rna");shinyjs::enable("pathway_gsea_cptac_protein");shinyjs::enable("pathway_gsea_ref_pm");shinyjs::enable("pathway_gsea_tcga_pm");shinyjs::enable("pathway_gsea_cptac_rna_pm");shinyjs::enable("pathway_gsea_cptac_protein_pm");shinyjs::enable("pathway_gsea_tcga_subtype");shinyjs::enable("pathway_gsea_cptac_rna_subtype");shinyjs::enable("pathway_gsea_cptac_protein_subtype");
@@ -931,6 +953,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   
   one_loader = reactiveVal(0)
   output$GSEA_tab_tcga_pm = renderReactable({
+    if(is.null(tmp_gsea_tcga_pm())){return(NULL)}
     if(tmp_gsea_tcga_pm()$is_alive()){
       
       invalidateLater(millis = 1000, session = session)
@@ -939,6 +962,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
         
         waiter_show(id = "tcga_pm_GSEA_loader",html = tagList(spin_flower(),h4("GSEA running..."),h5("Please wait for a minute")), color = "black")
         one_loader(one_loader()+1)
+        GSEA_use[[useid]] <<- TRUE
         return(NULL)
         
         
@@ -988,6 +1012,8 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       shinyjs::enable(id = "TCGA_gsea_pm_tabdown")
       one_loader(0)
       write("", status_file)
+      
+      GSEA_use[[useid]] <<- NULL
       return(tmp)
     }
     
@@ -1027,19 +1053,19 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   output$TCGA_gsea_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       paste0(gene,"_",input$Cancer_type_pm,".","gsea", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("TCGA_gsea_pm_tabdown")
       write.csv(x = tmp_gsea_tcga_pm()$get_result()@result,file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("TCGA_gsea_pm_tabdown")
     }
   )
   
   
-  row_num_tcga_pm = eventReactive(input$tcga_pm_GSEA_show,{input$tcga_pm_GSEA_show$index})
+  row_num_tcga_pm = eventReactive(input$tcga_pm_GSEA_show,{input$tcga_pm_GSEA_show$index})%>% debounce(500)
   
   output$GSEA_plot_tcga_pm = renderPlot({
     my_gseaplot2(tmp_gsea_tcga_pm()$get_result(),geneSetID = tmp_gsea_tcga_pm()$get_result()@result$ID[row_num_tcga_pm()],
@@ -1053,7 +1079,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
   output$TCGA_gsea_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       
       if(input$TCGA_gsea_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type_pm,".","gsea", '.',"pdf")
@@ -1067,7 +1093,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       
     },
     content = function(file){
-      
+      shinyjs::disable("TCGA_gsea_pm_down")
       if(input$TCGA_gsea_pm_res <= 300){
         r = input$TCGA_gsea_pm_res
       }else{
@@ -1112,6 +1138,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       )
       
       dev.off()
+      shinyjs::enable("TCGA_gsea_pm_down")
     }
   )
   
@@ -1143,10 +1170,10 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     }
   })
   
-  observeEvent(input$sec2_pm,{
-    gene = gene_tcga_pm()
+  observe({
+    gene = TCGA_pm_para()$gene_tcga_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
-    cancer_type = cancer_type_pm()
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     
     if(length(TCGA_cohort_pm$mut) <3 | length(TCGA_cohort_pm$wt) <3){
       closeAlert(session,"warning6_tcga_pm_id")
@@ -1161,10 +1188,10 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     }
   })
   
-  width = reactive({    if(cancer_type_pm() == "LAML"){500}else{1600}})
+  width = reactive({    if(TCGA_pm_para()$cancer_type_pm == "LAML"){500}else{1600}})
   output$TCGA_survival_pm = renderPlot({
-    gene = gene_tcga_pm()
-    cancer_type = cancer_type_pm()
+    gene = TCGA_pm_para()$gene_tcga_pm
+    cancer_type = TCGA_pm_para()$cancer_type_pm
     TCGA_cohort_pm = TCGA_cohort_pm()
     validate(need(length(TCGA_cohort_pm$mut) >=3 & length(TCGA_cohort_pm$wt) >= 3,message = FALSE))
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -1187,13 +1214,13 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
     return(tmp)
     
     
-  },width = width,height = 600)  %>% bindCache(cancer_type_pm(),gene_tcga_pm(),TCGA_cohort_pm())
+  },width = width,height = 600)  %>% bindCache(TCGA_pm_para()$cancer_type_pm,TCGA_pm_para()$gene_tcga_pm,TCGA_cohort_pm())
   
   
   output$TCGA_sur_pm_down = downloadHandler(
     
     filename = function(){
-      gene = gene_tcga_pm()
+      gene = TCGA_pm_para()$gene_tcga_pm
       
       if(input$TCGA_sur_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type_pm,".","sur", '.',"pdf")
@@ -1207,9 +1234,9 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       
     },
     content = function(file){
-      
-      gene = gene_tcga_pm()
-      cancer_type = cancer_type_pm()
+      shinyjs::disable("TCGA_sur_pm_down")
+      gene = TCGA_pm_para()$gene_tcga_pm
+      cancer_type = TCGA_pm_para()$cancer_type_pm
       TCGA_cohort_pm = TCGA_cohort_pm()
       
       if(input$TCGA_sur_pm_res <= 300){
@@ -1250,6 +1277,7 @@ TCGA_server_pm <- function(input,output,session,gene_tcga_pm,cancer_type_pm,TCGA
       print(  TCGA_survival_pm(TCGA = TCGA,cancer_type = cancer_type,gene = gene,mut_patient_id = TCGA_cohort_pm$mut,wt_patient_id = TCGA_cohort_pm$wt)   )
       
       dev.off()
+      shinyjs::enable("TCGA_sur_pm_down")
     }
   )
   

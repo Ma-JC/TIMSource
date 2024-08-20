@@ -1,17 +1,18 @@
-CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,CPTAC,pathway_database,Mut_type_cptac_pm,Wild_type_cptac_pm,
-                            min.pct_CPTAC_rna_pm,FC_CPTAC_rna_pm,pvalue_CPTAC_rna_pm,min.pct_CPTAC_protein_pm,FC_CPTAC_protein_pm,pvalue_CPTAC_protein_pm){
+CPTAC_server_pm <- function(input,output,session,CPTAC_pm_para,CPTAC,pathway_database,
+                            min.pct_CPTAC_rna_pm,FC_CPTAC_rna_pm,pvalue_CPTAC_rna_pm,min.pct_CPTAC_protein_pm,FC_CPTAC_protein_pm,pvalue_CPTAC_protein_pm,useid){
   
-  
+  useidr <- paste(useid,"CPTACpmr",sep = "_")
+  useidp <- paste(useid,"CPTACpmp",sep = "_")
   
   CPTAC_cohort_pm = reactive({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
-    Mut_type_cptac_pm = Mut_type_cptac_pm()
-    Wild_type_cptac_pm = Wild_type_cptac_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
+    Mut_type_cptac_pm = CPTAC_pm_para()$Mut_type_cptac_pm
+    Wild_type_cptac_pm = CPTAC_pm_para()$Wild_type_cptac_pm
     validate(need(any(pathway_list[[gene]] %in% CPTAC[[cancer_type2]][["maf"]]@data$SYMBOL),message = FALSE))
     
     CPTAC_cohort_cal_pm(TCGA = CPTAC,cancer_type = cancer_type2,gene = gene,Mut_type = Mut_type_cptac_pm,Wild_type = Wild_type_cptac_pm)
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),Mut_type_cptac_pm(),Wild_type_cptac_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_pm_para()$Mut_type_cptac_pm,CPTAC_pm_para()$Wild_type_cptac_pm)
   
   
   ##################################CPTAC_mutation################################################
@@ -72,10 +73,10 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     )
   })
   
-  observeEvent(input$sec3_pm,{
-    gene = gene_cptac_pm()
+  observe({
+    gene = CPTAC_pm_para()$gene_cptac_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
-    cancer_type2 = cancer_type2_pm()
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     
     if(length(CPTAC_cohort_pm$mut) <3 | length(CPTAC_cohort_pm$wt) <3){
       closeAlert(session,"warning_cptac_pm_id")
@@ -93,8 +94,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   
   Mut_res_cptac_pm =reactive({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -116,14 +117,14 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm())
   
   
   
   output$maf4_cptac_pm = renderPlot({
     
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     Mut_res_cptac_pm = Mut_res_cptac_pm()
     
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -158,12 +159,12 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),Mut_res_cptac_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,Mut_res_cptac_pm())
   
   
   output$CPTAC_mut_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_mut_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","mut", '.',"pdf")
@@ -177,8 +178,9 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      gene = gene_cptac_pm()
-      cancer_type2 = cancer_type2_pm()
+      shinyjs::disable("CPTAC_mut_pm_down")
+      gene = CPTAC_pm_para()$gene_cptac_pm
+      cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
       Mut_res_cptac_pm = Mut_res_cptac_pm()
       
       if(input$CPTAC_mut_pm_res <= 300){
@@ -232,12 +234,13 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
                )
       
       dev.off()
+      shinyjs::enable("CPTAC_mut_pm_down")
     }
   )
   
   output$maf5_cptac_pm = renderPlot({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     Mut_res_cptac_pm = Mut_res_cptac_pm()
     
     num = length(Mut_res_cptac_pm$fvsm$results$Hugo_Symbol)
@@ -278,11 +281,11 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),Mut_res_cptac_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,Mut_res_cptac_pm())
   
   output$CPTAC_cm_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_cm_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","cm", '.',"pdf")
@@ -296,8 +299,9 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      gene = gene_cptac_pm()
-      cancer_type2 = cancer_type2_pm()
+      shinyjs::disable("CPTAC_cm_pm_down")
+      gene = CPTAC_pm_para()$gene_cptac_pm
+      cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
       Mut_res_cptac_pm = Mut_res_cptac_pm()
       
       if(input$CPTAC_cm_pm_res <= 300){
@@ -356,6 +360,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
                )
       
       dev.off()
+      shinyjs::enable("CPTAC_cm_pm_down")
     }
   )
   
@@ -399,14 +404,14 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   output$CPTAC_cm_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       paste0(gene,"_",input$Cancer_type2_pm,".","cm", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("CPTAC_cm_pm_tabdown")
       write.csv(x = Mut_res_cptac_pm()$fvsm$results,file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("CPTAC_cm_pm_tabdown")
     }
   )
   
@@ -460,10 +465,10 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     }
   })
   
-  observeEvent(input$sec3_pm,{
-    gene = gene_cptac_pm()
+  observe({
+    gene = CPTAC_pm_para()$gene_cptac_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
-    cancer_type2 = cancer_type2_pm()
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     
     if(length(CPTAC_cohort_pm$mut) <3 | length(CPTAC_cohort_pm$wt) <3){
       closeAlert(session,"warning2_cptac_pm_id")
@@ -482,8 +487,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   
   output$immune_infiltration1_CPTAC_rna_pm = renderPlotly({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -497,9 +502,9 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     
     p = immune_infiltration_CPTAC_rna_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-            rangeslider(start = 0,end = 15.5)
-    
+            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+            rangeslider(start = 0,end = 15.5) %>% plotly::config(displayModeBar = FALSE)
+     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
     shinyjs::removeClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
@@ -509,12 +514,12 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm())
   
   
   output$CPTAC_infr_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_infr_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","infr", '.',"pdf")
@@ -528,8 +533,9 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      gene = gene_cptac_pm()
-      cancer_type2 = cancer_type2_pm()
+      shinyjs::disable("CPTAC_infr_pm_down")
+      gene = CPTAC_pm_para()$gene_cptac_pm
+      cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
       CPTAC_cohort_pm = CPTAC_cohort_pm()
       
       if(input$CPTAC_infr_pm_res <= 300){
@@ -569,13 +575,14 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       print(    immune_infiltration_CPTAC_rna_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)     )
       
       dev.off()
+      shinyjs::enable("CPTAC_infr_pm_down")
     }
   )
   
   
   output$immune_infiltration1_CPTAC_protein_pm = renderPlotly({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -589,8 +596,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     
     p = immune_infiltration_CPTAC_protein_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-            rangeslider(start = 0,end = 15.5)
+            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+            rangeslider(start = 0,end = 15.5) %>% plotly::config(displayModeBar = FALSE)
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -601,12 +608,12 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm())
   
   
   output$CPTAC_infp_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_infp_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","infp", '.',"pdf")
@@ -620,8 +627,9 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      gene = gene_cptac_pm()
-      cancer_type2 = cancer_type2_pm()
+      shinyjs::disable("CPTAC_infp_pm_down")
+      gene = CPTAC_pm_para()$gene_cptac_pm
+      cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
       CPTAC_cohort_pm = CPTAC_cohort_pm()
       
       if(input$CPTAC_infp_pm_res <= 300){
@@ -661,13 +669,14 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       print(    immune_infiltration_CPTAC_protein_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)     )
       
       dev.off()
+      shinyjs::enable("CPTAC_infp_pm_down")
     }
   )
   
   
   output$immune_infiltration2_CPTAC_rna_pm = renderPlot({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -689,11 +698,11 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    },width = 400,height = 500) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm(),input$immune_cell_type_CPTAC_pm,input$outlier2_CPTAC_pm)
+    },width = 400,height = 500) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm(),input$immune_cell_type_CPTAC_pm,input$outlier2_CPTAC_pm)
   
   output$immune_infiltration2_CPTAC_protein_pm = renderPlot({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
@@ -714,7 +723,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
-    },width = 400,height = 500) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm(),input$immune_cell_type_CPTAC_pm,input$outlier2_CPTAC_pm)
+    },width = 400,height = 500) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm(),input$immune_cell_type_CPTAC_pm,input$outlier2_CPTAC_pm)
   
   ###################################################CPTAC immune_signature ################################################
   
@@ -766,10 +775,10 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     }
   })
   
-  observeEvent(input$sec3_pm,{
-    gene = gene_cptac_pm()
+  observe({
+    gene = CPTAC_pm_para()$gene_cptac_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
-    cancer_type2 = cancer_type2_pm()
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     
     if(length(CPTAC_cohort_pm$mut) <3 | length(CPTAC_cohort_pm$wt) <3){
       closeAlert(session,"warning3_cptac_pm_id")
@@ -787,8 +796,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   
   output$immune_signature1_CPTAC_rna_pm = renderPlotly({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -802,8 +811,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     
     p = immune_signature_CPTAC_rna_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-            rangeslider(start = 0,end = 9)
+            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+            rangeslider(start = 0,end = 9) %>% plotly::config(displayModeBar = FALSE)
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
     shinyjs::removeClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
@@ -812,12 +821,12 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm())
   
   
   output$CPTAC_sigr_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_sigr_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","sigr", '.',"pdf")
@@ -831,8 +840,9 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      gene = gene_cptac_pm()
-      cancer_type2 = cancer_type2_pm()
+      shinyjs::disable("CPTAC_sigr_pm_down")
+      gene = CPTAC_pm_para()$gene_cptac_pm
+      cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
       CPTAC_cohort_pm = CPTAC_cohort_pm()
       
       if(input$CPTAC_sigr_pm_res <= 300){
@@ -872,13 +882,14 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       print(    immune_signature_CPTAC_rna_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)     )
       
       dev.off()
+      shinyjs::enable("CPTAC_sigr_pm_down")
     }
   )
   
   
   output$immune_signature1_CPTAC_protein_pm = renderPlotly({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -892,8 +903,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     
     p = immune_signature_CPTAC_protein_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)
     tmp = ggplotly(p) %>% 
-            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0)) %>% 
-            rangeslider(start = 0,end = 9)
+            layout(boxmode = "group",legend = list(orientation = "h",x = 0.5,xanchor = "center",y = 0), height = 800) %>% 
+            rangeslider(start = 0,end = 9) %>% plotly::config(displayModeBar = FALSE)
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
@@ -904,12 +915,12 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
      
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm())
   
   
   output$CPTAC_sigp_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_sigp_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","sigp", '.',"pdf")
@@ -923,8 +934,9 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      gene = gene_cptac_pm()
-      cancer_type2 = cancer_type2_pm()
+      shinyjs::disable("CPTAC_sigp_pm_down")
+      gene = CPTAC_pm_para()$gene_cptac_pm
+      cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
       CPTAC_cohort_pm = CPTAC_cohort_pm()
       
       if(input$CPTAC_sigp_pm_res <= 300){
@@ -964,13 +976,14 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       print(    immune_signature_CPTAC_protein_pm(TCGA = CPTAC,gene = gene,cancer_type = cancer_type2,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)     )
       
       dev.off()
+      shinyjs::enable("CPTAC_sigp_pm_down")
     }
   )
   
   
   output$immune_signature2_CPTAC_rna_pm = renderPlot({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -993,11 +1006,11 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    },width = 400,height = 500) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm(),input$immune_signature_CPTAC_pm,input$outlier3_CPTAC_pm)
+    },width = 400,height = 500) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm(),input$immune_signature_CPTAC_pm,input$outlier3_CPTAC_pm)
   
   output$immune_signature2_CPTAC_protein_pm = renderPlot({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
     
@@ -1022,7 +1035,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    },width = 400,height = 500) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm(),input$immune_signature_CPTAC_pm,input$outlier3_CPTAC_pm)
+    },width = 400,height = 500) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm(),input$immune_signature_CPTAC_pm,input$outlier3_CPTAC_pm)
   
   ###################################################CPTAC DEG ################################################
   output$DEGr_cptac_pm_uitabledown = renderUI({
@@ -1037,10 +1050,10 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     downloadButton('CPTAC_diffp_pm_tabdown',label = 'Download Table')
   })
   
-  observeEvent(input$sec3_pm,{
-    gene = gene_cptac_pm()
+  observe({
+    gene = CPTAC_pm_para()$gene_cptac_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
-    cancer_type2 = cancer_type2_pm()
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     
     if(length(CPTAC_cohort_pm$mut) <3 | length(CPTAC_cohort_pm$wt) <3){
       closeAlert(session,"warning4_cptac_pm_id")
@@ -1057,8 +1070,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   
   DEG_table_CPTAC_rna_pm = reactive({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     min.pct_CPTAC_rna_pm = min.pct_CPTAC_rna_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
@@ -1081,7 +1094,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
-    }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm(),min.pct_CPTAC_rna_pm())
+    }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm(),min.pct_CPTAC_rna_pm())
   
   output$DEG_tab_CPTAC_rna_pm = renderReactable({
     DEG_table_CPTAC_rna_pm = DEG_table_CPTAC_rna_pm()
@@ -1125,21 +1138,21 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   output$CPTAC_diffr_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       paste0(gene,"_",input$Cancer_type2_pm,".","diffr", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("CPTAC_diffr_pm_tabdown")
       write.csv(x = DEG_table_CPTAC_rna_pm(),file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("CPTAC_diffr_pm_tabdown")
     }
   )
   
   
   output$volcano_CPTAC_rna_pm = renderPlotly({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     tab = DEG_table_CPTAC_rna_pm()
     FC_CPTAC_rna_pm = FC_CPTAC_rna_pm()
     pvalue_CPTAC_rna_pm = pvalue_CPTAC_rna_pm()
@@ -1163,12 +1176,12 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),DEG_table_CPTAC_rna_pm(),FC_CPTAC_rna_pm(),pvalue_CPTAC_rna_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,DEG_table_CPTAC_rna_pm(),FC_CPTAC_rna_pm(),pvalue_CPTAC_rna_pm())
   
   #protein
   DEG_table_CPTAC_protein_pm = reactive({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
     min.pct_CPTAC_protein_pm = min.pct_CPTAC_protein_pm()
     validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
@@ -1192,7 +1205,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-    }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm(),min.pct_CPTAC_protein_pm())
+    }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm(),min.pct_CPTAC_protein_pm())
   
   output$DEG_tab_CPTAC_protein_pm = renderReactable({
     DEG_table_CPTAC_protein_pm = DEG_table_CPTAC_protein_pm()
@@ -1234,21 +1247,21 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   output$CPTAC_diffp_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       paste0(gene,"_",input$Cancer_type2_pm,".","diffp", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("CPTAC_diffp_pm_tabdown")
       write.csv(x = DEG_table_CPTAC_protein_pm(),file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("CPTAC_diffp_pm_tabdown")
     }
   )
   
   
   output$volcano_CPTAC_protein_pm = renderPlotly({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
+    gene = CPTAC_pm_para()$gene_cptac_pm
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     tab = DEG_table_CPTAC_protein_pm()
     FC_CPTAC_protein_pm = FC_CPTAC_protein_pm()
     pvalue_CPTAC_protein_pm = pvalue_CPTAC_protein_pm()
@@ -1271,7 +1284,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
     return(tmp)
     
-  }) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),DEG_table_CPTAC_protein_pm(),FC_CPTAC_protein_pm(),pvalue_CPTAC_protein_pm())
+  }) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,DEG_table_CPTAC_protein_pm(),FC_CPTAC_protein_pm(),pvalue_CPTAC_protein_pm())
   
   
   #################################################CPTAC GSEA######################################################
@@ -1289,10 +1302,10 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   })
   
   
-  observeEvent(input$sec3_pm,{
-    gene = gene_cptac_pm()
+  observe({
+    gene = CPTAC_pm_para()$gene_cptac_pm
     CPTAC_cohort_pm = CPTAC_cohort_pm()
-    cancer_type2 = cancer_type2_pm()
+    cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
     
     if(length(CPTAC_cohort_pm$mut) <3 | length(CPTAC_cohort_pm$wt) <3){
       closeAlert(session,"warning5_cptac_pm_id")
@@ -1328,9 +1341,23 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
     
-    installr::kill_pid(pid = scan(status_file_rna))
-    tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_cptac_rna_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
-    write(tmp$get_pid(), status_file_rna)
+    
+    if( length(GSEA_use) < 5 | useidr %in% names(GSEA_use) ){
+      
+      installr::kill_pid(pid = scan(status_file_rna))
+      tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_cptac_rna_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
+      write(tmp$get_pid(), status_file_rna)
+      
+    }else{
+      
+      closeAlert(session,"warning5_cptac_pm_id")
+      createAlert(session, "warning5_cptac_pm", "warning5_cptac_pm_id", title = "Warning",style = "danger",
+                  content = "Sorry, GSEA function is temporarily unavailable due to high user traffic. Please try again later.", append = FALSE)
+      
+      tmp = NULL
+      
+    }
+
 
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::enable("pathway_gsea_ref_single");shinyjs::enable("pathway_gsea_tcga");shinyjs::enable("pathway_gsea_cptac_rna");shinyjs::enable("pathway_gsea_cptac_protein");shinyjs::enable("pathway_gsea_ref_pm");shinyjs::enable("pathway_gsea_tcga_pm");shinyjs::enable("pathway_gsea_cptac_rna_pm");shinyjs::enable("pathway_gsea_cptac_protein_pm");shinyjs::enable("pathway_gsea_tcga_subtype");shinyjs::enable("pathway_gsea_cptac_rna_subtype");shinyjs::enable("pathway_gsea_cptac_protein_subtype");
@@ -1346,7 +1373,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   one_loader_rna = reactiveVal(0)
   output$GSEA_tab_cptac_rna_pm = renderReactable({
-    
+    if(is.null(tmp_gsea_cptac_rna_pm())){return(NULL)}
     if(tmp_gsea_cptac_rna_pm()$is_alive()){
       
       invalidateLater(millis = 1000, session = session)
@@ -1355,6 +1382,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
         
         waiter_show(id = "cptac_pm_rna_GSEA_loader",html = tagList(spin_flower(),h4("GSEA running..."),h5("Please wait for a minute")), color = "black")
         one_loader_rna(one_loader_rna()+1)
+        GSEA_use[[useidr]] <<- TRUE
         return(NULL)
         
         
@@ -1405,6 +1433,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       shinyjs::enable(id = "CPTAC_gsear_pm_tabdown")
       one_loader_rna(0)
       write("", status_file_rna)
+      
+      GSEA_use[[useidr]] <<- NULL
       return(tmp)
     }
     
@@ -1444,19 +1474,19 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   output$CPTAC_gsear_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       paste0(gene,"_",input$Cancer_type2_pm,".","gsear", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("CPTAC_gsear_pm_tabdown")
       write.csv(x = tmp_gsea_cptac_rna_pm()$get_result()@result,file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("CPTAC_gsear_pm_tabdown")
     }
   )
   
   
-  row_num_cptac_rna_pm = eventReactive(input$cptac_pm_rna_GSEA_show,{input$cptac_pm_rna_GSEA_show$index})
+  row_num_cptac_rna_pm = eventReactive(input$cptac_pm_rna_GSEA_show,{input$cptac_pm_rna_GSEA_show$index})%>% debounce(500)
   
   output$GSEA_plot_cptac_rna_pm = renderPlot({
     my_gseaplot2(tmp_gsea_cptac_rna_pm()$get_result(),geneSetID = tmp_gsea_cptac_rna_pm()$get_result()@result$ID[row_num_cptac_rna_pm()],
@@ -1469,7 +1499,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   output$CPTAC_gsear_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_gsear_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","gsear", '.',"pdf")
@@ -1483,7 +1513,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      
+      shinyjs::disable("CPTAC_gsear_pm_down")
       if(input$CPTAC_gsear_pm_res <= 300){
         r = input$CPTAC_gsear_pm_res
       }else{
@@ -1528,6 +1558,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       )
       
       dev.off()
+      shinyjs::enable("CPTAC_gsear_pm_down")
     }
   )
   
@@ -1548,9 +1579,22 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
     shinyjs::addClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
     shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
     
-    installr::kill_pid(pid = scan(status_file_protein))
-    tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_cptac_protein_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
-    write(tmp$get_pid(), status_file_protein)
+    if( length(GSEA_use) < 5 | useidp %in% names(GSEA_use) ){
+      
+      installr::kill_pid(pid = scan(status_file_protein))
+      tmp = r_bg(func = myGSEA,args = list(geneList = FC,TERM2GENE=pathway_database[[input$pathway_gsea_cptac_protein_pm]][,c(1,3)],pvalueCutoff = 0.1),supervise = TRUE)
+      write(tmp$get_pid(), status_file_protein)
+      
+    }else{
+      
+      closeAlert(session,"warning5_cptac_pm_id")
+      createAlert(session, "warning5_cptac_pm", "warning5_cptac_pm_id", title = "Warning",style = "danger",
+                  content = "Sorry, GSEA function is temporarily unavailable due to high user traffic. Please try again later.", append = FALSE)
+      
+      tmp = NULL
+      
+    }
+
     
     shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
     shinyjs::enable("pathway_gsea_ref_single");shinyjs::enable("pathway_gsea_tcga");shinyjs::enable("pathway_gsea_cptac_rna");shinyjs::enable("pathway_gsea_cptac_protein");shinyjs::enable("pathway_gsea_ref_pm");shinyjs::enable("pathway_gsea_tcga_pm");shinyjs::enable("pathway_gsea_cptac_rna_pm");shinyjs::enable("pathway_gsea_cptac_protein_pm");shinyjs::enable("pathway_gsea_tcga_subtype");shinyjs::enable("pathway_gsea_cptac_rna_subtype");shinyjs::enable("pathway_gsea_cptac_protein_subtype");
@@ -1566,7 +1610,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   one_loader_protein = reactiveVal(0)
   output$GSEA_tab_cptac_protein_pm = renderReactable({
-    
+    if(is.null(tmp_gsea_cptac_protein_pm())){return(NULL)}
     if(tmp_gsea_cptac_protein_pm()$is_alive()){
       
       invalidateLater(millis = 1000, session = session)
@@ -1575,6 +1619,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
         
         waiter_show(id = "cptac_pm_protein_GSEA_loader",html = tagList(spin_flower(),h4("GSEA running..."),h5("Please wait for a minute")), color = "black")
         one_loader_protein(one_loader_protein()+1)
+        GSEA_use[[useidp]] <<- TRUE
         return(NULL)
         
         
@@ -1625,6 +1670,8 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       shinyjs::enable(id = "CPTAC_gseap_pm_tabdown")
       one_loader_protein(0)
       write("", status_file_protein)
+      
+      GSEA_use[[useidp]] <<- NULL
       return(tmp)
     }
     
@@ -1665,19 +1712,19 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   output$CPTAC_gseap_pm_tabdown = downloadHandler(
     
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       paste0(gene,"_",input$Cancer_type2_pm,".","gseap", '.',"csv")
       
     },
     content = function(file){
-      
+      shinyjs::disable("CPTAC_gseap_pm_tabdown")
       write.csv(x = tmp_gsea_cptac_protein_pm()$get_result()@result,file = file, sep = ',', col.names = T, row.names = T, quote = F)
-      
+      shinyjs::enable("CPTAC_gseap_pm_tabdown")
     }
   )
   
   
-  row_num_cptac_protein_pm = eventReactive(input$cptac_pm_protein_GSEA_show,{input$cptac_pm_protein_GSEA_show$index})
+  row_num_cptac_protein_pm = eventReactive(input$cptac_pm_protein_GSEA_show,{input$cptac_pm_protein_GSEA_show$index})%>% debounce(500)
   
   output$GSEA_plot_cptac_protein_pm = renderPlot({
     my_gseaplot2(tmp_gsea_cptac_protein_pm()$get_result(),geneSetID = tmp_gsea_cptac_protein_pm()$get_result()@result$ID[row_num_cptac_protein_pm()],
@@ -1691,7 +1738,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
   
   output$CPTAC_gseap_pm_down = downloadHandler(
     filename = function(){
-      gene = gene_cptac_pm()
+      gene = CPTAC_pm_para()$gene_cptac_pm
       
       if(input$CPTAC_gseap_pm_file == 'pdf'){
         paste0(gene,"_",input$Cancer_type2_pm,".","gseap", '.',"pdf")
@@ -1705,7 +1752,7 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       
     },
     content = function(file){
-      
+      shinyjs::disable("CPTAC_gseap_pm_down")
       if(input$CPTAC_gseap_pm_res <= 300){
         r = input$CPTAC_gseap_pm_res
       }else{
@@ -1751,143 +1798,145 @@ CPTAC_server_pm <- function(input,output,session,gene_cptac_pm,cancer_type2_pm,C
       )
       
       dev.off()
+      shinyjs::enable("CPTAC_gseap_pm_down")
     }
   )
   
-  ###################CPTAC survival###################
-  
-  output$sur_cptac_pm_uidown = renderUI({
-    CPTAC_cohort_pm = CPTAC_cohort_pm()
-    validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
-    tagList(
-      div(selectInput(inputId = "CPTAC_sur_pm_file",label = "Choose a format",choices = c("png","tiff","jpeg","pdf"),selected = "png",multiple = F,width = "100%"),style = "display:inline-block;width:20%;vertical-align:top;margin-left:20px;"),
-      div(numericInput(inputId = "CPTAC_sur_pm_res",label = "Resolution",min = 100,max = 300,value = 100,step = 10,width = "100%"),style = "display:inline-block;width:20%;"),
-      div(numericInput(inputId = "CPTAC_sur_pm_width",label = "Width",min = 500,max = 3000,value = 1000,step = 10,width = "100%"),style = "display:inline-block;width:20%;"),
-      div(numericInput(inputId = "CPTAC_sur_pm_height",label = "Height",min = 500,max = 3000,value = 1000,step = 10,width = "100%"),style = "display:inline-block;width:20%;"),
-      div(downloadButton(outputId = "CPTAC_sur_pm_down",label = "Download Plot"),style = "display:inline-block;width:10%;vertical-align: middle;")
-    )
-  })
-  
-  observeEvent(input$CPTAC_sur_pm_file,{
-    if(input$CPTAC_sur_pm_file == "pdf"){
-      updateNumericInput(session = session,inputId = "CPTAC_sur_pm_res",value = 0,min = 0,max = 0)
-      updateNumericInput(session = session,inputId = "CPTAC_sur_pm_width",value = 10,min = 1,max = 30,step = 1)
-      updateNumericInput(session = session,inputId = "CPTAC_sur_pm_height",value = 10,min = 1,max = 30,step = 1)
-    }else{
-      updateNumericInput(session = session,inputId = "CPTAC_sur_pm_res",min = 100,max = 300,value = 100,step = 10)
-      updateNumericInput(session = session,inputId = "CPTAC_sur_pm_width",min = 500,max = 3000,value = 1000,step = 10)
-      updateNumericInput(session = session,inputId = "CPTAC_sur_pm_height",min = 500,max = 3000,value = 1000,step = 10)
-    }
-  })
-  
-  observeEvent(input$sec3_pm,{
-    gene = gene_cptac_pm()
-    CPTAC_cohort_pm = CPTAC_cohort_pm()
-    cancer_type2 = cancer_type2_pm()
-    
-    if(length(CPTAC_cohort_pm$mut) <3 | length(CPTAC_cohort_pm$wt) <3){
-      closeAlert(session,"warning6_cptac_pm_id")
-      createAlert(session, "warning6_cptac_pm", "warning6_cptac_pm_id", title = "Warning",style = "danger",
-                  content = paste("The number of patients with",gene,"mutation or wildtype","<3",sep = " "), append = FALSE)
-    }else if(!any(pathway_list[[gene]] %in% CPTAC[[cancer_type2]][["maf"]]@data$SYMBOL)){
-      closeAlert(session,"warning6_cptac_pm_id")
-      createAlert(session, "warning6_cptac_pm", "warning6_cptac_pm_id", title = "Warning",style = "danger",
-                  content = paste("The genes of ",gene,"does not exist in",cancer_type2,sep = " "), append = FALSE)
-    }else{
-      closeAlert(session,"warning6_cptac_pm_id")
-    }
-  })
-  
-  
-  output$CPTAC_survival_pm = renderPlot({
-    gene = gene_cptac_pm()
-    cancer_type2 = cancer_type2_pm()
-    CPTAC_cohort_pm = CPTAC_cohort_pm()
-    validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
-    
-    shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
-    shinyjs::removeClass(id = "button_ref_single",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-arrow-alt-circle-up");
-    shinyjs::removeClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
-    shinyjs::removeClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
-    shinyjs::addClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
-    shinyjs::addClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
-    shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
-    
-    
-    tmp = CPTAC_survival_pm(TCGA = CPTAC,cancer_type = cancer_type2,gene = gene,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)
-    
-    shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
-    shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
-    shinyjs::removeClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
-    shinyjs::removeClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
-    shinyjs::addClass(id = "button_ref_single",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_single",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_single",class = "fa fa-arrow-alt-circle-up");
-    shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
-    shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
-    return(tmp)
-    
-  },width = 600,height = 600) %>% bindCache(cancer_type2_pm(),gene_cptac_pm(),CPTAC_cohort_pm())
-  
-  output$CPTAC_sur_pm_down = downloadHandler(
-    filename = function(){
-      gene = gene_cptac_pm()
-      
-      if(input$CPTAC_sur_pm_file == 'pdf'){
-        paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"pdf")
-      }else if(input$CPTAC_sur_pm_file == 'png'){
-        paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"png")
-      }else if(input$CPTAC_sur_pm_file == 'jpeg'){
-        paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"jpeg")
-      }else{
-        paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"tiff")
-      }
-      
-    },
-    content = function(file){
-      
-      gene = gene_cptac_pm()
-      cancer_type2 = cancer_type2_pm()
-      CPTAC_cohort_pm = CPTAC_cohort_pm()
-      
-      if(input$CPTAC_sur_pm_res <= 300){
-        r = input$CPTAC_sur_pm_res
-      }else{
-        r = 300
-      }
-      if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_height <= 50){
-        h = input$CPTAC_sur_pm_height
-      }else if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_height > 50){
-        h = 50
-      }else if(input$CPTAC_sur_pm_file != "pdf" & input$CPTAC_sur_pm_height <= 3000){
-        h = input$CPTAC_sur_pm_height
-      }else{
-        h = 3000
-      }
-      if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_width <= 50){
-        w = input$CPTAC_sur_pm_width
-      }else if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_width > 50){
-        w = 50
-      }else if(input$CPTAC_sur_pm_file != "pdf" & input$CPTAC_sur_pm_width <= 3000){
-        w = input$CPTAC_sur_pm_width
-      }else{
-        w = 3000
-      }
-      
-      if(input$CPTAC_sur_pm_file == 'pdf'){
-        pdf(file = file,width = w,height = h)
-      }else if(input$CPTAC_sur_pm_file == 'png'){
-        png(file = file,width = w,height = h,res = r)
-      }else if(input$CPTAC_sur_pm_file == 'jpeg'){
-        jpeg(file = file,width = w,height = h,res = r)
-      }else{
-        tiff(file = file,width = w,height = h,res = r)
-      }
-
-      
-      print(    CPTAC_survival_pm(TCGA = CPTAC,cancer_type = cancer_type2,gene = gene,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)     )
-      
-      dev.off()
-    }
-  )
-  
-  
+  # ###################CPTAC survival###################
+  # 
+  # output$sur_cptac_pm_uidown = renderUI({
+  #   CPTAC_cohort_pm = CPTAC_cohort_pm()
+  #   validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
+  #   tagList(
+  #     div(selectInput(inputId = "CPTAC_sur_pm_file",label = "Choose a format",choices = c("png","tiff","jpeg","pdf"),selected = "png",multiple = F,width = "100%"),style = "display:inline-block;width:20%;vertical-align:top;margin-left:20px;"),
+  #     div(numericInput(inputId = "CPTAC_sur_pm_res",label = "Resolution",min = 100,max = 300,value = 100,step = 10,width = "100%"),style = "display:inline-block;width:20%;"),
+  #     div(numericInput(inputId = "CPTAC_sur_pm_width",label = "Width",min = 500,max = 3000,value = 1000,step = 10,width = "100%"),style = "display:inline-block;width:20%;"),
+  #     div(numericInput(inputId = "CPTAC_sur_pm_height",label = "Height",min = 500,max = 3000,value = 1000,step = 10,width = "100%"),style = "display:inline-block;width:20%;"),
+  #     div(downloadButton(outputId = "CPTAC_sur_pm_down",label = "Download Plot"),style = "display:inline-block;width:10%;vertical-align: middle;")
+  #   )
+  # })
+  # 
+  # observeEvent(input$CPTAC_sur_pm_file,{
+  #   if(input$CPTAC_sur_pm_file == "pdf"){
+  #     updateNumericInput(session = session,inputId = "CPTAC_sur_pm_res",value = 0,min = 0,max = 0)
+  #     updateNumericInput(session = session,inputId = "CPTAC_sur_pm_width",value = 10,min = 1,max = 30,step = 1)
+  #     updateNumericInput(session = session,inputId = "CPTAC_sur_pm_height",value = 10,min = 1,max = 30,step = 1)
+  #   }else{
+  #     updateNumericInput(session = session,inputId = "CPTAC_sur_pm_res",min = 100,max = 300,value = 100,step = 10)
+  #     updateNumericInput(session = session,inputId = "CPTAC_sur_pm_width",min = 500,max = 3000,value = 1000,step = 10)
+  #     updateNumericInput(session = session,inputId = "CPTAC_sur_pm_height",min = 500,max = 3000,value = 1000,step = 10)
+  #   }
+  # })
+  # 
+  # observe({
+  #   gene = CPTAC_pm_para()$gene_cptac_pm
+  #   CPTAC_cohort_pm = CPTAC_cohort_pm()
+  #   cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
+  #   
+  #   if(length(CPTAC_cohort_pm$mut) <3 | length(CPTAC_cohort_pm$wt) <3){
+  #     closeAlert(session,"warning6_cptac_pm_id")
+  #     createAlert(session, "warning6_cptac_pm", "warning6_cptac_pm_id", title = "Warning",style = "danger",
+  #                 content = paste("The number of patients with",gene,"mutation or wildtype","<3",sep = " "), append = FALSE)
+  #   }else if(!any(pathway_list[[gene]] %in% CPTAC[[cancer_type2]][["maf"]]@data$SYMBOL)){
+  #     closeAlert(session,"warning6_cptac_pm_id")
+  #     createAlert(session, "warning6_cptac_pm", "warning6_cptac_pm_id", title = "Warning",style = "danger",
+  #                 content = paste("The genes of ",gene,"does not exist in",cancer_type2,sep = " "), append = FALSE)
+  #   }else{
+  #     closeAlert(session,"warning6_cptac_pm_id")
+  #   }
+  # })
+  # 
+  # 
+  # output$CPTAC_survival_pm = renderPlot({
+  #   gene = CPTAC_pm_para()$gene_cptac_pm
+  #   cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
+  #   CPTAC_cohort_pm = CPTAC_cohort_pm()
+  #   validate(need(length(CPTAC_cohort_pm$mut) >=3 & length(CPTAC_cohort_pm$wt) >= 3,message = FALSE))
+  #   
+  #   shinyjs::disable("sec");shinyjs::disable("sec2");shinyjs::disable("sec3");shinyjs::disable("sec_pm");shinyjs::disable("sec2_pm");shinyjs::disable("sec3_pm");shinyjs::disable("sec2_subtype");shinyjs::disable("sec3_subtype");
+  #   shinyjs::removeClass(id = "button_ref_single",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-arrow-alt-circle-up");
+  #   shinyjs::removeClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
+  #   shinyjs::removeClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::removeClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
+  #   shinyjs::addClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
+  #   shinyjs::addClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
+  #   shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
+  #   
+  #   
+  #   tmp = CPTAC_survival_pm(TCGA = CPTAC,cancer_type = cancer_type2,gene = gene,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)
+  #   
+  #   shinyjs::enable("sec");shinyjs::enable("sec2");shinyjs::enable("sec3");shinyjs::enable("sec_pm");shinyjs::enable("sec2_pm");shinyjs::enable("sec3_pm");shinyjs::enable("sec2_subtype");shinyjs::enable("sec3_subtype");
+  #   shinyjs::removeClass(id = "button_ref_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_single",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_single",class = "fa fa-spinner fa-spin");
+  #   shinyjs::removeClass(id = "button_ref_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_tcga_pm",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_pm",class = "fa fa-spinner fa-spin");
+  #   shinyjs::removeClass(id = "button_tcga_subtype",class = "fa fa-spinner fa-spin");shinyjs::removeClass(id = "button_cptac_subtype",class = "fa fa-spinner fa-spin");
+  #   shinyjs::addClass(id = "button_ref_single",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_single",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_single",class = "fa fa-arrow-alt-circle-up");
+  #   shinyjs::addClass(id = "button_ref_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_tcga_pm",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_pm",class = "fa fa-arrow-alt-circle-up");
+  #   shinyjs::addClass(id = "button_tcga_subtype",class = "fa fa-arrow-alt-circle-up");shinyjs::addClass(id = "button_cptac_subtype",class = "fa fa-arrow-alt-circle-up");
+  #   return(tmp)
+  #   
+  # },width = 600,height = 600) %>% bindCache(CPTAC_pm_para()$cancer_type2_pm,CPTAC_pm_para()$gene_cptac_pm,CPTAC_cohort_pm())
+  # 
+  # output$CPTAC_sur_pm_down = downloadHandler(
+  #   filename = function(){
+  #     gene = CPTAC_pm_para()$gene_cptac_pm
+  #     
+  #     if(input$CPTAC_sur_pm_file == 'pdf'){
+  #       paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"pdf")
+  #     }else if(input$CPTAC_sur_pm_file == 'png'){
+  #       paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"png")
+  #     }else if(input$CPTAC_sur_pm_file == 'jpeg'){
+  #       paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"jpeg")
+  #     }else{
+  #       paste0(gene,"_",input$Cancer_type2_pm,".","sur", '.',"tiff")
+  #     }
+  #     
+  #   },
+  #   content = function(file){
+  #     shinyjs::disable("CPTAC_sur_pm_down")
+  #     gene = CPTAC_pm_para()$gene_cptac_pm
+  #     cancer_type2 = CPTAC_pm_para()$cancer_type2_pm
+  #     CPTAC_cohort_pm = CPTAC_cohort_pm()
+  #     
+  #     if(input$CPTAC_sur_pm_res <= 300){
+  #       r = input$CPTAC_sur_pm_res
+  #     }else{
+  #       r = 300
+  #     }
+  #     if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_height <= 50){
+  #       h = input$CPTAC_sur_pm_height
+  #     }else if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_height > 50){
+  #       h = 50
+  #     }else if(input$CPTAC_sur_pm_file != "pdf" & input$CPTAC_sur_pm_height <= 3000){
+  #       h = input$CPTAC_sur_pm_height
+  #     }else{
+  #       h = 3000
+  #     }
+  #     if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_width <= 50){
+  #       w = input$CPTAC_sur_pm_width
+  #     }else if(input$CPTAC_sur_pm_file == "pdf" & input$CPTAC_sur_pm_width > 50){
+  #       w = 50
+  #     }else if(input$CPTAC_sur_pm_file != "pdf" & input$CPTAC_sur_pm_width <= 3000){
+  #       w = input$CPTAC_sur_pm_width
+  #     }else{
+  #       w = 3000
+  #     }
+  #     
+  #     if(input$CPTAC_sur_pm_file == 'pdf'){
+  #       pdf(file = file,width = w,height = h)
+  #     }else if(input$CPTAC_sur_pm_file == 'png'){
+  #       png(file = file,width = w,height = h,res = r)
+  #     }else if(input$CPTAC_sur_pm_file == 'jpeg'){
+  #       jpeg(file = file,width = w,height = h,res = r)
+  #     }else{
+  #       tiff(file = file,width = w,height = h,res = r)
+  #     }
+  # 
+  #     
+  #     print(    CPTAC_survival_pm(TCGA = CPTAC,cancer_type = cancer_type2,gene = gene,mut_patient_id = CPTAC_cohort_pm$mut,wt_patient_id = CPTAC_cohort_pm$wt)     )
+  #     
+  #     dev.off()
+  #     shinyjs::enable("CPTAC_sur_pm_down")
+  #   }
+  # )
+  # 
+  # 
 }

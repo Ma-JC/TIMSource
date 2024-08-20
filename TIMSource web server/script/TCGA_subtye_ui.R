@@ -34,8 +34,8 @@ TCGA_subtype_ui <- function(){
             ),
         actionButton(inputId = "sec2_subtype",label = "submit",icon = icon("arrow-alt-circle-up",id = "button_tcga_subtype"),style="color: #033c73;"),
         hr(),
-        p("Mutation Subtype -- TCGA database",style="text-align:center;font-size=20px;font-weight:bolder;"),
-        p("Currently, gene-based transcriptome studies or web servers often don't take into account the patient's genetic mutation status. A large number of studies have shown that patients with different mutation backgrounds (especially driver mutations) have significant differences in gene regulation patterns and intercellular interactions, and even some genes have opposing prognostic values. Therefore, in the Browse module, the Mutation Subtype provides different gene mutation backgrounds for users to further compare and explore the relationship between gene expression and the immune microenvironment (or patient prognosis). The TCGA database originates from the Pan-Cancer Atlas (PanCanAtlas) initiative. Although it does not provide information on immune therapy efficacy, the dataset offers multi-omics data and clinical information for over 10,000 patients across 33 different cancer types. With this dataset, we can analyze the relationship between gene mutations and the immune microenvironment in a wider range of cancer types, thereby validating and expanding the results from the Ref_ICI datasets."),
+        p("Mutation Subtype",style="text-align:center;font-size=20px;font-weight:bolder;"),
+        p("It has been extensively accepted that tumors can be stratified by the key genetic events, and treatment strategies should be designed for cancer subtypes harboring specific genetic alterations. Therefore, it is essential to separate these cancer subtypes and in-depth explore the genetic factors associated microenvironment in each type. In this section, we focus on the mutation subtype, which allows the users to explore the relationship between gene expression and the immune microenvironment (or patient prognosis) in different gene mutation backgrounds."),
         width = 3,id = "sidebar_id2_subtype"
         
       ),
@@ -47,7 +47,7 @@ TCGA_subtype_ui <- function(){
                                               h2("TCGA database | Infiltrating immune cells",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("ssGSEA evaluated 28 types of immune cell infiltration in patients with different cancers, and observed the relationship between gene mutations and immune infiltration."))
+                                              box(width = 12,p(""))
                                        ),
                                        column(width = 12,bsAlert("warning_tcga_subtype")),
                                        box(title = "Immune infiltration",solidHeader = T,collapsible = T,collapsed = F,width = 12,
@@ -101,7 +101,7 @@ TCGA_subtype_ui <- function(){
                                               h2("TCGA database | Immune-related signatures",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                              box(width = 12,p(""))
                                        ),
                                        column(width = 12,bsAlert("warning2_tcga_subtype")),
                                        box(title = "Immune signatures",solidHeader = T,collapsible = T,collapsed = F,width = 12,
@@ -138,7 +138,7 @@ TCGA_subtype_ui <- function(){
                                               h2("TCGA database | Survival analysis",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                              box(width = 12,p(""))
                                        ),
                                        column(width = 12,bsAlert("warning5_tcga_subtype")),
                                        box(width = 12,title = "Survival analysis",solidHeader = T,collapsible = T,collapsed = F,
@@ -155,7 +155,7 @@ TCGA_subtype_ui <- function(){
                                               h2("TCGA database | Differential expression analysis",style="color:#033c73;"),
                                               hr(style="background-color:#033c73;height:1px")),
                                        column(width = 12,
-                                              box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                              box(width = 12,p(""))
                                        ),
                                        column(width = 12,bsAlert("warning3_tcga_subtype")),
                                        box(width = 12,title = "Volcano Plot",solidHeader = T,collapsible = T,
@@ -203,7 +203,7 @@ TCGA_subtype_ui <- function(){
                                        h2("TCGA database | GSEA",style="color:#033c73;"),
                                        hr(style="background-color:#033c73;height:1px")),
                                 column(width = 12,
-                                       box(width = 12,p("Patients with different cancers were scored on 8 immune-related signatures and observed the relationship between gene mutations and immunity."))
+                                       box(width = 12,p(""))
                                 ),
                                 column(width = 12,bsAlert("warning4_tcga_subtype")),
                                 box(
