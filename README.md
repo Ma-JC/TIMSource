@@ -2,7 +2,7 @@
 Complement inhibition reshapes the tumor microenvironment and enhances clinical efficacy in immunotherapy  
 ![image](overall.png)
 
-This repository contains all the data analysis scripts utilized in our study entitled **"Complement inhibition reshapes the tumor microenvironment and enhances clinical efficacy in immunotherapy."** The project is organized into three core components: Pan-cancer analysis, single-cell RNA sequencing (scRNA-seq) analysis, and the TIMSource web server. Below, we provide a detailed overview of each component along with guidance on how to navigate the repository.
+This repository contains all the data analysis scripts utilized in our study entitled **"Complement inhibition reshapes the tumor microenvironment and enhances clinical efficacy in immunotherapy."** The project is organized into three core components: **Pan-cancer analysis**, **single-cell RNA sequencing (scRNA-seq) analysis**, and **TIMSource web server**. Below, we provide a detailed overview of each component along with guidance on how to navigate the repository.
 
 ## Repository Structure
 
